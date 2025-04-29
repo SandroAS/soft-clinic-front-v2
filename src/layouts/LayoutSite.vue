@@ -12,17 +12,12 @@
             <span class="text-primary font-weight-bold text-h5">Soft Clinic</span>
           </div>
         </a>
-        
+
         <div class="d-none d-md-flex align-center">
           <v-btn variant="text" href="#resources">Recursos</v-btn>
           <v-btn variant="text" href="#plans">Planos</v-btn>
-          <v-btn variant="text" to="/contato">Contato</v-btn>
-          <v-btn
-            color="primary"
-            class="ml-4"
-            rounded="lg"
-            to="/acessar"
-          >
+          <v-btn variant="text" href="#contacts">Contatos</v-btn>
+          <v-btn color="primary" class="ml-4" rounded="lg" to="/acessar">
             Acessar Sistema
             <v-icon end>mdi-arrow-right</v-icon>
           </v-btn>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Resources from '@/components/site/Resources.vue';
 import Plans from '@/components/site/Plans.vue';
+import Contacts from '@/components/site/Contacts.vue';
 
 const features = [
   {
@@ -35,20 +36,10 @@ const features = [
             melhorar o atendimento aos pacientes.
           </p>
           <div class="d-flex flex-column flex-sm-row align-center justify-center gap-4">
-            <v-btn
-              color="primary"
-              size="x-large"
-              rounded="lg"
-              class="px-8"
-            >
+            <v-btn color="primary" size="x-large" rounded="lg" class="px-8">
               Teste gratuitamente por 7 dias
             </v-btn>
-            <v-btn
-              variant="text"
-              size="x-large"
-              rounded="lg"
-              class="text-primary"
-            >
+            <v-btn variant="text" size="x-large" rounded="lg" class="text-primary">
               Saiba mais
               <v-icon end>mdi-arrow-right</v-icon>
             </v-btn>
@@ -89,4 +80,6 @@ const features = [
   <Resources id="resources" />
 
   <Plans id="plans" />
+
+  <Contacts id="contacts" />
 </template>
