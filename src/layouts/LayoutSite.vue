@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// Nada necessário aqui por enquanto
+import logo from '@/assets/logo.svg'
 </script>
 
 <template>
@@ -8,7 +8,9 @@
       <div class="d-flex align-center justify-space-between w-100 px-4">
         <a href="#home" class="text-decoration-none">
           <div class="d-flex align-center">
-            <v-icon color="primary" size="32" class="me-2">mdi-heart-pulse</v-icon>
+            <v-img :src="logo" alt="Logo Soft Clinic" contain height="40" width="120" class="mr-4" />
+
+
             <span class="text-primary font-weight-bold text-h5">Soft Clinic</span>
           </div>
         </a>
@@ -17,7 +19,7 @@
           <v-btn variant="text" href="#resources">Recursos</v-btn>
           <v-btn variant="text" href="#plans">Planos</v-btn>
           <v-btn variant="text" href="#contacts">Contatos</v-btn>
-          <v-btn color="primary" class="ml-4" rounded="lg" to="/acessar">
+          <v-btn color="primary" class="ml-4" rounded="lg" to="/login">
             Acessar Sistema
             <v-icon end>mdi-arrow-right</v-icon>
           </v-btn>
