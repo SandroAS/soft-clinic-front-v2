@@ -29,7 +29,7 @@
               <a href="mailto:atendimento@softclinic.com.br" class="text-white text-decoration-none">
                 <v-icon start small>mdi-email</v-icon> atendimento@softclinic.com.br
               </a>
-              <span class="text-white">|</span>
+              <span class="text-white px-4">|</span>
               <a href="https://wa.me/553198136678" class="text-white text-decoration-none" target="_blank">
                 <v-icon start small>mdi-whatsapp</v-icon> (31) 9 9813-6678
               </a>
