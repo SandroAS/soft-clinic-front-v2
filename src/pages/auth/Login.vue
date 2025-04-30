@@ -39,11 +39,25 @@ const register = () => {
       </v-card-title>
 
       <v-form ref="formRef" v-model="formValid" @submit.prevent="submitForm">
-        <v-text-field v-model="email" label="E-mail" :rules="[rules.required, rules.email]"
-          prepend-inner-icon="mdi-email" type="email"></v-text-field>
+        <v-text-field
+          v-model="email"
+          label="E-mail"
+          :rules="[rules.required, rules.email]"
+          prepend-inner-icon="mdi-email"
+          type="email"
+          variant="solo-filled"
+          density="comfortable"
+        ></v-text-field>
 
-        <v-text-field v-model="password" label="Senha" :rules="[rules.required]" prepend-inner-icon="mdi-lock"
-          type="password"></v-text-field>
+        <v-text-field
+          v-model="password"
+          label="Senha"
+          :rules="[rules.required]"
+          prepend-inner-icon="mdi-lock"
+          type="password"
+          variant="solo-filled"
+          density="comfortable"
+        ></v-text-field>
 
         <div class="text-end mb-4">
           <v-btn variant="text" class="text-caption" @click="forgotPassword">
