@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import logo from '@/assets/logo.svg'
+import logo from '@/assets/logo.png'
 
 const email = ref('');
 const password = ref('');
@@ -33,8 +33,8 @@ const register = () => {
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
     <v-card class="pa-8" max-width="400" elevation="10" rounded="xl">
-      <v-card-title class="d-flex justify-center align-end mb-6">
-        <v-img :src="logo" alt="Logo Soft Clinic" contain height="80" class="mr-2" />
+      <v-card-title class="justify-center mb-6">
+        <v-img :src="logo" alt="Logo Soft Clinic" contain height="50" width="50" class="mr-2" />
         <span class="text-h5 font-weight-bold">Soft Clinic</span>
       </v-card-title>
 
