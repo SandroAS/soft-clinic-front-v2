@@ -72,7 +72,7 @@ const register = () => {
 
         <div class="text-center">
           <span class="text-caption mr-1">Não tem uma conta?</span>
-          <v-btn variant="outlined" color="teal" @click="register">
+          <v-btn to="register" variant="outlined" color="teal" @click="register">
             Teste gratuitamente!
           </v-btn>
         </div>

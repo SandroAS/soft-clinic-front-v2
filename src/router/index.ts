@@ -6,6 +6,7 @@ import LayoutSistema from '@/layouts/LayoutSystem.vue'
 
 import Home from '@/pages/site/Home.vue'
 import Login from '@/pages/auth/Login.vue'
+import Register from '@/pages/auth/Register.vue'
 import Dashboard from '@/pages/system/Dashboard.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -21,13 +22,18 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   {
-    path: '/login',
+    path: '/auth',
     component: LayoutAuth,
     children: [
       {
-        path: '',
+        path: 'login',
         name: 'login',
         component: Login
+      },
+      {
+        path: 'register',
+        name: 'register',
+        component: Register
       }
     ]
   },

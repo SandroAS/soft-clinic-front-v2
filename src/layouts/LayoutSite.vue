@@ -19,7 +19,7 @@ import logo from '@/assets/logo.png'
           <v-btn variant="text" href="#resources">Recursos</v-btn>
           <v-btn variant="text" href="#plans">Planos</v-btn>
           <v-btn variant="text" href="#contacts">Contatos</v-btn>
-          <v-btn color="primary" class="ml-4" rounded="lg" to="/login">
+          <v-btn color="primary" class="ml-4" rounded="lg" to="/auth/login">
             Acessar Sistema
             <v-icon end>mdi-arrow-right</v-icon>
           </v-btn>
