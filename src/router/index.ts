@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 import LayoutSite from '@/layouts/LayoutSite.vue'
 import LayoutAuth from '@/layouts/LayoutAuth.vue'
-import LayoutSistema from '@/layouts/LayoutSystem.vue'
+import LayoutSystem from '@/layouts/LayoutSystem.vue'
 
 import Home from '@/pages/site/Home.vue'
 import Login from '@/pages/auth/Login.vue'
@@ -38,8 +38,8 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   {
-    path: '/sistema',
-    component: LayoutSistema,
+    path: '/system',
+    component: LayoutSystem,
     children: [
       {
         path: 'dashboard',
