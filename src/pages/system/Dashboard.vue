@@ -1,3 +1,54 @@
+<script setup lang="ts">
+import ApexChart from 'vue3-apexcharts'
+
+const totalPacientes = 124
+const totalOrcamentos = 89
+const totalAtendimentos = 152
+const totalFaturamento = 38250.75
+
+// Simulação de dados para os últimos 30 dias
+const today = new Date()
+const labels = Array.from({ length: 30 }, (_, i) => {
+  const date = new Date(today)
+  date.setDate(today.getDate() - (29 - i))
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+})
+
+const values = Array.from({ length: 30 }, () => Math.floor(Math.random() * 2000) + 300)
+
+const series = [
+  {
+    name: 'Faturamento',
+    data: values,
+  },
+]
+
+const chartOptions = {
+  chart: {
+    type: 'bar',
+    toolbar: { show: false },
+  },
+  xaxis: {
+    categories: labels,
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 4,
+      columnWidth: '50%',
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  colors: ['#1976d2'],
+  tooltip: {
+    y: {
+      formatter: (val: number) => `R$ ${val.toLocaleString()}`,
+    },
+  },
+}
+</script>
+
 <template>
   <v-container fluid>
     <!-- Totalizadores -->
@@ -49,57 +100,6 @@
     </v-row>
   </v-container>
 </template>
-
-<script setup lang="ts">
-import ApexChart from 'vue3-apexcharts'
-
-const totalPacientes = 124
-const totalOrcamentos = 89
-const totalAtendimentos = 152
-const totalFaturamento = 38250.75
-
-// Simulação de dados para os últimos 30 dias
-const today = new Date()
-const labels = Array.from({ length: 30 }, (_, i) => {
-  const date = new Date(today)
-  date.setDate(today.getDate() - (29 - i))
-  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
-})
-
-const values = Array.from({ length: 30 }, () => Math.floor(Math.random() * 2000) + 300)
-
-const series = [
-  {
-    name: 'Faturamento',
-    data: values,
-  },
-]
-
-const chartOptions = {
-  chart: {
-    type: 'bar',
-    toolbar: { show: false },
-  },
-  xaxis: {
-    categories: labels,
-  },
-  plotOptions: {
-    bar: {
-      borderRadius: 4,
-      columnWidth: '50%',
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  colors: ['#1976d2'],
-  tooltip: {
-    y: {
-      formatter: (val: number) => `R$ ${val.toLocaleString()}`,
-    },
-  },
-}
-</script>
 
 <style scoped>
 h3 {
