@@ -53,8 +53,9 @@ const servicosFiltrados = computed(() => {
 
 <template>
   <v-card elevation="2" class="pa-4">
+    <v-card-title class="text-h6 font-weight-bold">Serviços Prestados</v-card-title>
+    <v-divider class="mb-2" />
     <div class="mb-4">
-      <h3 class="mb-2">Serviços Prestados</h3>
       <div class="d-flex gap-2 align-center">
         <v-select
           v-model="filtroMes"

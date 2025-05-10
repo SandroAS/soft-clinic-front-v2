@@ -2,6 +2,7 @@
 import BillingChart from '@/components/system/dashboard/BillingChart.vue'
 import BillingPerServiceList from '@/components/system/dashboard/BillingPerServiceList.vue'
 import PatientsBirthdayList from '@/components/system/dashboard/PatientsBirthdayList.vue'
+import PatientsPendingPaymentList from '@/components/system/dashboard/PatientsPendingPaymentList.vue'
 
 const totalPacientes = 124
 const totalOrcamentos = 89
@@ -51,7 +52,10 @@ const totalFaturamento = 38250.75
       </v-col>
       <v-col cols="12" lg="4" md="6">
         <PatientsBirthdayList />
-      </v-col> 
+      </v-col>
+      <v-col cols="12" lg="4" md="6">
+        <PatientsPendingPaymentList />
+      </v-col>
     </v-row>
   </v-container>
 </template>
