@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { Form, Field, ErrorMessage } from '@/plugins/vee-validate'
 import { useForm } from 'vee-validate'
 
@@ -20,6 +20,10 @@ const { handleSubmit } = useForm()
 function onSubmit(values: any) {
   alert(JSON.stringify(values, null, 2))
 }
+
+const showCurrentPassword = ref(false)
+const showNewPassword = ref(false)
+const showConfirmPassword = ref(false)
 </script>
 
 <template>
@@ -94,11 +98,13 @@ function onSubmit(values: any) {
               <v-text-field
                 v-bind="field"
                 label="Senha Atual"
-                type="password"
+                :type="showCurrentPassword ? 'text' : 'password'"
                 variant="solo-filled"
                 density="compact"
                 :error="!!errorMessage"
                 :error-messages="errorMessage"
+                :append-inner-icon="showCurrentPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                @click:append-inner="showCurrentPassword = !showCurrentPassword"
               />
             </Field>
           </v-col>
@@ -112,11 +118,13 @@ function onSubmit(values: any) {
               <v-text-field
                 v-bind="field"
                 label="Nova Senha"
-                type="password"
+                :type="showNewPassword ? 'text' : 'password'"
                 variant="solo-filled"
                 density="compact"
                 :error="!!errorMessage"
                 :error-messages="errorMessage"
+                :append-inner-icon="showNewPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                @click:append-inner="showNewPassword = !showNewPassword"
               />
             </Field>
           </v-col>
@@ -130,11 +138,13 @@ function onSubmit(values: any) {
               <v-text-field
                 v-bind="field"
                 label="Confirmação da Nova Senha"
-                type="password"
+                :type="showConfirmPassword ? 'text' : 'password'"
                 variant="solo-filled"
                 density="compact"
                 :error="!!errorMessage"
                 :error-messages="errorMessage"
+                :append-inner-icon="showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                @click:append-inner="showConfirmPassword = !showConfirmPassword"
               />
             </Field>
           </v-col>
