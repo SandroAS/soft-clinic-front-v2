@@ -23,7 +23,6 @@ const menuItems = [
   { title: 'Orçamentos', icon: 'mdi-file-document-outline', to: '/system/orcamentos' },
   { title: 'Atendimentos', icon: 'mdi-account-heart', to: '/system/atendimentos' },
   { title: 'Agendamentos', icon: 'mdi-calendar-account', to: '/system/agendamentos' },
-  { title: 'Sair', icon: 'mdi-logout', to: '/logout' }
 ]
 </script>
 
@@ -36,14 +35,15 @@ const menuItems = [
     :rail="!isMobile ? rail : false"
     width="240"
     class="d-flex flex-column justify-space-between"
+    aria-label="Menu lateral"
+    active-class="bg-blue-grey-lighten-4 text-primary"
   >
-    <!-- Menu principal (scrollável) -->
     <v-list nav density="comfortable" class="flex-grow-1 overflow-y-auto">
       <v-list-item
         v-for="item in menuItems"
         :key="item.title"
         :to="item.to"
-        link
+        router
         @click="isMobile && emit('update:modelValue', false)"
       >
         <template #prepend>

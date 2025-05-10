@@ -8,6 +8,7 @@ import Home from '@/pages/site/Home.vue'
 import Login from '@/pages/auth/Login.vue'
 import Register from '@/pages/auth/Register.vue'
 import Dashboard from '@/pages/system/Dashboard.vue'
+import MyAccount from '@/pages/system/MyAccount.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -45,6 +46,11 @@ const routes: RouteRecordRaw[] = [
         path: 'dashboard',
         name: 'dashboard',
         component: Dashboard
+      },
+      {
+        path: 'minha-conta',
+        name: 'myAccount',
+        component: MyAccount
       }
     ]
   },
