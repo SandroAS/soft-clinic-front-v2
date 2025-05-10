@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import dayjs from '@/plugins/dayjs.ts'
 
 const estadoAssinatura = ref('ativo') // 'trial' | 'semPlano' | 'ativo'
 
@@ -15,6 +16,81 @@ const planoAtivo = {
   inicio: '01/05/2025',
   fim: '01/06/2025'
 }
+
+// Mock headers da tabela
+const headers = [
+  { text: 'Parcela', value: 'parcela' },
+  { text: 'Data de Pagamento / Prevista', value: 'data' },
+  { text: 'Status', value: 'status' },
+  { text: 'Ação', value: 'acao', sortable: false }
+]
+
+// Mock dos pagamentos
+const pagamentos = ref([
+  {
+    parcela: '1ª parcela',
+    data: '01/02/2025',
+    status: 'Pago',
+    statusColor: 'green',
+    pago: true
+  },
+  {
+    parcela: '2ª parcela',
+    data: '01/03/2025',
+    status: 'Pago',
+    statusColor: 'green',
+    pago: true
+  },
+  {
+    parcela: '3ª parcela',
+    data: '01/04/2025',
+    status: 'Em atraso',
+    statusColor: 'red',
+    pago: false
+  },
+  {
+    parcela: '4ª parcela',
+    data: '01/05/2025',
+    status: 'Pendente',
+    statusColor: 'grey',
+    pago: false
+  }
+])
+
+const gerarPix = (parcela) => {
+  console.log('Gerar PIX para:', parcela.parcela)
+  // Aqui você pode abrir um diálogo ou chamar uma função real futuramente
+}
+
+// Atualiza dinamicamente os status com base na data atual
+pagamentos.value = pagamentos.value.map((p) => {
+  const hoje = dayjs()
+  const dataParcela = dayjs(p.data, 'DD/MM/YYYY')
+
+  if (p.pago) {
+    return p // mantém como está se já está pago
+  }
+
+  if (p.status == 'Pendente') {
+    return p // mantém como está se já está pago
+  }
+
+  const diasAtraso = hoje.diff(dataParcela, 'day')
+
+  if (diasAtraso > 0) {
+    return {
+      ...p,
+      status: `Em atraso (${diasAtraso} dias)`,
+      statusColor: 'red'
+    }
+  }
+
+  return {
+    ...p,
+    status: 'Pendente',
+    statusColor: 'grey'
+  }
+})
 </script>
 
 <template>
@@ -84,6 +160,43 @@ const planoAtivo = {
         Início: {{ planoAtivo.inicio }}<br>
         Próxima renovação: {{ planoAtivo.fim }}
       </v-alert>
+
+      <v-card class="mt-4">
+        <v-card-title>Histórico de Pagamentos</v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="pagamentos"
+          class="elevation-1"
+        >
+        <template #item.status="{ item }">
+          <v-chip
+            :color="item.statusColor"
+            text-color="white"
+            small
+          >
+            <template v-if="item.status === 'Em atraso'">
+              {{ item.status }} ({{ dayjs().diff(dayjs(item.data, 'DD/MM/YYYY'), 'day') }} dias)
+            </template>
+            <template v-else>
+              {{ item.status }}
+            </template>
+          </v-chip>
+        </template>
+
+          <template #item.acao="{ item }">
+            <v-btn
+              v-if="!item.pago"
+              color="primary"
+              size="small"
+              @click="gerarPix(item)"
+            >
+              Gerar PIX
+            </v-btn>
+            <span v-else>—</span>
+          </template>
+        </v-data-table>
+      </v-card>
+
     </div>
   </div>
 </template>

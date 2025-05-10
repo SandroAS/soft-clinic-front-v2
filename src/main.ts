@@ -5,7 +5,6 @@ import { createPinia } from 'pinia'
 import { vuetify } from './plugins/vuetify'
 import { Form, Field, ErrorMessage } from '@/plugins/vee-validate.js'
 
-
 import App from './App.vue'
 import router from './router'
 
