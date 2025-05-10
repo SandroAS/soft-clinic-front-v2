@@ -1,14 +1,38 @@
+<script setup lang="ts">
+import logo from '@/assets/logo.png'
+import { ref } from 'vue'
+
+const rail = ref(false)
+
+const menuItems = [
+  { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/system/dashboard' },
+  { title: 'Pacientes', icon: 'mdi-account', to: '/system/pacientes' },
+  { title: 'Orçamentos', icon: 'mdi-file-document-outline', to: '/system/orcamentos' },
+  { title: 'Atendimentos', icon: 'mdi-stethoscope', to: '/system/atendimentos' },
+  { title: 'Sair', icon: 'mdi-logout', to: '/logout' }
+]
+</script>
+
 <template>
   <v-app>
-    <!-- Barra superior fixa -->
+    <!-- Barra superior -->
     <v-app-bar app color="primary" dark>
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-toolbar-title class="pl-2">Meu Sistema</v-toolbar-title>
+      <v-app-bar-nav-icon
+        :icon="rail ? 'mdi-chevron-right-box-outline': 'mdi-chevron-left-box-outline'"
+        @click="rail = !rail"
+      />
+
+      <v-toolbar-title class="pl-2">
+        <div class="d-flex justify-self-start align-center">
+          <v-img :src="logo" alt="Logo Soft Clinic" contain height="50" width="50" class="mr-2" />
+          <div>Soft Clinic</div>
+        </div>
+      </v-toolbar-title>
     </v-app-bar>
 
-    <!-- Menu lateral fixo, abaixo da barra superior -->
+    <!-- Menu lateral -->
     <v-navigation-drawer
-      v-model="drawer"
+      :rail="rail"
       permanent
       width="220"
     >
@@ -37,17 +61,3 @@
     </v-main>
   </v-app>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-const drawer = ref(true)
-
-const menuItems = [
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/system/dashboard' },
-  { title: 'Pacientes', icon: 'mdi-account', to: '/system/pacientes' },
-  { title: 'Orçamentos', icon: 'mdi-file-document-outline', to: '/system/orcamentos' },
-  { title: 'Atendimentos', icon: 'mdi-stethoscope', to: '/system/atendimentos' },
-  { title: 'Sair', icon: 'mdi-logout', to: '/logout' }
-]
-</script>
