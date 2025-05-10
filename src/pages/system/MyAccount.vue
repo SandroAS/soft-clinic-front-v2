@@ -1,15 +1,24 @@
 <script setup lang="ts">
 import NotificationSettings from '@/components/system/myAccount/tabs/NotificationSettings.vue';
 import PersonalInformations from '@/components/system/myAccount/tabs/PersonalInformations.vue';
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-const selectedTab = ref(0)
+const route = useRoute()
+const router = useRouter()
+
 const tabs = [
   { name:'Informações Pessoais', value: 'informacoes-pessoais' },
   { name: 'Notificações', value: 'notificacao' },
   { name:'Assinatura', value: 'assinatura' },
   { name: 'Integrações', value: 'integracoes' }
 ]
+
+const selectedTab = ref(route.query.tab || 'informacoes-pessoais')
+
+watch(selectedTab, (newTab) => {
+  router.replace({ query: { ...route.query, tab: newTab } })
+})
 </script>
 
 <template>
