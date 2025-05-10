@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import BillingChart from '@/components/system/dashboard/BillingChart.vue'
+import BillingPerServiceList from '@/components/system/dashboard/BillingPerServiceList.vue'
 
 const totalPacientes = 124
 const totalOrcamentos = 89
 const totalAtendimentos = 152
 const totalFaturamento = 38250.75
-
 </script>
 
 <template>
@@ -43,6 +43,8 @@ const totalFaturamento = 38250.75
     </v-row>
 
     <BillingChart />
+
+    <BillingPerServiceList />
   </v-container>
 </template>
 
