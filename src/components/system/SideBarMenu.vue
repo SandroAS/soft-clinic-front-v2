@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps<{
   isMobile: boolean
@@ -34,7 +34,7 @@ const menuItems = [
     :rail="!isMobile ? rail : false"
     width="220"
   >
-    <v-list nav dense >
+    <v-list nav density="comfortable">
       <v-list-item
         v-for="item in menuItems"
         :key="item.title"
@@ -42,12 +42,10 @@ const menuItems = [
         link
         @click="isMobile && emit('update:modelValue', false)"
       >
-        <div class="d-flex align-center">
-          <v-list-item-icon class="mr-2">
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </div>
+        <template #prepend>
+          <v-icon class="mr-2">{{ item.icon }}</v-icon>
+        </template>
+        <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
