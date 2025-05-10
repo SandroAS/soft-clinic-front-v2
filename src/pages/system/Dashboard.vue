@@ -35,10 +35,19 @@ const chartOptions = {
     bar: {
       borderRadius: 4,
       columnWidth: '50%',
+      dataLabels: {
+        position: 'top', // posição acima da barra
+      },
     },
   },
   dataLabels: {
-    enabled: false,
+    enabled: true,
+    formatter: (val: number) => `R$ ${val.toLocaleString()}`,
+    offsetY: -20,
+    style: {
+      fontSize: '12px',
+      colors: ['#000'],
+    },
   },
   colors: ['#1976d2'],
   tooltip: {
@@ -88,7 +97,7 @@ const chartOptions = {
       <v-col cols="12">
         <v-card elevation="2" class="pa-4">
           <h3 class="mb-4">Faturamento - Últimos 30 dias</h3>
-          <apexchart
+          <ApexChart
             width="100%"
             height="350"
             type="bar"
