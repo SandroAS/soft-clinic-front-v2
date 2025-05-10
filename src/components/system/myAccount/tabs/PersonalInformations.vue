@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { Form, Field, ErrorMessage } from '@/plugins/vee-validate'
+import { useForm } from 'vee-validate'
 
 function uploadAvatar() {
   alert('Função de upload ainda não implementada')
@@ -12,6 +14,12 @@ const user = reactive({
   cpf: '',
   avatar: 'https://img.freepik.com/vetores-premium/icone-de-adesao-prateada-icone-de-perfil-de-avatar-padrao-icone-de-associacao-imagem-de-usuario-de-midia-social-ilustracao-vetorial_561158-4195.jpg?w=740'
 })
+
+const { handleSubmit } = useForm()
+
+function onSubmit(values: any) {
+  alert(JSON.stringify(values, null, 2))
+}
 </script>
 
 <template>
@@ -61,6 +69,83 @@ const user = reactive({
           </v-col>
         </v-row>
       </v-form>
+    </v-col>
+  </v-row>
+
+  <v-divider class="my-10"></v-divider>
+
+  <v-row>
+    <v-col cols="12" md="4" class="pr-md-6">
+      <h5 class="text-subtitle-1 font-weight-medium">Alterar Senha</h5>
+      <p class="text-body-2 text-medium-emphasis">
+        Atualize a senha associada à sua conta.
+      </p>
+    </v-col>
+
+    <v-col cols="12" md="8">
+      <Form @submit="handleSubmit(onSubmit)">
+        <v-row>
+          <v-col cols="12">
+            <Field
+              name="senha atual"
+              rules="required|min:6"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Senha Atual"
+                type="password"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+
+          <v-col cols="12">
+            <Field
+              name="nova senha"
+              rules="required|min:6"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Nova Senha"
+                type="password"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+
+          <v-col cols="12">
+            <Field
+              name="confirmação da nova senha"
+              rules="required|confirmed:newPassword"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Confirmação da Nova Senha"
+                type="password"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+
+          <v-col cols="12" class="d-flex justify-end">
+            <v-btn type="submit" color="primary">
+              Salvar
+            </v-btn>
+          </v-col>
+        </v-row>
+      </Form>
     </v-col>
   </v-row>
 </template>
