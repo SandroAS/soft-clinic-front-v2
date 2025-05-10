@@ -88,6 +88,10 @@ const company = reactive({
         </v-row>
       </v-form>
     </v-col>
+
+    <v-col cols="12" class="d-flex justify-end">
+      <v-btn class="mt-4" color="primary">Salvar</v-btn>
+    </v-col>
   </v-row>
 
   <v-divider class="my-10" />
@@ -196,9 +200,12 @@ const company = reactive({
               density="compact"
             />
           </v-col>
-        </v-row>
 
-        <v-btn class="mt-4" color="primary">Salvar</v-btn>
+          <v-col cols="12" class="d-flex justify-end">
+            <v-btn class="mt-4" color="primary">Salvar</v-btn>
+          </v-col>
+        </v-row>
+        
       </v-form>
     </v-col>
   </v-row>

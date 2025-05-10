@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NotificationSettings from '@/components/system/myAccount/tabs/NotificationSettings.vue';
 import PersonalInformations from '@/components/system/myAccount/tabs/PersonalInformations.vue';
 import { ref } from 'vue'
 
@@ -33,7 +34,7 @@ const tabs = [
         </v-tabs-window-item>
 
         <v-tabs-window-item value="notificacao">
-          Notificações
+          <NotificationSettings />
         </v-tabs-window-item>
 
         <v-tabs-window-item value="assinatura">
