@@ -52,51 +52,47 @@ const servicosFiltrados = computed(() => {
 </script>
 
 <template>
-  <v-row class="mt-6">
-    <v-col cols="12" lg="4" md="6">
-      <v-card elevation="2" class="pa-4">
-        <div class="mb-4">
-          <h3 class="mb-2">Serviços Prestados</h3>
-          <div class="d-flex gap-2 align-center">
-            <v-select
-              v-model="filtroMes"
-              :items="meses"
-              item-title="label"
-              item-value="value"
-              label="Mês"
-              clearable
-              density="compact"
-              hide-details
-              class="mr-2"
-            />
-            <v-select
-              v-model="filtroAno"
-              :items="anosDisponiveis"
-              label="Ano"
-              clearable
-              density="compact"
-              hide-details
-            />
-          </div>
-        </div>
+  <v-card elevation="2" class="pa-4">
+    <div class="mb-4">
+      <h3 class="mb-2">Serviços Prestados</h3>
+      <div class="d-flex gap-2 align-center">
+        <v-select
+          v-model="filtroMes"
+          :items="meses"
+          item-title="label"
+          item-value="value"
+          label="Mês"
+          clearable
+          density="compact"
+          hide-details
+          class="mr-2"
+        />
+        <v-select
+          v-model="filtroAno"
+          :items="anosDisponiveis"
+          label="Ano"
+          clearable
+          density="compact"
+          hide-details
+        />
+      </div>
+    </div>
 
-        <v-table>
-          <thead>
-            <tr>
-              <th>Serviço</th>
-              <th class="text-center">Quantidade</th>
-              <th class="text-right">Faturamento</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="servico in servicosFiltrados" :key="servico.nome">
-              <td>{{ servico.nome }}</td>
-              <td class="text-center">{{ servico.quantidade }}</td>
-              <td class="text-right">R$ {{ servico.faturamento.toLocaleString() }}</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-card>
-    </v-col>
-  </v-row>
+    <v-table>
+      <thead>
+        <tr>
+          <th>Serviço</th>
+          <th class="text-center">Quantidade</th>
+          <th class="text-right">Faturamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="servico in servicosFiltrados" :key="servico.nome">
+          <td>{{ servico.nome }}</td>
+          <td class="text-center">{{ servico.quantidade }}</td>
+          <td class="text-right">R$ {{ servico.faturamento.toLocaleString() }}</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-card>
 </template>

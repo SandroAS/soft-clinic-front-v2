@@ -20,7 +20,7 @@ const menuItems = [
   { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/system/dashboard' },
   { title: 'Pacientes', icon: 'mdi-account', to: '/system/pacientes' },
   { title: 'Orçamentos', icon: 'mdi-file-document-outline', to: '/system/orcamentos' },
-  { title: 'Atendimentos', icon: 'mdi-stethoscope', to: '/system/atendimentos' },
+  { title: 'Atendimentos', icon: 'mdi-account-heart', to: '/system/atendimentos' },
   { title: 'Sair', icon: 'mdi-logout', to: '/logout' }
 ]
 </script>
