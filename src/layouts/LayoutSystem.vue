@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import logo from '@/assets/logo.png'
-import SideBarMenu from '@/components/system/SideBarMenu.vue'
+import SideBarMenu from '@/components/system/sidebar/SideBarMenu.vue'
 import { ref, computed, onMounted } from 'vue'
 
 const drawer = ref(true)
