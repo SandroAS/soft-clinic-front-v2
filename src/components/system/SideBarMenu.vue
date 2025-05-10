@@ -16,8 +16,6 @@ const drawer = computed({
   set: (val: boolean) => emit('update:modelValue', val),
 })
 
-const rail = ref(false)
-
 const menuItems = [
   { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/system/dashboard' },
   { title: 'Pacientes', icon: 'mdi-account', to: '/system/pacientes' },
@@ -42,6 +40,7 @@ const menuItems = [
         :key="item.title"
         :to="item.to"
         link
+        @click="isMobile && emit('update:modelValue', false)"
       >
         <div class="d-flex align-center">
           <v-list-item-icon class="mr-2">
