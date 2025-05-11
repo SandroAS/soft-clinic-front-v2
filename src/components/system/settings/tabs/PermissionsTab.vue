@@ -73,11 +73,10 @@ function viewPermissions(group: any) {
       :headers="[
         { title: 'Grupo', value: 'role' },
         { title: 'Descrição', value: 'description' },
-        { title: 'Ações', value: 'actions', sortable: false }
+        { title: 'Ações', value: 'actions', sortable: false, align: 'end' }
       ]"
       :items="permissionsGroups"
       item-value="role"
-      class="elevation-1"
     >
       <template #item.actions="{ item }">
         <v-btn icon @click="viewPermissions(item)">

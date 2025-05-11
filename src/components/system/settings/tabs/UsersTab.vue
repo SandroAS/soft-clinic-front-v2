@@ -84,7 +84,7 @@ const toggleStatus = (user: User) => {
         { title: 'Email', key: 'email' },
         { title: 'Tipo', key: 'type' },
         { title: 'Status', key: 'status' },
-        { title: 'Editar/Desativar', key: 'actions', sortable: false }
+        { title: 'Editar/Desativar', key: 'actions', sortable: false, align: 'end' }
       ]"
       :items="users"
       item-value="id"

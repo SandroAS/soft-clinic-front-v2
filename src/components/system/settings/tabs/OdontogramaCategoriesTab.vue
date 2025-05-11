@@ -73,44 +73,44 @@ const deleteCategory = (id: number) => {
 
 <template>
   <div>
-    <v-row justify="end">
-      <v-btn color="primary" class="mb-4" @click="openDialog()">Nova Categoria</v-btn>
-    </v-row>
+    <div class="d-flex justify-end mb-4">
+      <v-btn color="primary" @click="openDialog()">
+        <v-icon start>mdi-plus</v-icon>
+        Nova Categoria
+      </v-btn>
+    </div>
 
-    <!-- Data Table -->
     <v-data-table
       :headers="[
         { title: 'Nome', value: 'name' },
         { title: 'Cor', value: 'color' },
         { title: 'Tipo', value: 'type' },
-        { title: 'Ações', value: 'actions', sortable: false }
+        { title: 'Ações', value: 'actions', sortable: false, align: 'end' }
       ]"
       :items="categories"
       item-key="id"
-      class="elevation-1"
     >
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn
-          icon
-          variant="text"
-          :disabled="item.predefined"
-          @click="openDialog(item)"
-        >
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          variant="text"
-          color="red"
-          :disabled="item.predefined"
-          @click="deleteCategory(item.id)"
-        >
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
+        <div v-if="!item.predefined">
+          <v-btn
+            icon
+            :disabled="item.predefined"
+            @click="openDialog(item)"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            color="red"
+            :disabled="item.predefined"
+            @click="deleteCategory(item.id)"
+          >
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </div>
       </template>
     </v-data-table>
 
-    <!-- Dialog -->
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
         <v-card-title class="text-h6">
@@ -121,6 +121,8 @@ const deleteCategory = (id: number) => {
             v-model="editedItem.name"
             label="Nome"
             required
+            variant="solo-filled"
+            density="comfortable"
           />
           <v-color-picker
             v-model="editedItem.color"
@@ -129,11 +131,15 @@ const deleteCategory = (id: number) => {
             hide-canvas
             show-swatches
             flat
+            class="mb-4"
+            style="width: -webkit-fill-available"
           />
           <v-select
             v-model="editedItem.type"
             :items="['DENTE', 'FACE']"
             label="Tipo"
+            variant="solo-filled"
+            density="comfortable"
           />
         </v-card-text>
         <v-card-actions>
