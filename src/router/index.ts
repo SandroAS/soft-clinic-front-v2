@@ -9,6 +9,7 @@ import Login from '@/pages/auth/Login.vue'
 import Register from '@/pages/auth/Register.vue'
 import Dashboard from '@/pages/system/Dashboard.vue'
 import MyAccount from '@/pages/system/MyAccount.vue'
+import Settings from '@/pages/system/Settings.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -51,6 +52,11 @@ const routes: RouteRecordRaw[] = [
         path: 'minha-conta',
         name: 'myAccount',
         component: MyAccount
+      },
+      {
+        path: 'configuracoes',
+        name: 'settings',
+        component: Settings
       }
     ]
   },
