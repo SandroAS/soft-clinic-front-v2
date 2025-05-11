@@ -10,6 +10,8 @@ import Register from '@/pages/auth/Register.vue'
 import Dashboard from '@/pages/system/Dashboard.vue'
 import MyAccount from '@/pages/system/MyAccount.vue'
 import Settings from '@/pages/system/Settings.vue'
+import Patients from '@/pages/system/Patients.vue'
+import PatientRecord from '@/components/system/patient/PatientRecord.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -57,6 +59,17 @@ const routes: RouteRecordRaw[] = [
         path: 'configuracoes',
         name: 'settings',
         component: Settings
+      },
+      {
+        path: 'pacientes',
+        name: 'patients',
+        component: Patients
+      },
+      {
+        path: 'pacientes/:id',
+        name: 'patientRecord',
+        component: PatientRecord,
+        props: true
       }
     ]
   },

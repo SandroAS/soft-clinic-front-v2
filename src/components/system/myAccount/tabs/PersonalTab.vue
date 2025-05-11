@@ -35,6 +35,7 @@ const company = reactive({
   street: '',
   number: '',
   neighborhood: '',
+  complement: '',
   city: '',
   state: ''
 })
@@ -176,10 +177,18 @@ const company = reactive({
               density="compact"
             />
           </v-col>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="company.neighborhood"
               label="Bairro"
+              variant="solo-filled"
+              density="compact"
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="company.complement"
+              label="Complemento"
               variant="solo-filled"
               density="compact"
             />
