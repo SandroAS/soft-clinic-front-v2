@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import NotificationSettings from '@/components/system/myAccount/tabs/NotificationSettings.vue';
-import PersonalInformations from '@/components/system/myAccount/tabs/PersonalInformations.vue';
-import SubscriptionSettings from '@/components/system/myAccount/tabs/SubscriptionSettings.vue';
+import NotificationSettings from '@/components/system/myAccount/tabs/NotificationSettings.vue'
+import PersonalInformations from '@/components/system/myAccount/tabs/PersonalInformations.vue'
+import SubscriptionSettings from '@/components/system/myAccount/tabs/SubscriptionSettings.vue'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 

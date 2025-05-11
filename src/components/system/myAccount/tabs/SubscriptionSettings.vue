@@ -68,11 +68,11 @@ pagamentos.value = pagamentos.value.map((p) => {
   const dataParcela = dayjs(p.data, 'DD/MM/YYYY')
 
   if (p.pago) {
-    return p // mantém como está se já está pago
+    return p
   }
 
   if (p.status == 'Pendente') {
-    return p // mantém como está se já está pago
+    return p
   }
 
   const diasAtraso = hoje.diff(dataParcela, 'day')
