@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import NotificationSettings from '@/components/system/myAccount/tabs/NotificationSettings.vue'
-import PersonalInformations from '@/components/system/myAccount/tabs/PersonalInformations.vue'
-import SubscriptionSettings from '@/components/system/myAccount/tabs/SubscriptionSettings.vue'
+import IntegrationTab from '@/components/system/myAccount/tabs/IntegrationTab.vue'
+import NotificationTab from '@/components/system/myAccount/tabs/NotificationTab.vue'
+import PersonalTab from '@/components/system/myAccount/tabs/PersonalTab.vue'
+import SubscriptionTab from '@/components/system/myAccount/tabs/SubscriptionTab.vue'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -40,19 +41,19 @@ watch(selectedTab, (newTab) => {
     <v-container class="py-12">
       <v-tabs-window v-model="selectedTab">
         <v-tabs-window-item value="informacoes-pessoais">
-          <PersonalInformations />
+          <PersonalTab />
         </v-tabs-window-item>
 
         <v-tabs-window-item value="notificacao">
-          <NotificationSettings />
+          <NotificationTab />
         </v-tabs-window-item>
 
         <v-tabs-window-item value="assinatura">
-          <SubscriptionSettings />
+          <SubscriptionTab />
         </v-tabs-window-item>
 
         <v-tabs-window-item value="integracoes">
-          Integrações
+          <IntegrationTab />
         </v-tabs-window-item>
       </v-tabs-window>
     </v-container>
