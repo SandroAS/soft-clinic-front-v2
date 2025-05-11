@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { VDialog, VCard, VCardTitle, VCardText, VCardActions, VBtn, VSwitch } from 'vuetify/components'
 
 interface PermissionGroup {
   role: 'ADMIN' | 'ASSISTANT' | 'HEALTHCARE_PROFESSIONAL'

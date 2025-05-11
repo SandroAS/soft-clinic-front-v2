@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { VDialog, VCard, VCardTitle, VCardText, VCardActions, VBtn, VTextField, VSelect, VDataTable, VIcon, VSwitch } from 'vuetify/components'
 
 interface User {
   id: number

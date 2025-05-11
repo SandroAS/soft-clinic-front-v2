@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { VDialog } from 'vuetify/components'
 
 type Category = {
   id: number
@@ -63,7 +62,7 @@ const saveCategory = () => {
   } else {
     customCategories.value.push({ id: itemToSave.id, ...categoryData })
   }
-  
+
   dialog.value = false
 }
 
@@ -78,41 +77,40 @@ const deleteCategory = (id: number) => {
       <v-btn color="primary" class="mb-4" @click="openDialog()">Nova Categoria</v-btn>
     </v-row>
 
-    <v-table>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Cor</th>
-          <th>Tipo</th>
-          <th class="text-right">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="category in categories" :key="category.id">
-          <td>{{ category.name }}</td>
-          <td>
-            <v-chip :color="category.color" class="text-white" label>{{ category.color }}</v-chip>
-          </td>
-          <td>{{ category.type === 'DENTE' ? 'Dente' : 'Face' }}</td>
-          <td class="text-right">
-            <v-btn
-              icon="mdi-pencil"
-              variant="text"
-              :disabled="category.predefined"
-              @click="openDialog(category)"
-            />
-            <v-btn
-              icon="mdi-delete"
-              variant="text"
-              color="red"
-              :disabled="category.predefined"
-              @click="deleteCategory(category.id)"
-            />
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
+    <!-- Data Table -->
+    <v-data-table
+      :headers="[
+        { title: 'Nome', value: 'name' },
+        { title: 'Cor', value: 'color' },
+        { title: 'Tipo', value: 'type' },
+        { title: 'Ações', value: 'actions', sortable: false }
+      ]"
+      :items="categories"
+      item-key="id"
+      class="elevation-1"
+    >
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-btn
+          icon
+          variant="text"
+          :disabled="item.predefined"
+          @click="openDialog(item)"
+        >
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          variant="text"
+          color="red"
+          :disabled="item.predefined"
+          @click="deleteCategory(item.id)"
+        >
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
 
+    <!-- Dialog -->
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
         <v-card-title class="text-h6">
