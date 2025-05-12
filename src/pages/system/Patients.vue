@@ -65,7 +65,10 @@ const deletePatient = (id: number) => {
 <template>
   <v-container fluid>
     <div class="d-flex justify-end mb-4">
-      <v-btn color="primary" @click="openDialog()">Adicionar Paciente</v-btn>
+      <v-btn color="primary" @click="openDialog()">
+        <v-icon start>mdi-plus</v-icon>
+        Adicionar Paciente
+      </v-btn>
     </div>
 
     <v-card>
