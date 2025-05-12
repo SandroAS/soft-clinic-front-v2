@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import dayjs from 'dayjs'
 import GeneralInformationTab from './tabs/GeneralInformationTab.vue'
 import AnamnesisTab from './tabs/AnamnesisTab.vue'
 
 const route = useRoute()
+const router = useRouter()
 const patientId = route.params.id as string
 
-const activeTab = ref('geral')
+const activeTab = ref((route.query.tab as string) || 'geral')
+
+watch(activeTab, (newTab) => {
+  router.replace({ query: { ...route.query, tab: newTab } })
+})
 
 const patient = ref({
   id: 1,
@@ -37,6 +43,10 @@ const patient = ref({
   observations: ''
 })
 
+const patientAge = computed(() => {
+  return dayjs().diff(patient.value.birthDate, 'year')
+})
+
 onMounted(() => {
   // Buscar paciente com ID da rota: `patientId`
   console.log(`Buscando paciente com ID: ${patientId}`)
@@ -46,9 +56,25 @@ onMounted(() => {
 <template>
   <v-container fluid>
     <v-card class="pa-4">
-      <v-card-title class="text-h6">
-        Ficha do Paciente: {{ patient.name }}
-      </v-card-title>
+      <v-row align="center">
+        <v-col cols="auto">
+          <v-avatar size="80">
+            <v-img :src="patient.avatar" />
+          </v-avatar>
+        </v-col>
+        <v-col>
+          <div class="text-h6">
+            {{ patient.name }}
+            <span class="text-subtitle-1 font-weight-medium">
+              - {{ patientAge }} anos
+            </span>
+          </div>
+          <div class="text-body-2 text-grey-darken-1">{{ patient.email }}</div>
+        </v-col>
+        <v-col class="text-right" cols="auto">
+          
+        </v-col>
+      </v-row>
 
       <v-tabs v-model="activeTab" class="mt-4">
         <v-tab value="geral">Informações Gerais</v-tab>
