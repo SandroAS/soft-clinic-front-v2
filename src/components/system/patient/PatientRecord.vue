@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import GeneralInformationTab from './tabs/GeneralInformationTab.vue'
+import AnamnesisTab from './tabs/AnamnesisTab.vue'
 
 const route = useRoute()
 const patientId = route.params.id as string
@@ -66,7 +67,7 @@ onMounted(() => {
         </v-window-item>
 
         <v-window-item value="anamnese">
-          <p>Conteúdo da anamnese aqui...</p>
+          <AnamnesisTab />
         </v-window-item>
 
         <v-window-item value="odontograma">
