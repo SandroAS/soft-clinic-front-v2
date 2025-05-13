@@ -28,7 +28,7 @@ function getToothImage(tooth: string): string {
     <div class="d-flex ga-2">
       <div v-for="tooth in teethsTop" :key="tooth" class="d-flex flex-column align-center">
         <img
-          class="tooth-image elevation-5 rounded-lg bg-white mb-2"
+          class="tooth-image elevation-5 rounded-lg bg-white my-2"
           :src="getToothImage(tooth)"
           :alt="`Dente ${tooth}`"
         />
