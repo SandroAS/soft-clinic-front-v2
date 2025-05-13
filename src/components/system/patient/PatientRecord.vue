@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import dayjs from 'dayjs'
 import GeneralInformationTab from './tabs/GeneralInformationTab.vue'
 import AnamnesisTab from './tabs/AnamnesisTab.vue'
+import OdontogramaTab from './tabs/OdontogramaTab.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,7 +98,7 @@ onMounted(() => {
         </v-window-item>
 
         <v-window-item value="odontograma">
-          <p>Conteúdo do odontograma aqui...</p>
+          <OdontogramaTab />
         </v-window-item>
 
         <v-window-item value="receita">
