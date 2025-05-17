@@ -2,12 +2,24 @@
 import { computed, reactive, ref } from 'vue'
 import TeethFaces from '@/components/system/patient/tabs/TeethFaces.vue'
 
+type Face = 'esquerda' | 'direita' | 'superior' | 'inferior' | 'frontal'
+
+interface SelectedTooth {
+  tooth: string | null
+  face: Face | null
+}
+
 const teethsTop = ['18','17','16','15','14','13','12','11','21','22','23','24','25','26','27','28']
 const teethsBottom = ['48','47','46','45','44','43','42','41','31','32','33','34','35','36','37','38']
 
 const selectedFaces = reactive<Record<string, Record<string, boolean>>>({})
 
-function toggleFace(tooth: string, face: string) {
+const selectedTooth = reactive<SelectedTooth>({
+  tooth: null,
+  face: null,
+})
+
+function toggleFace(tooth: string, face: Face) {
   selectedTooth.tooth = tooth
   selectedTooth.face = face
   selectedFaces[tooth] = { [face]: true }
@@ -18,11 +30,6 @@ const toothImages = import.meta.glob('@/assets/images/teeths/*.png', { eager: tr
 function getToothImage(tooth: string): string {
   return toothImages[`/src/assets/images/teeths/${tooth}.png`] as string
 }
-
-const selectedTooth = reactive<{ tooth: string | null, face: string | null }>({
-  tooth: null,
-  face: null,
-})
 
 const categories = {
   DENTE: [
@@ -49,7 +56,7 @@ const availableCategories = computed(() =>
   isFaceSelected.value ? categories.FACE : categories.DENTE
 )
 
-function getTechnicalToothFaceName(code: string, face: string): string {
+function getTechnicalToothFaceName(code: string, face: Face): string {
   if (!code || !face) return ''
 
   const tooth = parseInt(code)
@@ -61,7 +68,7 @@ function getTechnicalToothFaceName(code: string, face: string): string {
   const oclusal = new Set([18, 17, 16, 15, 14, 24, 25, 26, 27, 28, 48, 47, 46, 45, 44, 34, 35, 36, 37, 38])
   const incisal = new Set([13, 12, 11, 21, 22, 23, 43, 42, 41, 31, 32, 33])
 
-  const faceMap = {
+  const faceMap: Record<Face, () => string> = {
     esquerda: () => leftSide.has(tooth) ? 'distal' : rightSide.has(tooth) ? 'mesial' : '',
     direita: () => leftSide.has(tooth) ? 'mesial' : rightSide.has(tooth) ? 'distal' : '',
     superior: () => topSide.has(tooth) ? 'palatal' : bottomSide.has(tooth) ? 'lingual' : '',
@@ -69,7 +76,7 @@ function getTechnicalToothFaceName(code: string, face: string): string {
     frontal: () => oclusal.has(tooth) ? 'oclusal' : incisal.has(tooth) ? 'incisal' : ''
   }
 
-  return faceMap[face]?.() || ''
+  return faceMap[face]?.() ?? ''
 }
 </script>
 

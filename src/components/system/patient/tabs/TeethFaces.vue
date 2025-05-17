@@ -1,18 +1,19 @@
 <script setup lang="ts">
+type Face = 'esquerda' | 'direita' | 'superior' | 'inferior' | 'frontal';
 
 const props = defineProps<{
-  selectedFaces: Record<string, boolean>
+  selectedFaces: Record<Face, boolean>
 }>()
 
 const emit = defineEmits<{
-  (e: 'face-clicked', face: string): void
+  (e: 'face-clicked', face: Face): void
 }>()
 
-function emitFace(face: string) {
+function emitFace(face: Face) {
   emit('face-clicked', face)
 }
 
-function faceClass(face: string) {
+function faceClass(face: Face) {
   return [
     'rounded-sm',
     'border',
