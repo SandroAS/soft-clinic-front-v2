@@ -46,7 +46,7 @@ const categories = {
     { label: 'Prótese', color: '#BDBDBD' },
     { label: 'Resina', color: '#FFC107' },
     { label: 'Ausente', color: '#9E9E9E' },
-    { label: 'Canal Tratado awd awd wa daw dawd wadaw da wdawd aw dwd', color: '#2196F3' },
+    { label: 'Canal Tratado', color: '#2196F3' },
   ],
   FACE: [
     { label: 'Cariado', color: '#D32F2F' },
