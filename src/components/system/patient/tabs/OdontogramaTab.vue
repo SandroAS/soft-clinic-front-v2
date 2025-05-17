@@ -46,7 +46,7 @@ const categories = {
     { label: 'Prótese', color: '#BDBDBD' },
     { label: 'Resina', color: '#FFC107' },
     { label: 'Ausente', color: '#9E9E9E' },
-    { label: 'Canal Tratado', color: '#2196F3' },
+    { label: 'Canal Tratado awd awd wa daw dawd wadaw da wdawd aw dwd', color: '#2196F3' },
   ],
   FACE: [
     { label: 'Cariado', color: '#D32F2F' },
@@ -142,62 +142,65 @@ function handleSave() {
 </script>
 
 <template>
-  <div class="d-flex justify-space-between">
+  <div class="d-flex flex-wrap flex-md-nowrap justify-space-between">
     <!-- ODONTOGRAMA -->
-    <div class="d-flex flex-column align-center ga-6 ml-2">
-      <!-- LINHA SUPERIOR -->
-      <div class="d-flex ga-2">
-        <div
-          v-for="tooth in teethsTop"
-          :key="tooth"
-          class="d-flex flex-column align-center"
-        >
-          <img
-            class="tooth-image elevation-5 rounded-lg my-2"
-            :style="getToothStyle(tooth)"
-            :src="getToothImage(tooth)"
-            :alt="`Dente ${tooth}`"
-            @click="selectTooth(tooth)"
-          />
-          <TeethFaces
-            :selectedFaces="selectedFaces[tooth] || {}"
-            :tooth="tooth"
-            :selectedTooth="selectedTooth"
-            :annotations="annotations"
-            @face-clicked="(face) => toggleFace(tooth, face)"
-          />
-          <span class="text-caption mt-1">{{ tooth }}</span>
+    <div class="odontograma-wrapper">
+      <div class="d-flex flex-column ga-6 mx-4">
+        <!-- LINHA SUPERIOR -->
+        <div class="d-flex ga-2">
+          <div
+            v-for="tooth in teethsTop"
+            :key="tooth"
+            class="d-flex flex-column align-center"
+          >
+            <img
+              class="tooth-image elevation-5 rounded-lg my-2"
+              :style="getToothStyle(tooth)"
+              :src="getToothImage(tooth)"
+              :alt="`Dente ${tooth}`"
+              @click="selectTooth(tooth)"
+            />
+            <TeethFaces
+              :selectedFaces="selectedFaces[tooth] || {}"
+              :tooth="tooth"
+              :selectedTooth="selectedTooth"
+              :annotations="annotations"
+              @face-clicked="(face) => toggleFace(tooth, face)"
+            />
+            <span class="text-caption mt-1">{{ tooth }}</span>
+          </div>
         </div>
-      </div>
-
-      <!-- LINHA INFERIOR -->
-      <div class="d-flex ga-2">
-        <div
-          v-for="tooth in teethsBottom"
-          :key="tooth"
-          class="d-flex flex-column align-center"
-        >
-          <span class="text-caption mb-1">{{ tooth }}</span>
-          <TeethFaces
-            :selectedFaces="selectedFaces[tooth] || {}"
-            :tooth="tooth"
-            :selectedTooth="selectedTooth"
-            :annotations="annotations"
-            @face-clicked="(face) => toggleFace(tooth, face)"
-          />
-          <img
-            class="tooth-image elevation-5 rounded-lg my-2"
-            :style="getToothStyle(tooth)"
-            :src="getToothImage(tooth)"
-            :alt="`Dente ${tooth}`"
-            @click="selectTooth(tooth)"
-          />
+  
+        <!-- LINHA INFERIOR -->
+        <div class="d-flex ga-2">
+          <div
+            v-for="tooth in teethsBottom"
+            :key="tooth"
+            class="d-flex flex-column align-center"
+          >
+            <span class="text-caption mb-1">{{ tooth }}</span>
+            <TeethFaces
+              :selectedFaces="selectedFaces[tooth] || {}"
+              :tooth="tooth"
+              :selectedTooth="selectedTooth"
+              :annotations="annotations"
+              @face-clicked="(face) => toggleFace(tooth, face)"
+            />
+            <img
+              class="tooth-image elevation-5 rounded-lg my-2"
+              :style="getToothStyle(tooth)"
+              :src="getToothImage(tooth)"
+              :alt="`Dente ${tooth}`"
+              @click="selectTooth(tooth)"
+            />
+          </div>
         </div>
       </div>
     </div>
 
     <!-- FORMULÁRIO LATERAL -->
-    <v-card class="ml-4 pa-4 mr-2 d-flex flex-column justify-space-between" min-width="300" style="height: 100%;">
+    <v-card
+      class="ml-md-4 mt-4 mt-md-0 pa-4 mr-md-2 d-flex flex-column justify-space-between w-100 w-md-auto annotation-form">
       <h3 class="text-h6 mb-4">
         Anotação para:
         <template v-if="selectedTooth.tooth">
@@ -245,12 +248,50 @@ function handleSave() {
 </template>
 
 <style scoped>
+@media (max-width: 1447px) {
+  .odontograma-wrapper {
+    overflow-x: auto;
+  }
+}
+@media (max-width: 959px) {
+  .annotation-form {
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+@media (min-width: 1450px) {
+  .annotation-form {
+    max-width: 100% !important;
+  }
+}
+
+.odontograma-wrapper {
+  max-width: 100%;
+}
+.annotation-form {
+  max-width: 285px;
+  min-width: 285px;
+}
+
+.odontograma {
+  min-width: 900px;
+}
+
+.tooth-image {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
 .tooth-image:hover {
+  transform: scale(1.05);
+}
+
+/* .tooth-image:hover {
   transform: scale(1.1);
   cursor: pointer;
   z-index: 1;
 }
 .tooth-image {
   transition: transform 0.2s ease;
-}
+} */
 </style>
