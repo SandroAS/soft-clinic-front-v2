@@ -199,8 +199,7 @@ function handleSave() {
     </div>
 
     <!-- FORMULÁRIO LATERAL -->
-    <v-card
-      class="ml-md-4 mt-4 mt-md-0 pa-4 mr-md-2 d-flex flex-column justify-space-between w-100 w-md-auto annotation-form">
+    <v-card class="ml-md-4 mt-4 mt-md-0 pa-4 mr-md-2 d-flex flex-column justify-space-between w-100 w-md-auto annotation-form">
       <h3 class="text-h6 mb-4">
         Anotação para:
         <template v-if="selectedTooth.tooth">
@@ -285,13 +284,4 @@ function handleSave() {
 .tooth-image:hover {
   transform: scale(1.05);
 }
-
-/* .tooth-image:hover {
-  transform: scale(1.1);
-  cursor: pointer;
-  z-index: 1;
-}
-.tooth-image {
-  transition: transform 0.2s ease;
-} */
 </style>
