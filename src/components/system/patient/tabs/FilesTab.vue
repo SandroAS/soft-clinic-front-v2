@@ -258,7 +258,7 @@ watch(showModal, (val) => {
 
             <!-- Preview do arquivo à direita -->
             <v-col cols="12" md="6">
-              <div style="flex: 1; border: 1px solid #ccc; border-radius: 4px; padding: 8px; max-height: 300px; overflow: auto;">
+              <div style="flex: 1; border: 1px solid #ccc; border-radius: 4px; padding: 8px; height: 100%; justify-items: center; max-height: 300px; overflow: auto;">
                 <template v-if="previewUrl">
                   <template v-if="previewFileType === 'pdf'">
                     <embed
