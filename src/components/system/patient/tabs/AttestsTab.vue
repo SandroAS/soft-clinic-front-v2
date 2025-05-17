@@ -23,6 +23,34 @@ interface ModeloReceita {
   texto: string
 }
 
+const patient = ref({
+  id: 1,
+  name: 'João da Silva',
+  email: 'joao@email.com',
+  phone: '(11) 99999-0000',
+  birthDate: '1990-05-01',
+  cpf: '123.456.789-00',
+  avatar: 'https://img.freepik.com/vetores-premium/icone-de-adesao-prateada-icone-de-perfil-de-avatar-padrao-icone-de-associacao-imagem-de-usuario-de-midia-social-ilustracao-vetorial_561158-4195.jpg?w=740',
+  createdAt: '2024-01-10',
+  address: {
+    street: '',
+    number: '',
+    zip: '',
+    neighborhood: '',
+    complement: '',
+    city: '',
+    state: ''
+  },
+  isMinor: 'Não',
+  responsibleName: '',
+  responsiblePhone: '',
+  insurance: '',
+  insuranceCard: '',
+  referralSource: '',
+  indicatedBy: '',
+  observations: ''
+})
+
 const profissionais = ref<Profissional[]>([
   {
     id: 1,
@@ -135,6 +163,20 @@ function salvarNovoModelo() {
   nomeNovoModelo.value = ''
   modalSalvarModelo.value = false
 }
+
+const copiado = reactive({
+  nome: false,
+  cpf: false
+})
+
+function copiarTexto(campo: 'nome' | 'cpf', valor: string) {
+  navigator.clipboard.writeText(valor).then(() => {
+    copiado[campo] = true
+    setTimeout(() => {
+      copiado[campo] = false
+    }, 1000)
+  })
+}
 </script>
 
 <template>
@@ -191,7 +233,39 @@ function salvarNovoModelo() {
   <!-- Modal -->
   <v-dialog v-model="modalAberto" max-width="900px">
     <v-card>
-      <v-card-title class="text-h6">Novo Atestado</v-card-title>
+      <v-card-title class="text-h6 d-flex justify-space-between align-start">
+        <span>Novo Atestado</span>
+        <div class="d-flex flex-column text-right text-caption" style="gap: 2px;">
+          <div class="d-flex align-center justify-end">
+            <span class="me-1 font-weight-medium">Nome:</span>
+            <span>{{ patient.name }}</span>
+            <v-icon
+              size="16"
+              class="ml-1 cursor-pointer"
+              :class="{ 'icon-feedback-enter-active': copiado.nome }"
+              :color="copiado.nome ? 'green' : 'primary'"
+              @click="copiarTexto('nome', patient.name)"
+            >
+              {{ copiado.nome ? 'mdi-check-circle' : 'mdi-content-copy' }}
+            </v-icon>
+          </div>
+          <div class="d-flex align-center justify-end">
+            <span class="me-1 font-weight-medium">CPF:</span>
+            <span>{{ patient.cpf }}</span>
+            <v-icon
+              size="16"
+              class="ml-1 cursor-pointer"
+              :class="{ 'icon-feedback-enter-active': copiado.cpf }"
+              :color="copiado.cpf ? 'green' : 'primary'"
+              @click="copiarTexto('cpf', patient.cpf)"
+            >
+              {{ copiado.cpf ? 'mdi-check-circle' : 'mdi-content-copy' }}
+            </v-icon>
+          </div>
+        </div>
+      </v-card-title>
+
+
       <v-card-text>
         <v-row>
           <!-- Formulário -->
@@ -315,3 +389,20 @@ function salvarNovoModelo() {
   </v-dialog>
 
 </template>
+
+<style scoped>
+.icon-feedback-enter-active {
+  animation: scaleUp 0.3s ease;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+</style>
