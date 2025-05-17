@@ -7,6 +7,7 @@ import AnamnesisTab from './tabs/AnamnesisTab.vue'
 import OdontogramaTab from './tabs/OdontogramaTab.vue'
 import RecipesTab from './tabs/RecipesTab.vue'
 import AttestsTab from './tabs/AttestsTab.vue'
+import FilesTab from './tabs/FilesTab.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -112,7 +113,7 @@ onMounted(() => {
         </v-window-item>
 
         <v-window-item value="anexos">
-          <p>Upload e visualização de arquivos anexos...</p>
+          <FilesTab />
         </v-window-item>
       </v-window>
     </v-card>
