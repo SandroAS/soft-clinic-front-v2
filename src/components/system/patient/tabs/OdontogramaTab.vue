@@ -10,6 +10,15 @@ interface SelectedTooth {
   face: Face | null
 }
 
+interface Annotation {
+  tooth: number
+  face: Face
+  color: string
+  category: string
+  note: string
+  createdAt: Date
+}
+
 const teethsTop = ['18','17','16','15','14','13','12','11','21','22','23','24','25','26','27','28']
 const teethsBottom = ['48','47','46','45','44','43','42','41','31','32','33','34','35','36','37','38']
 
@@ -80,7 +89,7 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
   return faceMap[face]?.() ?? ''
 }
 
-const annotations = ref([
+const annotations = ref<Annotation[]>([
   {
     tooth: 11,
     face: 'frontal',
@@ -98,6 +107,19 @@ const annotations = ref([
     createdAt: new Date()
   }
 ])
+
+function getToothStyle(tooth: string) {
+  const isSelected = selectedTooth.tooth === tooth && !selectedTooth.face
+  if (isSelected) return { backgroundColor: '#BBDEFB' }
+
+  const hasAnnotation = annotations.value.some(a => a.tooth === Number(tooth) && !a.face)
+  if (hasAnnotation) {
+    const firstAnnotation = annotations.value.find(a => a.tooth === Number(tooth) && !a.face)
+    return { backgroundColor: firstAnnotation?.color || 'transparent' }
+  }
+
+  return { backgroundColor: 'white' }
+}
 </script>
 
 <template>
@@ -112,13 +134,17 @@ const annotations = ref([
           class="d-flex flex-column align-center"
         >
           <img
-            class="tooth-image elevation-5 rounded-lg bg-white my-2"
+            class="tooth-image elevation-5 rounded-lg my-2"
+            :style="getToothStyle(tooth)"
             :src="getToothImage(tooth)"
             :alt="`Dente ${tooth}`"
             @click="selectTooth(tooth)"
           />
           <TeethFaces
             :selectedFaces="selectedFaces[tooth] || {}"
+            :tooth="tooth"
+            :selectedTooth="selectedTooth"
+            :annotations="annotations"
             @face-clicked="(face) => toggleFace(tooth, face)"
           />
           <span class="text-caption mt-1">{{ tooth }}</span>
@@ -135,10 +161,14 @@ const annotations = ref([
           <span class="text-caption mb-1">{{ tooth }}</span>
           <TeethFaces
             :selectedFaces="selectedFaces[tooth] || {}"
+            :tooth="tooth"
+            :selectedTooth="selectedTooth"
+            :annotations="annotations"
             @face-clicked="(face) => toggleFace(tooth, face)"
           />
           <img
-            class="tooth-image elevation-5 rounded-lg bg-white my-2"
+            class="tooth-image elevation-5 rounded-lg my-2"
+            :style="getToothStyle(tooth)"
             :src="getToothImage(tooth)"
             :alt="`Dente ${tooth}`"
             @click="selectTooth(tooth)"
