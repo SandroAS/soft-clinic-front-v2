@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import TeethFaces from '@/components/system/patient/tabs/TeethFaces.vue'
+import OdontogramaAnnotations from '../odontograma/OdontogramaAnnotations.vue'
 
 type Face = 'esquerda' | 'direita' | 'superior' | 'inferior' | 'frontal'
 
@@ -78,6 +79,25 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
 
   return faceMap[face]?.() ?? ''
 }
+
+const annotations = ref([
+  {
+    tooth: 11,
+    face: 'frontal',
+    category: 'Cárie',
+    note: 'Presença de cárie visível',
+    color: 'red',
+    createdAt: new Date()
+  },
+  {
+    tooth: 12,
+    face: 'frontal',
+    category: 'Cárie',
+    note: 'Presença de cárie visível',
+    color: 'red',
+    createdAt: new Date()
+  }
+])
 </script>
 
 <template>
@@ -160,6 +180,11 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
       </v-radio-group>
     </v-card>
   </div>
+
+  <OdontogramaAnnotations
+    :annotations="annotations"
+    @delete="annotations.splice($event, 1)"
+  />
 </template>
 
 <style scoped>
