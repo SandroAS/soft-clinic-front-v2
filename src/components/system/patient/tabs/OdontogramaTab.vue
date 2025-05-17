@@ -120,12 +120,31 @@ function getToothStyle(tooth: string) {
 
   return { backgroundColor: 'white' }
 }
+
+function handleSave() {
+  if (!selectedTooth.tooth) return
+
+  annotations.value.push({
+    tooth: Number(selectedTooth.tooth),
+    face: selectedTooth.face!,
+    category: selectedCategory.value,
+    note: note.value,
+    color: availableCategories.value.find(c => c.label === selectedCategory.value)?.color || '#000',
+    createdAt: new Date()
+  })
+
+  // Resetar os campos
+  selectedCategory.value = ''
+  note.value = ''
+  selectedTooth.tooth = null
+  selectedTooth.face = null
+}
 </script>
 
 <template>
   <div class="d-flex justify-space-between">
     <!-- ODONTOGRAMA -->
-    <div class="d-flex flex-column align-center ga-6">
+    <div class="d-flex flex-column align-center ga-6 ml-2">
       <!-- LINHA SUPERIOR -->
       <div class="d-flex ga-2">
         <div
@@ -178,7 +197,7 @@ function getToothStyle(tooth: string) {
     </div>
 
     <!-- FORMULÁRIO LATERAL -->
-    <v-card class="ml-10 pa-4 mr-2" min-width="300">
+    <v-card class="ml-4 pa-4 mr-2 d-flex flex-column justify-space-between" min-width="300" style="height: 100%;">
       <h3 class="text-h6 mb-4">
         Anotação para:
         <template v-if="selectedTooth.tooth">
@@ -208,6 +227,14 @@ function getToothStyle(tooth: string) {
           :color="cat.color"
         />
       </v-radio-group>
+
+      <v-spacer></v-spacer>
+
+      <div class="d-flex justify-end mt-auto pt-4">
+        <v-btn color="primary" @click="handleSave">
+          Salvar
+        </v-btn>
+      </div>
     </v-card>
   </div>
 
@@ -225,8 +252,5 @@ function getToothStyle(tooth: string) {
 }
 .tooth-image {
   transition: transform 0.2s ease;
-}
-.v-card {
-  max-height: 400px;
 }
 </style>
