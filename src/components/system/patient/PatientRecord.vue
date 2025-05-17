@@ -6,6 +6,7 @@ import GeneralInformationTab from './tabs/GeneralInformationTab.vue'
 import AnamnesisTab from './tabs/AnamnesisTab.vue'
 import OdontogramaTab from './tabs/OdontogramaTab.vue'
 import RecipesTab from './tabs/RecipesTab.vue'
+import AttestsTab from './tabs/AttestsTab.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -107,7 +108,7 @@ onMounted(() => {
         </v-window-item>
 
         <v-window-item value="atestado">
-          <p>Atestados emitidos...</p>
+          <AttestsTab />
         </v-window-item>
 
         <v-window-item value="anexos">
