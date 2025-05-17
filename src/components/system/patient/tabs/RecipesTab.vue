@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import logo from '@/assets/logo.jpg'
 
 interface Profissional {
@@ -97,7 +97,7 @@ function salvarReceita() {
   modalAberto.value = false
 }
 
-const modelosDeReceita: ModeloReceita[] = [
+const modelosDeReceita = reactive<ModeloReceita[]>([
   {
     id: 1,
     titulo: 'Pós-operatório de extração dentária',
@@ -113,13 +113,27 @@ const modelosDeReceita: ModeloReceita[] = [
     titulo: 'Inflamação gengival (Gengivite)',
     texto: `- Nimesulida 100mg: 1 comprimido a cada 12h por 5 dias\n- Bochechos com clorexidina 0,12% 3x ao dia por 10 dias\n\nRecomenda-se escovação suave com escova macia e uso de fio dental.`
   }
-]
+])
 
 const modeloSelecionado = ref(null)
 function aplicarModelo(modelo: ModeloReceita | null) {
   if (modelo?.texto) {
     corpoReceita.value = modelo.texto
   }
+}
+
+const modalSalvarModelo = ref(false)
+const nomeNovoModelo = ref('')
+
+function salvarNovoModelo() {
+  const novoModelo = {
+    id: Date.now(),
+    titulo: nomeNovoModelo.value,
+    texto: corpoReceita.value
+  }
+  modelosDeReceita.push(novoModelo)
+  nomeNovoModelo.value = ''
+  modalSalvarModelo.value = false
 }
 </script>
 
@@ -210,6 +224,41 @@ function aplicarModelo(modelo: ModeloReceita | null) {
               variant="solo-filled"
               density="comfortable"
             />
+            <!-- Botão para abrir modal -->
+            <div class="text-right mt-1">
+              <v-btn
+                size="x-small"
+                variant="text"
+                class="text-caption"
+                prepend-icon="mdi-content-save-outline"
+                @click="modalSalvarModelo = true"
+              >
+                Salvar como modelo
+              </v-btn>
+            </div>
+
+            <!-- Modal interno para salvar modelo -->
+            <v-dialog v-model="modalSalvarModelo" max-width="400px">
+              <v-card>
+                <v-card-title class="text-h6">Salvar como Modelo</v-card-title>
+                <v-card-text>
+                  <v-text-field
+                    v-model="nomeNovoModelo"
+                    label="Nome do modelo"
+                    autofocus
+                    variant="solo-filled"
+                    density="comfortable"
+                  />
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer />
+                  <v-btn text @click="modalSalvarModelo = false">Cancelar</v-btn>
+                  <v-btn color="primary" @click="salvarNovoModelo" :disabled="!nomeNovoModelo || !corpoReceita">
+                    Salvar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-col>
 
           <!-- Pré-visualização da Receita -->
