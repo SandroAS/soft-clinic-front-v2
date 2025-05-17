@@ -30,7 +30,7 @@ function getFaceColor(face: Face) {
   if (isSelected) return 'bg-blue-lighten-2'
 
   const annotation = props.annotations.find(a => a.tooth === Number(props.tooth) && a.face === face)
-  if (annotation) return `bg-[${annotation.color}]`
+  if (annotation) return `bg-${annotation.color}`
 
   return 'bg-white'
 }
