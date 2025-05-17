@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import GeneralInformationTab from './tabs/GeneralInformationTab.vue'
 import AnamnesisTab from './tabs/AnamnesisTab.vue'
 import OdontogramaTab from './tabs/OdontogramaTab.vue'
+import RecipesTab from './tabs/RecipesTab.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -102,7 +103,7 @@ onMounted(() => {
         </v-window-item>
 
         <v-window-item value="receita">
-          <p>Receitas do paciente...</p>
+          <RecipesTab />
         </v-window-item>
 
         <v-window-item value="atestado">

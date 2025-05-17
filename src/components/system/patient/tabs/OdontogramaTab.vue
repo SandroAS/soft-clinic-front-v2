@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
-import TeethFaces from '@/components/system/patient/tabs/TeethFaces.vue'
+import TeethFaces from '@/components/system/patient/odontograma/TeethFaces.vue'
 import OdontogramaAnnotations from '../odontograma/OdontogramaAnnotations.vue'
 
 type Face = 'esquerda' | 'direita' | 'superior' | 'inferior' | 'frontal'
