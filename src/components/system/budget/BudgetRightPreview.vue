@@ -118,6 +118,10 @@ const getInitials = (name: string) => {
             </div>
           </div>
           <!-- Paciente e Profissional -->
+          <div class="d-flex justify-space-between">
+            <div class="text-caption">Paciente</div>
+            <div class="text-caption">Profissional da Saúde</div>
+          </div>
           <div class="mb-4 d-flex justify-space-between gap-3">
             <!-- Paciente -->
             <div class="d-flex align-center gap-3">
@@ -147,8 +151,8 @@ const getInitials = (name: string) => {
           <!-- Serviços orçados -->
           <div class="mb-4">
             <div class="text-subtitle-1 font-weight-medium mb-2">Serviços orçados</div>
-            <v-list density="compact">
-              <v-list-item v-for="(service, index) in item.services" :key="index">
+            <v-list density="compact" class="px-1">
+              <v-list-item v-for="(service, index) in item.services" :key="index" class="elevation-1 rounded mb-1">
                 <v-list-item-content>
                   <div class="d-flex justify-space-between">
                     <div>
@@ -169,8 +173,8 @@ const getInitials = (name: string) => {
         </div>
 
         <div class="d-flex justify-space-between">
-          <div class="text-left w-100">
-            <div v-if="item.paid_cash ?? 0 > 0" class="mt-2">
+          <div class="text-left w-100 d-flex flex-column">
+            <div v-if="item.paid_cash ?? 0 > 0">
               <div class="text-caption">Pago em dinheiro:</div>
               <div class="text-body-2">{{ formatCurrency(item.paid_cash ?? 0) }}</div>
             </div>
@@ -221,7 +225,7 @@ const getInitials = (name: string) => {
           <v-btn color="blue" block @click="scheduleServices">
             <v-icon start>mdi-calendar-clock</v-icon> Agendar serviços
           </v-btn>
-          <v-btn color="deep-purple" block @click="startAppointment">
+          <v-btn color="blue-darken-3" block @click="startAppointment">
             <v-icon start>mdi-account-heart</v-icon> Iniciar atendimento
           </v-btn>
         </div>
