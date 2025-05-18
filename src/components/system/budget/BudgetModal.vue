@@ -159,12 +159,35 @@ function selectTooth(tooth: string) {
   selectedTooth.tooth = tooth
   selectedTooth.face = null
 }
+
+function getTechnicalToothFaceName(code: string, face: Face): string {
+  if (!code || !face) return ''
+
+  const tooth = parseInt(code)
+
+  const leftSide = new Set([18, 17, 16, 15, 14, 13, 12, 11, 48, 47, 46, 45, 44, 43, 42, 41])
+  const rightSide = new Set([21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38])
+  const topSide = new Set([18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28])
+  const bottomSide = new Set([48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38])
+  const oclusal = new Set([18, 17, 16, 15, 14, 24, 25, 26, 27, 28, 48, 47, 46, 45, 44, 34, 35, 36, 37, 38])
+  const incisal = new Set([13, 12, 11, 21, 22, 23, 43, 42, 41, 31, 32, 33])
+
+  const faceMap: Record<Face, () => string> = {
+    esquerda: () => leftSide.has(tooth) ? 'distal' : rightSide.has(tooth) ? 'mesial' : '',
+    direita: () => leftSide.has(tooth) ? 'mesial' : rightSide.has(tooth) ? 'distal' : '',
+    superior: () => topSide.has(tooth) ? 'palatal' : bottomSide.has(tooth) ? 'lingual' : '',
+    inferior: () => 'vestibular',
+    frontal: () => oclusal.has(tooth) ? 'oclusal' : incisal.has(tooth) ? 'incisal' : ''
+  }
+
+  return faceMap[face]?.() ?? ''
+}
 </script>
 
 <template>
   <v-dialog
     :model-value="modelValue"
-    max-width="800"
+    max-width="1155"
     @update:model-value="emit('update:modelValue', $event)"
   >
     <v-card>
@@ -258,44 +281,69 @@ function selectTooth(tooth: string) {
 
               <v-card class="ml-md-4 mt-4 mt-md-0 pa-4 mr-md-2 d-flex flex-column justify-space-between w-100 w-md-auto annotation-form">
                 <div>
-                  <v-select
-                    label="Serviço"
-                    :items="availableServices"
-                    item-title="name"
-                    item-value="id"
-                    v-model="form.service"
-                    variant="solo-filled"
-                    density="comfortable"
-                  />
+                  <h3 class="text-h6 mb-4">
+                    Serviço em:
+                    <template v-if="selectedTooth.tooth">
+                      {{ selectedTooth.tooth }}
+                      <span v-if="selectedTooth.face">
+                        ({{ getTechnicalToothFaceName(selectedTooth.tooth, selectedTooth.face) }})
+                      </span>
+                    </template>
+                  </h3>
+                  <div>
+                    <v-select
+                      label="Serviço"
+                      :items="availableServices"
+                      item-title="name"
+                      item-value="id"
+                      v-model="form.service"
+                      variant="solo-filled"
+                      density="comfortable"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <v-btn color="primary" @click="addService" block>
+                    <v-icon start>mdi-plus</v-icon> Adicionar Serviço
+                  </v-btn>
                 </div>
               </v-card>
             </div>
           </v-col>
 
-          <v-col cols="12" sm="4" class="d-flex align-end">
-            <v-btn color="primary" @click="addService" block>
-              <v-icon start>mdi-plus</v-icon> Adicionar Serviço
-            </v-btn>
-          </v-col>
-
           <v-col cols="12">
             <v-data-table
+              :headers="[
+                { title: 'Serviço', value: 'name' },
+                { title: 'Dente', value: 'tooth' },
+                { title: 'Valor', value: 'price' },
+                { title: 'Ação', value: 'actions', sortable: false, align: 'end' },
+              ]"
               :items="form.services"
               density="compact"
-              hide-default-header
-              class="mt-3"
+              class="my-3 pa-2 rounded elevation-1"
+              hide-default-footer
             >
-              <template #item="{ item, index }">
-                <tr>
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.tooth?.number ? `${item.tooth.number}${item.tooth.face ? ' - ' + item.tooth.face : ''}` : 'Todos' }}</td>
-                  <td>{{ item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</td>
-                  <td>
-                    <v-btn icon size="small" color="red" @click="removeService(index)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </td>
-                </tr>
+              <!-- Coluna: Nome -->
+              <template #item.name="{ item }">
+                {{ item.name }}
+              </template>
+
+              <!-- Coluna: Dente -->
+              <template #item.tooth="{ item }">
+                {{ item.tooth?.number ? `${item.tooth.number}${item.tooth.face ? ' - ' + item.tooth.face : ''}` : 'Todos' }}
+              </template>
+
+              <!-- Coluna: Preço -->
+              <template #item.price="{ item }">
+                {{ item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
+              </template>
+
+              <!-- Coluna: Ações -->
+              <template #item.actions="{ index }">
+                <v-btn icon size="small" color="red" @click="removeService(index)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
               </template>
             </v-data-table>
           </v-col>
