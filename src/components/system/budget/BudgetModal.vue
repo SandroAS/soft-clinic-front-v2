@@ -72,7 +72,7 @@ const selectedTooth = reactive<SelectedTooth>({
   face: null,
 })
 
-const paymentMethods = ['Dinheiro', 'Cartão de Crédito', 'Pix']
+const paymentMethods = ['Dinheiro', 'Cartão de Débito', 'Cartão de Crédito', 'Pix']
 
 const installmentOptions = Array.from({ length: 12 }, (_, i) => `${i + 1}x`)
 
@@ -182,6 +182,12 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
 
   return faceMap[face]?.() ?? ''
 }
+
+const partialCashPayment = ref(false)
+const partialCashAmount = ref<number | null>(null)
+
+const discountType = ref<'Tem desconto?' | 'FIXO' | 'PORCENTAGEM'>('Tem desconto?')
+const discountValue = ref<number | null>(null)
 </script>
 
 <template>
@@ -347,7 +353,9 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
               </template>
             </v-data-table>
           </v-col>
+        </v-row>
 
+        <v-row dense>
           <v-col cols="12" sm="6">
             <v-select
               label="Forma de Pagamento"
@@ -357,7 +365,6 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
               density="comfortable"
             />
           </v-col>
-
           <v-col cols="12" sm="6" v-if="form.paymentMethod === 'Cartão de Crédito'">
             <v-select
               label="Parcelas"
@@ -367,7 +374,67 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
               density="comfortable"
             />
           </v-col>
-
+        </v-row>
+        <!-- Se não for dinheiro -->
+        <v-row dense v-if="form.paymentMethod !== 'Dinheiro'">
+          <!-- Checkbox: pagou parte em dinheiro -->
+          <v-col cols="12" sm="6">
+            <v-checkbox
+              v-model="partialCashPayment"
+              label="Pagou uma parte em dinheiro?"
+              class="mb-2"
+            />
+          </v-col>
+          <!-- Valor pago em dinheiro -->
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-if="partialCashPayment"
+              v-model="partialCashAmount"
+              label="Valor pago em dinheiro"
+              prefix="R$"
+              type="number"
+              class="mb-4"
+              variant="solo-filled"
+              density="comfortable"
+            />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="12" sm="6">
+            <!-- Tipo de desconto -->
+            <v-select
+              v-model="discountType"
+              :items="['Tem desconto?', 'FIXO', 'PORCENTAGEM']"
+              label="Tipo de desconto"
+              class="mb-4"
+              variant="solo-filled"
+              density="comfortable"
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <!-- Valor do desconto -->
+            <v-text-field
+              v-if="discountType === 'FIXO'"
+              v-model="discountValue"
+              label="Desconto (valor fixo)"
+              prefix="R$"
+              type="number"
+              class="mb-4"
+              variant="solo-filled"
+              density="comfortable"
+            />
+  
+            <v-text-field
+              v-else-if="discountType === 'PORCENTAGEM'"
+              v-model="discountValue"
+              label="Desconto (%)"
+              suffix="%"
+              type="number"
+              class="mb-4"
+              variant="solo-filled"
+              density="comfortable"
+            />
+          </v-col>
           <v-col cols="12">
             <div class="text-h6 text-right">Total: {{ total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div>
           </v-col>
