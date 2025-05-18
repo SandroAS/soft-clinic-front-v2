@@ -149,7 +149,7 @@ const mockItem = {
       tooth: '11',
       face: 'Palatina',
       price: 700,
-      status: 'ORÇADO'
+      status: 'PAGO'
     }
   ]
 }

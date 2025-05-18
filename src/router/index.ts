@@ -13,6 +13,7 @@ import Settings from '@/pages/system/Settings.vue'
 import Patients from '@/pages/system/Patients.vue'
 import PatientRecord from '@/components/system/patient/PatientRecord.vue'
 import Budgets from '@/pages/system/Budgets.vue'
+import Appointments from '@/pages/system/Appointments.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -76,6 +77,11 @@ const routes: RouteRecordRaw[] = [
         path: 'orcamentos',
         name: 'budgets',
         component: Budgets
+      },
+      {
+        path: 'atendimentos',
+        name: 'appointments',
+        component: Appointments
       }
     ]
   },
