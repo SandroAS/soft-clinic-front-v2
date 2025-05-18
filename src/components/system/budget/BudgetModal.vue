@@ -95,9 +95,25 @@ const removeService = (index: any) => {
   form.services.splice(index, 1)
 }
 
-const total = computed(() =>
-  form.services.reduce((acc, s) => acc + s.price, 0)
+const totalSemDesconto = computed(() =>
+  form.services.reduce((sum, item) => sum + item.price, 0)
 )
+
+const totalComDesconto = computed(() => {
+  const total = totalSemDesconto.value
+  const tipo = discountType.value
+  const valor = parseFloat(discountValue.value || '0') / 100
+
+  if (tipo === 'FIXO') {
+    return Math.max(total - valor, 0)
+  }
+
+  if (tipo === 'PORCENTAGEM') {
+    return Math.max(total - total * (valor / 100), 0)
+  }
+
+  return total
+})
 
 watch(() => form.paymentMethod, (val) => {
   if (val !== 'Cartão de Crédito') {
@@ -187,11 +203,25 @@ const partialCashPayment = ref(false)
 const partialCashAmount = ref('')
 
 const discountType = ref<'Tem desconto?' | 'FIXO' | 'PORCENTAGEM'>('Tem desconto?')
-const discountValue = ref<number | null>(null)
+const discountValue = ref('')
 
 const displayAmount = computed({
   get: () => {
     const number = parseInt(partialCashAmount.value || '0')
+    const value = number / 100
+    return value.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    })
+  },
+  set: (val: string) => {
+    // ignorado, pois só alteramos via teclado
+  },
+})
+
+const displayDiscount = computed({
+  get: () => {
+    const number = parseInt(discountValue.value || '0')
     const value = number / 100
     return value.toLocaleString('pt-BR', {
       style: 'currency',
@@ -216,6 +246,21 @@ function handleCurrencyKeydown(e: KeyboardEvent) {
   if (!/^\d$/.test(key)) return
 
   partialCashAmount.value += key
+}
+
+function handleCurrencyKeydownDiscount(e: KeyboardEvent) {
+  const key = e.key
+
+  // Remover último caractere (backspace)
+  if (key === 'Backspace') {
+    discountValue.value = discountValue.value.slice(0, -1)
+    return
+  }
+
+  // Aceitar apenas números
+  if (!/^\d$/.test(key)) return
+
+  discountValue.value += key
 }
 </script>
 
@@ -443,13 +488,12 @@ function handleCurrencyKeydown(e: KeyboardEvent) {
             <!-- Valor do desconto -->
             <v-text-field
               v-if="discountType === 'FIXO'"
-              v-model="discountValue"
+              v-model="displayDiscount"
               label="Desconto (valor fixo)"
-              prefix="R$"
-              type="number"
               class="mb-4"
               variant="solo-filled"
               density="comfortable"
+              @keydown.prevent="handleCurrencyKeydownDiscount"
             />
   
             <v-text-field
@@ -463,10 +507,38 @@ function handleCurrencyKeydown(e: KeyboardEvent) {
               density="comfortable"
             />
           </v-col>
-          <v-col cols="12">
-            <div class="text-h6 text-right">Total: {{ total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div>
+        </v-row>
+        <v-row justify="end" class="mt-4">
+          <v-col cols="12" md="4" class="text-right">
+            <div class="d-flex justify-end">
+              <div class="text-caption text-grey-darken-1 mr-2">Total sem desconto:</div>
+              <div class="text-body-2 mb-1">
+                {{ totalSemDesconto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
+              </div>
+            </div>
+
+            <div class="d-flex justify-end">
+              <div class="text-caption text-grey-darken-1 mr-2">Desconto aplicado:</div>
+              <div class="text-body-2 mb-2">
+                <span v-if="discountType === 'FIXO'">
+                  {{ (parseFloat(discountValue || '0')/100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
+                </span>
+                <span v-else-if="discountType === 'PORCENTAGEM'">
+                  {{ discountValue || 0 }}%
+                </span>
+                <span v-else>
+                  Nenhum
+                </span>
+              </div>
+            </div>
+
+            <div class="font-weight-bold text-h6">
+              Total com desconto:
+              {{ totalComDesconto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
+            </div>
           </v-col>
         </v-row>
+
       </v-card-text>
 
       <v-card-actions>
