@@ -1,6 +1,7 @@
 <script setup>
 import BudgetModal from '@/components/system/budget/BudgetModal.vue'
-import { ref } from 'vue'
+import MoneyExplosion from '@/components/system/budget/MoneyExplosion.vue'
+import { ref, watch } from 'vue'
 
 const headers = [
   { title: 'Valor', value: 'amount' },
@@ -11,7 +12,7 @@ const headers = [
   { title: 'Ações', value: 'actions', sortable: false },
 ]
 
-const statuses = ['ABERTO', 'EM ANDAMENTO', 'CONCLUÍDO', 'CANCELADO']
+const statuses = ['ORÇADO', 'PAGO PARCIALMENTE', 'PAGO', 'CANCELADO']
 
 const budgets = ref([
   {
@@ -28,7 +29,7 @@ const budgets = ref([
       avatar: null,
     },
     createdAt: '2025-05-10',
-    status: 'ABERTO',
+    status: 'ORÇADO',
   },
   // outros itens...
 ])
@@ -56,11 +57,11 @@ const formatCurrency = (value) => {
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'ABERTO':
+    case 'ORÇADO':
       return 'blue'
-    case 'EM ANDAMENTO':
+    case 'PAGO PARCIALMENTE':
       return 'orange'
-    case 'CONCLUÍDO':
+    case 'PAGO':
       return 'green'
     case 'CANCELADO':
       return 'red'
@@ -73,7 +74,7 @@ const viewItem = (item) => {
   console.log('Visualizar', item)
 }
 const editItem = (item) => {
-  console.log('Editar', item)
+  openDialog()
 }
 const deleteItem = (item) => {
   console.log('Excluir', item)
@@ -83,6 +84,25 @@ const dialog = ref(false)
 
 const openDialog = () => {
   dialog.value = true
+}
+
+const showExplosion = ref(false)
+const previousStatuses = ref({})
+
+// Detectar mudança de status para 'PAGO'
+watch(budgets, (newVal) => {
+  newVal.forEach(b => {
+    const previous = previousStatuses.value[b.id]
+    if (previous && previous !== b.status && b.status === 'PAGO') {
+      triggerExplosion()
+    }
+    previousStatuses.value[b.id] = b.status
+  })
+}, { deep: true, immediate: true })
+
+const triggerExplosion = () => {
+  showExplosion.value = true
+  setTimeout(() => showExplosion.value = false, 1000)
 }
 </script>
 
@@ -148,10 +168,11 @@ const openDialog = () => {
             <v-select
               v-model="item.status"
               :items="statuses"
-              dense
               hide-details
-              solo
               class="w-40"
+              variant="solo-filled"
+              density="compact"
+              @update:modelValue="editingStatusId = null"
               @blur="editingStatusId = null"
             />
           </div>
@@ -160,6 +181,9 @@ const openDialog = () => {
               {{ item.status }}
             </v-chip>
           </div>
+          <transition name="fade">
+            <MoneyExplosion v-if="showExplosion" />
+          </transition>
         </template>
   
         <!-- Ações -->
@@ -172,6 +196,16 @@ const openDialog = () => {
     </v-card>
 
     <BudgetModal v-model="dialog"/>
-
   </v-container>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
