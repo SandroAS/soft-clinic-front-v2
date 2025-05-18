@@ -184,10 +184,39 @@ function getTechnicalToothFaceName(code: string, face: Face): string {
 }
 
 const partialCashPayment = ref(false)
-const partialCashAmount = ref<number | null>(null)
+const partialCashAmount = ref('')
 
 const discountType = ref<'Tem desconto?' | 'FIXO' | 'PORCENTAGEM'>('Tem desconto?')
 const discountValue = ref<number | null>(null)
+
+const displayAmount = computed({
+  get: () => {
+    const number = parseInt(partialCashAmount.value || '0')
+    const value = number / 100
+    return value.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    })
+  },
+  set: (val: string) => {
+    // ignorado, pois só alteramos via teclado
+  },
+})
+
+function handleCurrencyKeydown(e: KeyboardEvent) {
+  const key = e.key
+
+  // Remover último caractere (backspace)
+  if (key === 'Backspace') {
+    partialCashAmount.value = partialCashAmount.value.slice(0, -1)
+    return
+  }
+
+  // Aceitar apenas números
+  if (!/^\d$/.test(key)) return
+
+  partialCashAmount.value += key
+}
 </script>
 
 <template>
@@ -389,13 +418,12 @@ const discountValue = ref<number | null>(null)
           <v-col cols="12" sm="6">
             <v-text-field
               v-if="partialCashPayment"
-              v-model="partialCashAmount"
+              v-model="displayAmount"
               label="Valor pago em dinheiro"
-              prefix="R$"
-              type="number"
               class="mb-4"
               variant="solo-filled"
               density="comfortable"
+              @keydown.prevent="handleCurrencyKeydown"
             />
           </v-col>
         </v-row>
