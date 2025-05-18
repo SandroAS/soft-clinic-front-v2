@@ -1,5 +1,6 @@
 <script setup>
 import BudgetModal from '@/components/system/budget/BudgetModal.vue'
+import BudgetRightPreview from '@/components/system/budget/BudgetRightPreview.vue'
 import MoneyExplosion from '@/components/system/budget/MoneyExplosion.vue'
 import { ref, watch } from 'vue'
 
@@ -70,8 +71,12 @@ const getStatusColor = (status) => {
   }
 }
 
+const selectedBudget = ref(null)
+const showDetails = ref(false)
+
 const viewItem = (item) => {
-  console.log('Visualizar', item)
+  selectedBudget.value = item
+  showDetails.value = true
 }
 const editItem = (item) => {
   openDialog()
@@ -103,6 +108,50 @@ watch(budgets, (newVal) => {
 const triggerExplosion = () => {
   showExplosion.value = true
   setTimeout(() => showExplosion.value = false, 1000)
+}
+
+const mockItem = {
+  id: 1,
+  amount: 0,
+  createdAt: '2024-10-01T10:00:00Z',
+  status: 'ORÇADO',
+  total: 1200,
+  discount: 200,
+  paid_cash: 300,
+  payment_method: 'Cartão de Crédito',
+  patient: {
+    name: 'João da Silva',
+    email: 'joao@exemplo.com',
+    avatar: null
+  },
+  professional: {
+    name: 'Dra. Maria Oliveira',
+    email: 'maria@clinicadental.com',
+    avatar: null
+  },
+  services: [
+    {
+      name: 'Limpeza',
+      tooth: '12',
+      face: 'Vestibular',
+      price: 200,
+      status: 'PENDENTE'
+    },
+    {
+      name: 'Obturação',
+      tooth: '14',
+      face: 'Oclusal',
+      price: 300,
+      status: 'ORÇADO'
+    },
+    {
+      name: 'Canal',
+      tooth: '11',
+      face: 'Palatina',
+      price: 700,
+      status: 'ORÇADO'
+    }
+  ]
 }
 </script>
 
@@ -196,6 +245,11 @@ const triggerExplosion = () => {
     </v-card>
 
     <BudgetModal v-model="dialog"/>
+
+    <BudgetRightPreview
+      v-model="showDetails"
+      :item="mockItem"
+    />
   </v-container>
 </template>
 
