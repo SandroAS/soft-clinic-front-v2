@@ -103,12 +103,12 @@ const submitForm = () => {
         <v-form ref="formRef" @submit.prevent="submitForm">
           <v-row dense>
             <v-col cols="12" sm="6">
-              <v-select
+              <v-autocomplete
                 v-model="form.patientId"
+                label="Paciente"
                 :items="patients"
                 item-title="name"
                 item-value="id"
-                label="Paciente"
                 :disabled="loading"
                 required
                 variant="solo-filled"
@@ -149,7 +149,7 @@ const submitForm = () => {
 
             <template v-if="form.budgetMode === 'existing'">
               <v-col cols="12" sm="6">
-                <v-select
+                <v-autocomplete
                   v-model="form.budgetId"
                   :items="budgets"
                   item-title="name"
