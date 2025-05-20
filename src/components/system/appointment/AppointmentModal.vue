@@ -93,7 +93,7 @@ const submitForm = () => {
 
 
 <template>
-  <v-dialog :model-value="modelValue" max-width="800px" persistent @update:model-value="emit('update:modelValue', $event)">
+  <v-dialog :model-value="modelValue" max-width="800px" @update:model-value="emit('update:modelValue', $event)">
     <v-card>
       <v-card-title>
         <span class="text-h6">{{ editing ? 'Editar Atendimento' : 'Novo Atendimento' }}</span>
