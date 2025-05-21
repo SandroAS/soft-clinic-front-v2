@@ -153,20 +153,18 @@ const getInitials = (name: string) => {
             <div class="text-subtitle-1 font-weight-medium mb-2">Serviços orçados</div>
             <v-list density="compact" class="px-1">
               <v-list-item v-for="(service, index) in item.services" :key="index" class="elevation-1 rounded mb-1">
-                <v-list-item-content>
-                  <div class="d-flex justify-space-between">
-                    <div>
-                      {{ service.name }}
-                      <span class="text-caption"> | Dente: {{ service.tooth }} | Face: {{ service.face }}</span>
-                    </div>
-                    <div class="text-end">
-                      <div class="text-caption">{{ formatCurrency(service.price) }}</div>
-                      <v-chip size="x-small" :color="getStatusColor(service.status)">
-                        {{ service.status }}
-                      </v-chip>
-                    </div>
+                <div class="d-flex justify-space-between">
+                  <div>
+                    {{ service.name }}
+                    <span class="text-caption"> | Dente: {{ service.tooth }} | Face: {{ service.face }}</span>
                   </div>
-                </v-list-item-content>
+                  <div class="text-end">
+                    <div class="text-caption">{{ formatCurrency(service.price) }}</div>
+                    <v-chip size="x-small" :color="getStatusColor(service.status)">
+                      {{ service.status }}
+                    </v-chip>
+                  </div>
+                </div>
               </v-list-item>
             </v-list>
           </div>
@@ -215,7 +213,7 @@ const getInitials = (name: string) => {
           </div>
         </div>
       </v-card-text>
-      <v-card-footer class="px-6 pb-6">
+      <div class="px-6 pb-6">
         <!-- Ações -->
         <v-divider class="mb-4 mt-0" />
         <div class="d-flex flex-column gap-2">
@@ -229,7 +227,7 @@ const getInitials = (name: string) => {
             <v-icon start>mdi-account-heart</v-icon> Iniciar atendimento
           </v-btn>
         </div>
-      </v-card-footer>
+      </div>
     </v-card>
   </v-dialog>
 </template>

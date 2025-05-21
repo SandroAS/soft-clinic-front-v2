@@ -8,12 +8,14 @@ import '@mdi/font/css/materialdesignicons.css'
 // Labs (Componentes experimentais do Vuetify)
 // import { VSnackbarQueue } from 'vuetify/labs/VSnackbarQueue'
 // import { VTimePicker } from 'vuetify/labs/VTimePicker'
+import { VCalendar } from 'vuetify/labs/VCalendar'
 
 export const vuetify = createVuetify({
   components: {
     ...components,
     //VSnackbarQueue,
-    //VTimePicker
+    //VTimePicker,
+    VCalendar
   },
   directives,
   theme: {

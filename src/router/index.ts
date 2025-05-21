@@ -14,6 +14,7 @@ import Patients from '@/pages/system/Patients.vue'
 import PatientRecord from '@/components/system/patient/PatientRecord.vue'
 import Budgets from '@/pages/system/Budgets.vue'
 import Appointments from '@/pages/system/Appointments.vue'
+import Schedules from '@/pages/system/Schedules.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -82,6 +83,11 @@ const routes: RouteRecordRaw[] = [
         path: 'atendimentos',
         name: 'appointments',
         component: Appointments
+      },
+      {
+        path: 'agendamentos',
+        name: 'schedules',
+        component: Schedules
       }
     ]
   },
