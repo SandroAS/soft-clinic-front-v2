@@ -1,5 +1,6 @@
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
+import { pt, en } from 'vuetify/locale'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
@@ -11,6 +12,11 @@ import '@mdi/font/css/materialdesignicons.css'
 import { VCalendar } from 'vuetify/labs/VCalendar'
 
 export const vuetify = createVuetify({
+  locale: {
+    locale: 'pt',
+    fallback: 'en',
+    messages: { pt, en },
+  },
   components: {
     ...components,
     //VSnackbarQueue,
