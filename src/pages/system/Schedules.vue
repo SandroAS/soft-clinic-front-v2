@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useDate } from 'vuetify'
-import type { CalendarWeekdays } from 'vuetify/lib/composables/calendar.mjs'
 
-// Tipagens para eventos
 interface CalendarEvent {
   title: string
   start: Date
@@ -13,21 +11,17 @@ interface CalendarEvent {
 }
 
 const type = ref<'month' | 'week' | 'day'>('month')
-const types = ['month', 'week', 'day']
-
-const weekday = ref<CalendarWeekdays[]>([0, 1, 2, 3, 4, 5, 6])
-const weekdays = [
-  { title: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
-  { title: 'Mon - Sun', value: [1, 2, 3, 4, 5, 6, 0] },
-  { title: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
-  { title: 'Mon, Wed, Fri', value: [1, 3, 5] },
+const types = [
+  { text: 'MÊS', value: 'month' },
+  { text: 'SEMANA', value: 'week' },
+  { text: 'DIA', value: 'day' },
 ]
 
 const value = ref<Date[]>([new Date()])
 const events = ref<CalendarEvent[]>([])
 
 const colors = ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1']
-const titles = ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
+const titles = ['Atendimento', 'Feriado', 'Reunião', 'Viagem', 'Cirurgia', 'Aniversário', 'Conferência', 'Festa']
 
 const dateAdapter = useDate()
 
@@ -46,14 +40,29 @@ function getEvents({ start, end }: { start: Date; end: Date }) {
     const secondTimestamp = rnd(2, allDay ? 288 : 8) * 900000
     const second = new Date(first.getTime() + secondTimestamp)
 
-    generatedEvents.push({
-      title: titles[rnd(0, titles.length - 1)],
-      start: first,
-      end: second,
-      color: colors[rnd(0, colors.length - 1)],
-      allDay: !allDay,
-    })
+    // generatedEvents.push({
+    //   title: titles[rnd(0, titles.length - 1)],
+    //   start: first,
+    //   end: second,
+    //   color: colors[rnd(0, colors.length - 1)],
+    //   allDay: !allDay,
+    // })
+    // console.log('Event:', {
+    //   title: titles[rnd(0, titles.length - 1)],
+    //   start: first,
+    //   end: second,
+    //   color: colors[rnd(0, colors.length - 1)],
+    //   allDay: !allDay,
+    // })
   }
+
+  generatedEvents.push({
+    allDay: false,
+    color: "orange",
+    end: new Date("2025-05-22T09:10:00"),
+    start: new Date("2025-05-22T09:20:00"),
+    title: "Feriado"
+  })
 
   events.value = generatedEvents
 }
@@ -125,13 +134,16 @@ onMounted(() => {
   const end = dateAdapter.endOfDay(dateAdapter.endOfMonth(new Date())) as Date
   getEvents({ start, end })
 })
+
+function teste(n) {
+  return n.label
+}
 </script>
 
 
 <template>
   <v-container fluid>
     <v-row>
-      <!-- Coluna esquerda: próximos agendamentos -->
       <v-col cols="12" md="3">
         <h3 class="mb-2">Próximos agendamentos</h3>
         <v-list density="compact">
@@ -149,39 +161,38 @@ onMounted(() => {
         </v-list>
       </v-col>
 
-      <!-- Coluna direita: calendário mensal -->
-      <v-col cols="12" md="9">
-        <h3 class="mb-2">Calendário de agendamentos</h3>
-        <div>
-          <div class="d-flex justify-end mb-2 gap-2">
+      <v-col cols="12" md="12">
+        <v-row justify="end">
+          <v-col cols="12" md="6">
+            <h3 class="mb-2">Calendário de agendamentos</h3>
+          </v-col>
+          <v-col cols="12" md="6">
             <v-select
               v-model="type"
               :items="types"
-              label="View Mode"
-              density="comfortable"
-              variant="solo-filled"
-              hide-details
-            />
-            <v-select
-              v-model="weekday"
-              :items="weekdays"
-              label="weekdays"
-              density="comfortable"
-              variant="solo-filled"
-              hide-details
-              item-title="title"
+              item-title="text"
               item-value="value"
+              label="Modo de exibição"
+              density="comfortable"
+              variant="solo-filled"
+              hide-details
             />
-          </div>
-
-          <v-calendar
-            v-model="value"
-            :events="events"
-            :view-mode="type"
-            :weekdays="weekday"
-          />
-
-        </div>
+          </v-col>
+        </v-row>
+        <v-calendar
+          ref="calendarRef"
+          v-model="value"
+          :events="events"
+          :view-mode="type"
+          :first-day-of-week="0"
+          :interval-duration="60"
+          :interval-format="teste"
+          :interval-height="25"
+        >
+          <template #header="{ title, clickNext, clickPrev, clickToday }">
+            Teste {{ title }}
+          </template>
+        </v-calendar>
       </v-col>
     </v-row>
   </v-container>
@@ -191,4 +202,13 @@ onMounted(() => {
 .text-grey {
   color: #aaa;
 }
+</style>
+
+<style>
+/* .v-calendar__container {
+  padding: 4px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+} */
 </style>
