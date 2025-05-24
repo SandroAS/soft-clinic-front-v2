@@ -10,7 +10,7 @@ interface CalendarEvent {
   allDay: boolean
 }
 
-const type = ref<'month' | 'week' | 'day'>('month')
+const type = ref<'month' | 'week' | 'day'>('week')
 const types = [
   { text: 'MÊS', value: 'month' },
   { text: 'SEMANA', value: 'week' },
@@ -59,9 +59,17 @@ function getEvents({ start, end }: { start: Date; end: Date }) {
   generatedEvents.push({
     allDay: false,
     color: "orange",
-    end: new Date("2025-05-22T09:10:00"),
-    start: new Date("2025-05-22T09:20:00"),
+    end: new Date("2025-05-22T09:30:00"),
+    start: new Date("2025-05-22T07:00:00"),
     title: "Feriado"
+  })
+
+  generatedEvents.push({
+    allDay: false,
+    color: "red",
+    end: new Date("2025-05-22T13:00:00"),
+    start: new Date("2025-05-22T12:00:00"),
+    title: "Feriado2"
   })
 
   events.value = generatedEvents
@@ -138,6 +146,19 @@ onMounted(() => {
 function teste(n) {
   return n.label
 }
+function isFirstInterval(event, interval) {
+  return (
+    new Date(event.start).getHours() === new Date(interval.start).getHours() &&
+    new Date(event.start).getMinutes() === new Date(interval.start).getMinutes()
+  )
+}
+
+function isLastInterval(event, interval) {
+  const intervalStart = new Date(interval.start)
+  const nextIntervalStart = new Date(intervalStart.getTime() + 15 * 60 * 1000) // 15 min depois
+
+  return new Date(event.end) <= nextIntervalStart
+}
 </script>
 
 
@@ -180,17 +201,42 @@ function teste(n) {
           </v-col>
         </v-row>
         <v-calendar
-          ref="calendarRef"
           v-model="value"
           :events="events"
           :view-mode="type"
           :first-day-of-week="0"
-          :interval-duration="60"
+          :interval-duration="15"
+          :interval-start="23"
+          :intervals="58"
           :interval-format="teste"
-          :interval-height="25"
+          :interval-height="33"
         >
           <template #header="{ title, clickNext, clickPrev, clickToday }">
             Teste {{ title }}
+          </template>
+          <template #intervalEvent="{ event, height, margin, eventClass, interval }">
+            <div
+              :class="['custom-event', eventClass]"
+              :style="{
+                height: '33px',
+                margin: '0px',
+                backgroundColor: event.color || 'blue',
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                padding: '4px',
+                overflow: 'hidden',
+                borderRadius: '0px',
+                fontSize: '12px',
+                color: isFirstInterval(event, interval) ? 'white' : 'transparent',
+                borderTopLeftRadius: isFirstInterval(event, interval) ? '8px' : '0',
+                borderTopRightRadius: isFirstInterval(event, interval) ? '8px' : '0',
+                borderBottomLeftRadius: isLastInterval(event, interval) ? '8px' : '0',
+                borderBottomRightRadius: isLastInterval(event, interval) ? '8px' : '0',
+              }"
+              :title="event.title"
+            >
+              {{ isFirstInterval(event, interval) ? event.title : '\u00A0' }}
+            </div>
           </template>
         </v-calendar>
       </v-col>
@@ -211,4 +257,14 @@ function teste(n) {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 } */
+
+.custom-event {
+  display: flex;
+  align-items: flex-start;
+}
+
+.v-calendar__container {
+  overflow: auto;
+  height: 500px;
+}
 </style>
