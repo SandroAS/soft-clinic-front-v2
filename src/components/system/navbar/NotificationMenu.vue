@@ -68,7 +68,7 @@ const unreadCount = computed(() => notifications.value.filter(n => !n.read).leng
 </script>
 
 <template>
-  <v-menu offset-y>
+  <v-menu offset-y :close-on-content-click="false">
     <template #activator="{ props }">
       <v-btn icon v-bind="props" class="ml-2">
         <v-badge

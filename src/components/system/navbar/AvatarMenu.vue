@@ -24,7 +24,7 @@ function irPara(path: string) {
 </script>
 
 <template>
-  <v-menu offset-y>
+  <v-menu offset-y :close-on-content-click="false">
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
