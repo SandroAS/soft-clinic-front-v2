@@ -66,7 +66,7 @@ function getEvents({ start, end }: { start: Date; end: Date }) {
   generatedEvents.push({
     allDay: false,
     color: "orange",
-    end: new Date("2025-05-25T09:30:00"),
+    end: new Date("2025-05-25T09:45:00"),
     start: new Date("2025-05-25T07:00:00"),
     title: "Feriado"
   })
@@ -167,25 +167,65 @@ function labelHoursMinuts(n: IntervalFormatArg): string {
 }
 
 function isFirstInterval(event: CalendarEvent, interval: IntervalFormatArg) {
-  if(typeof interval.start === 'object' && interval.start != null) {
+  if (typeof interval.start === 'object' && interval.start != null) {
+    const eventStart = new Date(event.start)
+    const intervalStart = new Date(interval.start)
+
     return (
-      new Date(event.start).getDay() === new Date(interval.start).getDay() &&
-      new Date(event.start).getHours() === new Date(interval.start).getHours() &&
-      new Date(event.start).getMinutes() === new Date(interval.start).getMinutes()
+      eventStart.getDay() === intervalStart.getDay() &&
+      eventStart.getHours() === intervalStart.getHours() &&
+      eventStart.getMinutes() === intervalStart.getMinutes()
     )
   }
   return false
 }
 
 function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
-  if(typeof interval.start === 'object') {
+  if (typeof interval.start === 'object' && interval.start != null) {
     const intervalStart = new Date(interval.start)
-    const nextIntervalStart = new Date(intervalStart.getTime() + 15 * 60 * 1000)
-  
-    return new Date(event.end) <= nextIntervalStart
+    const nextIntervalStart = new Date(intervalStart.getTime() + intervalSetting.value.min * 60 * 1000)
+    const eventEnd = new Date(event.end)
+
+    return eventEnd > intervalStart && eventEnd <= nextIntervalStart
   }
   return false
 }
+
+function computeHeight(event: CalendarEvent, interval: IntervalFormatArg) {
+  const isLast = isLastInterval(event, interval)
+
+  if (!isLast) return '32px'
+
+  const start = new Date(event.start).getTime()
+  const end = new Date(event.end).getTime()
+  const durationMinutes = (end - start) / 60000
+
+  const remainder = durationMinutes % 60
+
+  if (remainder === 15) {
+    if(intervalSetting.value.min === 30) return '16px'
+    if(intervalSetting.value.min === 60) return '8px'
+  }
+  if (remainder === 30) {
+    if(intervalSetting.value.min === 60) return '16px'
+  }
+  if (remainder === 45) {
+    if(intervalSetting.value.min === 30) return '16px'
+    if(intervalSetting.value.min === 60) return '24px'
+  }
+
+  return '32px'
+}
+
+// watchEffect(() => {
+//   events.value = appointments.value.map(a => ({
+//     title: a.patient.name,
+//     start: new Date(a.date),
+//     end: new Date(new Date(a.date).getTime() + 60 * 60 * 1000), // 1h default
+//     color: 'primary',
+//     allDay: false,
+//   }))
+// })
 </script>
 
 
@@ -212,7 +252,7 @@ function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
       <v-col cols="12" md="12">
         <v-row justify="end">
           <v-col cols="12" md="6">
-            <h3 class="mb-2">Calendário de agendamentos {{  intervalSetting }}</h3>
+            <h3 class="mb-2">Calendário de agendamentos</h3>
           </v-col>
           <v-col cols="12" md="3">
             <v-select
@@ -248,7 +288,7 @@ function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
           :interval-start="intervalSetting.intervalStart"
           :intervals="intervalSetting.intervals"
           :interval-format="labelHoursMinuts"
-          :interval-height="33"
+          :interval-height="32"
         >
           <template #header="{ title, clickNext, clickPrev, clickToday }">
             <div class="text-h4">
@@ -259,7 +299,7 @@ function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
             <div
               :class="['custom-event', eventClass]"
               :style="{
-                height: '33px',
+                height: computeHeight(event, interval),
                 margin: '0px',
                 backgroundColor: event.color || 'blue',
                 whiteSpace: 'normal',
@@ -269,10 +309,10 @@ function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
                 borderRadius: '0px',
                 fontSize: '12px',
                 color: isFirstInterval(event, interval) ? 'white' : 'transparent',
-                borderTopLeftRadius: isFirstInterval(event, interval) ? '8px' : '0',
-                borderTopRightRadius: isFirstInterval(event, interval) ? '8px' : '0',
-                borderBottomLeftRadius: isLastInterval(event, interval) ? '8px' : '0',
-                borderBottomRightRadius: isLastInterval(event, interval) ? '8px' : '0',
+                borderTopLeftRadius: isFirstInterval(event, interval) ? '4px' : '0',
+                borderTopRightRadius: isFirstInterval(event, interval) ? '4px' : '0',
+                borderBottomLeftRadius: isLastInterval(event, interval) ? '4px' : '0',
+                borderBottomRightRadius: isLastInterval(event, interval) ? '4px' : '0',
               }"
               :title="event.title"
             >
@@ -292,12 +332,12 @@ function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
 </style>
 
 <style>
-/* .v-calendar__container {
+.v-calendar__container {
   padding: 4px;
   background-color: #fff;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-} */
+}
 
 .custom-event {
   display: flex;
