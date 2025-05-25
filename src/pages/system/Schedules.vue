@@ -21,7 +21,7 @@ const value = ref<Date[]>([new Date()])
 const events = ref<CalendarEvent[]>([])
 
 const colors = ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1']
-const titles = ['Atendimento', 'Feriado', 'Reunião', 'Viagem', 'Cirurgia', 'Aniversário', 'Conferência', 'Festa']
+const titles = ['Atendimento', 'Feriado', 'Reunião', 'Viagem', 'Cirurgia', 'Aniversário', 'Conferência']
 
 const dateAdapter = useDate()
 
@@ -141,24 +141,43 @@ onMounted(() => {
   const start = dateAdapter.startOfDay(dateAdapter.startOfMonth(new Date())) as Date
   const end = dateAdapter.endOfDay(dateAdapter.endOfMonth(new Date())) as Date
   getEvents({ start, end })
+
+  const wrong12Am = document.getElementsByClassName('v-calendar-day__row-label')
+  if(wrong12Am[0].textContent === '12 AM') {
+    wrong12Am[0].innerHTML = ''
+  }
 })
 
-function teste(n) {
+interface IntervalFormatArg {
+  label: string
+  start: unknown
+  end: unknown
+  events: CalendarEvent[]
+}
+
+function labelHoursMinuts(n: IntervalFormatArg): string {
   return n.label
 }
-function isFirstInterval(event, interval) {
-  return (
-    new Date(event.start).getDay() === new Date(interval.start).getDay() &&
-    new Date(event.start).getHours() === new Date(interval.start).getHours() &&
-    new Date(event.start).getMinutes() === new Date(interval.start).getMinutes()
-  )
+
+function isFirstInterval(event: CalendarEvent, interval: IntervalFormatArg) {
+  if(typeof interval.start === 'object' && interval.start != null) {
+    return (
+      new Date(event.start).getDay() === new Date(interval.start).getDay() &&
+      new Date(event.start).getHours() === new Date(interval.start).getHours() &&
+      new Date(event.start).getMinutes() === new Date(interval.start).getMinutes()
+    )
+  }
+  return false
 }
 
-function isLastInterval(event, interval) {
-  const intervalStart = new Date(interval.start)
-  const nextIntervalStart = new Date(intervalStart.getTime() + 15 * 60 * 1000)
-
-  return new Date(event.end) <= nextIntervalStart
+function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
+  if(typeof interval.start === 'object') {
+    const intervalStart = new Date(interval.start)
+    const nextIntervalStart = new Date(intervalStart.getTime() + 15 * 60 * 1000)
+  
+    return new Date(event.end) <= nextIntervalStart
+  }
+  return false
 }
 </script>
 
@@ -209,7 +228,7 @@ function isLastInterval(event, interval) {
           :interval-duration="15"
           :interval-start="23"
           :intervals="58"
-          :interval-format="teste"
+          :interval-format="labelHoursMinuts"
           :interval-height="33"
         >
           <template #header="{ title, clickNext, clickPrev, clickToday }">
@@ -267,5 +286,19 @@ function isLastInterval(event, interval) {
 .v-calendar__container {
   overflow: auto;
   height: 500px;
+}
+
+.v-calendar-day__row-with-label .v-calendar-day__row-hairline:after {
+    content: "";
+    border-bottom: none;
+    position: absolute;
+    width: 100%;
+    margin-top: -1px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.v-calendar-day__row-hairline {
+  border-bottom: thin solid #e0e0e0;
 }
 </style>
