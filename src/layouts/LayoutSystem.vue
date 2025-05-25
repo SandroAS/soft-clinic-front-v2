@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AvatarMenu from '@/components/system/navbar/AvatarMenu.vue'
 import NavBarLogo from '@/components/system/navbar/NavBarLogo.vue'
+import NotificationMenu from '@/components/system/navbar/NotificationMenu.vue'
 import SideBarMenu from '@/components/system/sidebar/SideBarMenu.vue'
 import { ref, computed, onMounted } from 'vue'
 
@@ -43,6 +44,7 @@ onMounted(() => {
 
       <v-spacer />
 
+      <NotificationMenu />
       <AvatarMenu />
     </v-app-bar>
 
