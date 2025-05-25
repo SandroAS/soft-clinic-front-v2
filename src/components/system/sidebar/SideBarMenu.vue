@@ -53,6 +53,6 @@ const menuItems = [
       </v-list-item>
     </v-list>
 
-    <SideBarSchedule />
+    <SideBarSchedule :rail="rail"/>
   </v-navigation-drawer>
 </template>

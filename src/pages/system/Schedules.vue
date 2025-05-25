@@ -375,6 +375,6 @@ const mouseOver = ref(false)
 }
 
 .custom-event.hovered {
-  filter: brightness(0.85);
+  filter: brightness(0.90);
 }
 </style>

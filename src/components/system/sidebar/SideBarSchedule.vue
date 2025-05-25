@@ -3,6 +3,10 @@ import { ref } from 'vue'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
+const props = defineProps<{
+  rail: boolean
+}>()
+
 const agendamentosHoje = ref([
   { hora: '09:00', nome: 'Ana Silva', servico: 'Limpeza' },
   { hora: '11:30', nome: 'Carlos Pereira', servico: 'Extração' },
@@ -24,37 +28,45 @@ const diaDoMes = format(hoje, 'dd', { locale: ptBR })
 </script>
 
 <template>
-  <div class="pa-2 border-t" style="border-top: 1px solid #ccc;">
-    <div class="d-flex align-end justify-space-between mb-2">
-      <div>
-        <div class="text-subtitle-2 font-weight-medium">Agenda de Hoje</div>
-        <div class="text-caption text-medium-emphasis">{{ dataFormatadaHoje() }}</div>
+  <div class="border-t">
+    <div v-if="!rail" class="pa-2">
+      <div class="d-flex align-end justify-space-between mb-2">
+        <div>
+          <div class="text-subtitle-2 font-weight-medium">Agenda de Hoje</div>
+          <div class="text-caption text-medium-emphasis">{{ dataFormatadaHoje() }}</div>
+        </div>
+        <div class="mini-calendario ml-2">
+          <div class="mes">{{ abreviacaoMes }}</div>
+          <div class="dia">{{ diaDoMes }}</div>
+        </div>
       </div>
-      <div class="mini-calendario ml-2">
+  
+      <v-divider class="mb-2" />
+  
+      <div
+        v-for="item in agendamentosHoje"
+        :key="item.hora"
+        class="d-flex align-center justify-space-between mb-2 elevation-1 rounded pa-2"
+      >
+        <div>
+          <div class="text-caption font-weight-medium">{{ item.hora }} - {{ item.nome }}</div>
+          <div class="text-caption text-medium-emphasis">{{ item.servico }}</div>
+        </div>
+        <v-btn
+          size="x-small"
+          variant="tonal"
+          color="primary"
+          @click="iniciarAtendimento(item)"
+        >
+          Iniciar
+        </v-btn>
+      </div>
+    </div>
+    <div class="pt-2" v-else>
+      <div class="mini-calendario rail-off ml-2">
         <div class="mes">{{ abreviacaoMes }}</div>
         <div class="dia">{{ diaDoMes }}</div>
       </div>
-    </div>
-
-    <v-divider class="mb-2" />
-
-    <div
-      v-for="item in agendamentosHoje"
-      :key="item.hora"
-      class="d-flex align-center justify-space-between mb-2 elevation-1 rounded pa-2"
-    >
-      <div>
-        <div class="text-caption font-weight-medium">{{ item.hora }} - {{ item.nome }}</div>
-        <div class="text-caption text-medium-emphasis">{{ item.servico }}</div>
-      </div>
-      <v-btn
-        size="x-small"
-        variant="tonal"
-        color="primary"
-        @click="iniciarAtendimento(item)"
-      >
-        Iniciar
-      </v-btn>
     </div>
   </div>
 </template>
@@ -96,5 +108,9 @@ const diaDoMes = format(hoje, 'dd', { locale: ptBR })
   font-weight: bold;
   text-align: center;
   padding: 4px 0;
+}
+
+.mini-calendario.rail-off {
+  width: 39px !important;
 }
 </style>
