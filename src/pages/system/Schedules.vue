@@ -17,6 +17,13 @@ const types = [
   { text: 'DIA', value: 'day' },
 ]
 
+const intervalSetting = ref<{ min: 60, intervalStart: 5, intervals: 16 } | { min: 30, intervalStart: 11, intervals: 30 } | { min: 15, intervalStart: 23, intervals: 58 }>({ min: 15, intervalStart: 23, intervals: 58 })
+const intervalsSettings = [
+  { text: '60 min', value: { min: 60, intervalStart: 5, intervals: 16 } },
+  { text: '30 min', value: { min: 30, intervalStart: 11, intervals: 30 } },
+  { text: '15 min', value: { min: 15, intervalStart: 23, intervals: 58 } },
+]
+
 const value = ref<Date[]>([new Date()])
 const events = ref<CalendarEvent[]>([])
 
@@ -205,9 +212,9 @@ function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
       <v-col cols="12" md="12">
         <v-row justify="end">
           <v-col cols="12" md="6">
-            <h3 class="mb-2">Calendário de agendamentos</h3>
+            <h3 class="mb-2">Calendário de agendamentos {{  intervalSetting }}</h3>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="3">
             <v-select
               v-model="type"
               :items="types"
@@ -219,20 +226,34 @@ function isLastInterval(event: CalendarEvent, interval: IntervalFormatArg) {
               hide-details
             />
           </v-col>
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="intervalSetting"
+              :items="intervalsSettings"
+              item-title="text"
+              item-value="value"
+              label="Intervalos de horas/minutos"
+              density="comfortable"
+              variant="solo-filled"
+              hide-details
+            />
+          </v-col>
         </v-row>
         <v-calendar
           v-model="value"
           :events="events"
           :view-mode="type"
           :first-day-of-week="0"
-          :interval-duration="15"
-          :interval-start="23"
-          :intervals="58"
+          :interval-duration="intervalSetting.min"
+          :interval-start="intervalSetting.intervalStart"
+          :intervals="intervalSetting.intervals"
           :interval-format="labelHoursMinuts"
           :interval-height="33"
         >
           <template #header="{ title, clickNext, clickPrev, clickToday }">
-            Teste {{ title }}
+            <div class="text-h4">
+              {{ title.charAt(0).toUpperCase() + title.slice(1) }}
+            </div>
           </template>
           <template #intervalEvent="{ event, height, margin, eventClass, interval }">
             <div
