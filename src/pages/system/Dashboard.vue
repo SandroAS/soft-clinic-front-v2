@@ -8,10 +8,21 @@ const totalPacientes = 124
 const totalOrcamentos = 89
 const totalAtendimentos = 152
 const totalFaturamento = 38250.75
+import { useSnackbarStore } from '@/stores/snackbar.store'
+
+const snackbar = useSnackbarStore()
+function teste () {
+  snackbar.show('Usuário salvo com sucesso!', 'success')
+}
 </script>
 
 <template>
   <v-container fluid>
+    <v-btn @click="teste()">
+      teste
+    </v-btn>
+    <v-btn @click="snackbar.show('Salvo com sucesso!', 'success')">Mostrar Toast</v-btn>
+
     <!-- Totalizadores -->
     <v-row dense class="mb-6">
       <v-col cols="12" md="3">

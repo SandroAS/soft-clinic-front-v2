@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import AvatarMenu from '@/components/system/navbar/AvatarMenu.vue'
 import NavBarLogo from '@/components/system/navbar/NavBarLogo.vue'
 import NotificationMenu from '@/components/system/navbar/NotificationMenu.vue'
 import SideBarMenu from '@/components/system/sidebar/SideBarMenu.vue'
-import { ref, computed, onMounted } from 'vue'
+import Toast from '@/components/system/Toast.vue'
 
 const drawer = ref(true)
 const rail = ref(false)
@@ -19,7 +20,7 @@ const appBarIcon = computed(() => {
 })
 
 function toggleAppBarIcon() {
-  if(isMobile.value) {
+  if (isMobile.value) {
     drawer.value = !drawer.value
   } else {
     rail.value = !rail.value
@@ -33,31 +34,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
-      <v-app-bar-nav-icon
-        :icon="appBarIcon"
-        @click="toggleAppBarIcon"
-      />
-
-      <NavBarLogo />
-
-      <v-spacer />
-
-      <NotificationMenu />
-      <AvatarMenu />
-    </v-app-bar>
-
-    <SideBarMenu
-      v-model="drawer"
-      :rail="rail"
-      :is-mobile="isMobile"
+  <v-app-bar app color="primary" dark>
+    <v-app-bar-nav-icon
+      :icon="appBarIcon"
+      @click="toggleAppBarIcon"
     />
 
-    <v-main>
-      <v-container fluid class="pa-4">
-        <router-view />
-      </v-container>
-    </v-main>
-  </v-app>
+    <NavBarLogo />
+
+    <v-spacer />
+
+    <NotificationMenu />
+    <AvatarMenu />
+  </v-app-bar>
+
+  <SideBarMenu
+    v-model="drawer"
+    :rail="rail"
+    :is-mobile="isMobile"
+  />
+
+  <v-main>
+    <v-container fluid class="pa-4">
+      <router-view />
+    </v-container>
+  </v-main>
+
+  <Toast />
 </template>
