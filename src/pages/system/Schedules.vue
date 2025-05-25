@@ -226,6 +226,12 @@ function computeHeight(event: CalendarEvent, interval: IntervalFormatArg) {
 //     allDay: false,
 //   }))
 // })
+
+function openEventDialog(event: CalendarEvent) {
+  console.log('openEventDialog')
+}
+
+const mouseOver = ref(false)
 </script>
 
 
@@ -297,7 +303,7 @@ function computeHeight(event: CalendarEvent, interval: IntervalFormatArg) {
           </template>
           <template #intervalEvent="{ event, height, margin, eventClass, interval }">
             <div
-              :class="['custom-event', eventClass]"
+              :class="{'custom-event': true, 'hovered': mouseOver, eventClass}"
               :style="{
                 height: computeHeight(event, interval),
                 margin: '0px',
@@ -313,8 +319,13 @@ function computeHeight(event: CalendarEvent, interval: IntervalFormatArg) {
                 borderTopRightRadius: isFirstInterval(event, interval) ? '4px' : '0',
                 borderBottomLeftRadius: isLastInterval(event, interval) ? '4px' : '0',
                 borderBottomRightRadius: isLastInterval(event, interval) ? '4px' : '0',
+                cursor: 'pointer',
+                transition: 'filter 0.2s ease'
               }"
               :title="event.title"
+              @mouseover="mouseOver = true"
+              @mouseleave="mouseOver = false"
+              @click.prevent="openEventDialog(event)"
             >
               {{ isFirstInterval(event, interval) ? event.title : '\u00A0' }}
             </div>
@@ -339,11 +350,6 @@ function computeHeight(event: CalendarEvent, interval: IntervalFormatArg) {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.custom-event {
-  display: flex;
-  align-items: flex-start;
-}
-
 .v-calendar__container {
   overflow: auto;
   height: 500px;
@@ -361,5 +367,14 @@ function computeHeight(event: CalendarEvent, interval: IntervalFormatArg) {
 
 .v-calendar-day__row-hairline {
   border-bottom: thin solid #e0e0e0;
+}
+
+.custom-event {
+  display: flex;
+  align-items: flex-start;
+}
+
+.custom-event.hovered {
+  filter: brightness(0.85);
 }
 </style>
