@@ -59,16 +59,16 @@ function getEvents({ start, end }: { start: Date; end: Date }) {
   generatedEvents.push({
     allDay: false,
     color: "orange",
-    end: new Date("2025-05-22T09:30:00"),
-    start: new Date("2025-05-22T07:00:00"),
+    end: new Date("2025-05-25T09:30:00"),
+    start: new Date("2025-05-25T07:00:00"),
     title: "Feriado"
   })
 
   generatedEvents.push({
     allDay: false,
     color: "red",
-    end: new Date("2025-05-22T13:00:00"),
-    start: new Date("2025-05-22T12:00:00"),
+    end: new Date("2025-05-25T13:00:00"),
+    start: new Date("2025-05-25T12:00:00"),
     title: "Feriado2"
   })
 
@@ -148,6 +148,7 @@ function teste(n) {
 }
 function isFirstInterval(event, interval) {
   return (
+    new Date(event.start).getDay() === new Date(interval.start).getDay() &&
     new Date(event.start).getHours() === new Date(interval.start).getHours() &&
     new Date(event.start).getMinutes() === new Date(interval.start).getMinutes()
   )
@@ -155,7 +156,7 @@ function isFirstInterval(event, interval) {
 
 function isLastInterval(event, interval) {
   const intervalStart = new Date(interval.start)
-  const nextIntervalStart = new Date(intervalStart.getTime() + 15 * 60 * 1000) // 15 min depois
+  const nextIntervalStart = new Date(intervalStart.getTime() + 15 * 60 * 1000)
 
   return new Date(event.end) <= nextIntervalStart
 }
