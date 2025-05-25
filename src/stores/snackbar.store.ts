@@ -3,17 +3,19 @@ import { defineStore } from 'pinia'
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
 export interface ToastMessage {
+  id: number
   text: string
   color?: string
-  timeout?: number
+  active: boolean
 }
 
+let idCounter = 0
 export const useSnackbarStore = defineStore('snackbar', {
   state: () => ({
     messages: [] as ToastMessage[],
   }),
   actions: {
-    show(text: string, type: ToastType = 'info', timeout = 5000) {
+    show(text: string, type: ToastType = 'info') {
       console.log('teste')
       const colorMap = {
         success: 'green',
@@ -23,9 +25,10 @@ export const useSnackbarStore = defineStore('snackbar', {
       }
 
       this.messages.push({
+        id: ++idCounter,
         text,
         color: colorMap[type],
-        timeout,
+        active: true
       })
     },
     clear() {
