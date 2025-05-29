@@ -8,19 +8,26 @@ const totalPacientes = 124
 const totalOrcamentos = 89
 const totalAtendimentos = 152
 const totalFaturamento = 38250.75
-import { useSnackbarStore } from '@/stores/snackbar.store'
+// import { useSnackbarStore } from '@/stores/snackbar.store'
 
-function teste () {
-  const snackbar = useSnackbarStore()
-  snackbar.show('Usuário salvo com sucesso!', 'success')
-}
+// function teste () {
+//   const snackbar = useSnackbarStore()
+//   snackbar.show('Usuário salvo com sucesso!', 'success')
+// }
+// function teste2 () {
+//   const snackbar = useSnackbarStore()
+//   snackbar.show('Usuário salvo com sucesso!', 'warning')
+// }
 </script>
 
 <template>
   <v-container fluid>
-    <v-btn @click="teste()">
+    <!-- <v-btn @click="teste()">
       teste
     </v-btn>
+    <v-btn @click="teste2()">
+      teste2
+    </v-btn> -->
     <!-- Totalizadores -->
     <v-row dense class="mb-6">
       <v-col cols="12" md="3">

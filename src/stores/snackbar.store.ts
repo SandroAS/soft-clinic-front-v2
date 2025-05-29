@@ -5,6 +5,7 @@ export type ToastType = 'success' | 'error' | 'warning' | 'info'
 export interface ToastMessage {
   id: number
   text: string
+  type: ToastType
   color?: string
   active: boolean
 }
@@ -16,7 +17,6 @@ export const useSnackbarStore = defineStore('snackbar', {
   }),
   actions: {
     show(text: string, type: ToastType = 'info') {
-      console.log('teste')
       const colorMap = {
         success: 'green',
         error: 'red',
@@ -27,6 +27,7 @@ export const useSnackbarStore = defineStore('snackbar', {
       this.messages.push({
         id: ++idCounter,
         text,
+        type,
         color: colorMap[type],
         active: true
       })
