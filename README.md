@@ -1,4 +1,4 @@
-# soft-clinic-front-v2
+# soft-clinic-front
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -61,4 +61,71 @@ npm run test:e2e -- --debug
 
 ```sh
 npm run lint
+```
+
+## Rodando com Docker
+
+Este projeto possui configurações para rodar em **ambientes de desenvolvimento** e **produção** usando Docker.
+
+### Pré-requisitos
+
+- [Docker](https://docs.docker.com/get-docker/) instalado  
+- [Docker Compose](https://docs.docker.com/compose/install/) (opcional, mas recomendado)
+
+---
+
+### Desenvolvimento com hot reload (via Docker)
+
+Este ambiente roda o servidor de desenvolvimento (Vite) dentro do container, com seu código local montado via volume para hot reload.
+
+1. Build e start do container de desenvolvimento:
+
+```sh
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+2. Acesse no navegador:
+
+```sh
+http://localhost:5173
+```
+
+3. O código que você alterar localmente será refletido automaticamente no navegador.
+
+### Produção com build estático + Nginx
+
+Neste ambiente, o projeto é buildado dentro do container e servido via Nginx.
+
+1. Build e start do container de produção:
+```sh
+docker-compose -f docker-compose.prod.yml up --build
+```
+
+2. Acesse no navegador:
+```sh
+http://localhost:8080
+```
+
+#### Parar os containers
+Para parar qualquer ambiente:
+```sh
+docker-compose down
+```
+
+#### Rodando sem Docker Compose
+Se não estiver usando Docker Compose, pode rodar manualmente com:
+
+- Desenvolvimento:
+```sh
+docker build -f Dockerfile.dev -t soft-clinic-dev .
+```
+```sh
+docker run -it -p 5173:5173 -v $(pwd):/app -v /app/node_modules soft-clinic-dev
+```
+- Produção:
+```sh
+docker build -t soft-clinic-prod .
+```
+```sh
+docker run -p 8080:80 soft-clinic-prod
 ```

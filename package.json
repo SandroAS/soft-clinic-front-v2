@@ -1,6 +1,6 @@
 {
-  "name": "soft-clinic-front-v2",
-  "version": "0.0.0",
+  "name": "soft-clinic-front",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
