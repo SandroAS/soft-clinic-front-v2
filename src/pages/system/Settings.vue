@@ -4,6 +4,7 @@ import PermissionsTab from '@/components/system/settings/tabs/PermissionsTab.vue
 import OdontogramaCategoriesTab from '@/components/system/settings/tabs/OdontogramaCategoriesTab.vue'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ServicesTab from '@/components/system/settings/tabs/ServicesTab.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -11,6 +12,7 @@ const router = useRouter()
 const tabs = [
   { name: 'Usuários', value: 'usuarios' },
   { name: 'Permissões', value: 'permissoes' },
+  { name: 'Serviços', value: 'servicos' },
   { name: 'Categorias de Odontograma', value: 'categorias-odontograma' }
 ]
 
@@ -44,6 +46,10 @@ watch(selectedTab, (newTab) => {
 
         <v-tabs-window-item value="permissoes">
           <PermissionsTab />
+        </v-tabs-window-item>
+
+        <v-tabs-window-item value="servicos">
+          <ServicesTab />
         </v-tabs-window-item>
 
         <v-tabs-window-item value="categorias-odontograma">
