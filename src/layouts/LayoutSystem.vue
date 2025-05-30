@@ -5,14 +5,11 @@ import NavBarLogo from '@/components/system/navbar/NavBarLogo.vue'
 import NotificationMenu from '@/components/system/navbar/NotificationMenu.vue'
 import SideBarMenu from '@/components/system/sidebar/SideBarMenu.vue'
 import Toast from '@/components/system/Toast.vue'
+import FreeTrialAlert from '@/components/system/FreeTrialAlert.vue'
 
 const drawer = ref(true)
 const rail = ref(false)
 const isMobile = ref(false)
-
-// Simulação de estado de teste gratuito
-const isTrial = ref(true)
-const trialDaysLeft = ref(7)
 
 const updateIsMobile = () => {
   isMobile.value = window.innerWidth < 768
@@ -59,41 +56,8 @@ onMounted(() => {
   />
 
   <v-main>
-    <div class="v-toolbar v-toolbar--density-compact elevation-3 bg-white">
-      <v-alert
-        v-if="isTrial"
-        type="warning"
-        class="rounded-0 w-100"
-        border="bottom"
-        density="compact"
-        variant="tonal"
-      >
-        <div
-          class="d-flex align-center justify-space-between flex-wrap"
-          :class="{ 'flex-column': isMobile }"
-        >
-          <span class="mb-2" v-if="isMobile">
-            Você está em período de avaliação gratuita, finaliza em
-            <strong>{{ trialDaysLeft }}</strong> dias.
-          </span>
-          <span v-else>
-            Você está em período de avaliação gratuita, finaliza em
-            <strong>{{ trialDaysLeft }}</strong> dias.
-          </span>
 
-          <v-btn
-            color="warning"
-            variant="flat"
-            class="text-no-wrap"
-            :class="isMobile ? 'w-100' : 'ml-4'"
-            size="small"
-            @click="() => $router.push('/assinatura')"
-          >
-            Assinar agora
-          </v-btn>
-        </div>
-      </v-alert>
-    </div>
+    <FreeTrialAlert :is-mobile="isMobile" />
 
     <v-container fluid class="pa-4">
       <router-view />
