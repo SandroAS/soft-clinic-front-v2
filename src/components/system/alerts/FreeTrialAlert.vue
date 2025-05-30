@@ -11,7 +11,7 @@ const trialDaysLeft = ref(7)
 </script>
 
 <template>
-  <div class="v-toolbar v-toolbar--density-compact elevation-3 bg-white">
+  <div class="v-toolbar v-toolbar--density-compact bg-white">
     <v-alert
       v-if="isTrial"
       type="warning"

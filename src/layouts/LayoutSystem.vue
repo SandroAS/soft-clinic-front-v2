@@ -5,7 +5,8 @@ import NavBarLogo from '@/components/system/navbar/NavBarLogo.vue'
 import NotificationMenu from '@/components/system/navbar/NotificationMenu.vue'
 import SideBarMenu from '@/components/system/sidebar/SideBarMenu.vue'
 import Toast from '@/components/system/Toast.vue'
-import FreeTrialAlert from '@/components/system/FreeTrialAlert.vue'
+import FreeTrialAlert from '@/components/system/alerts/FreeTrialAlert.vue'
+import AppointmentTimerAlert from '@/components/system/alerts/AppointmentTimerAlert.vue'
 
 const drawer = ref(true)
 const rail = ref(false)
@@ -58,6 +59,8 @@ onMounted(() => {
   <v-main>
 
     <FreeTrialAlert :is-mobile="isMobile" />
+    
+    <AppointmentTimerAlert :is-mobile="isMobile" />
 
     <v-container fluid class="pa-4">
       <router-view />
