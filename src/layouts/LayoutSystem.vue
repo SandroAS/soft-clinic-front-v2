@@ -10,6 +10,10 @@ const drawer = ref(true)
 const rail = ref(false)
 const isMobile = ref(false)
 
+// Simulação de estado de teste gratuito
+const isTrial = ref(true)
+const trialDaysLeft = ref(7)
+
 const updateIsMobile = () => {
   isMobile.value = window.innerWidth < 768
   if (isMobile.value) drawer.value = false
@@ -55,6 +59,32 @@ onMounted(() => {
   />
 
   <v-main>
+    <v-app-bar app dark class="custom-alert-height" style="max-height: 52.6px;">
+      <v-alert
+        v-if="isTrial"
+        type="warning"
+        class="rounded-0"
+        border="bottom"
+        density="compact"
+        variant="tonal"
+      >
+        <div class="d-flex justify-space-between align-center">
+          <span>
+            Você está em período de avaliação gratuita, finaliza em <strong>{{ trialDaysLeft }}</strong> dias.
+          </span>
+          <v-btn
+            color="warning"
+            variant="flat"
+            class="ml-4"
+            size="small"
+            @click="() => $router.push('/assinatura')"
+          >
+            Assinar agora
+          </v-btn>
+        </div>
+      </v-alert>
+    </v-app-bar>
+
     <v-container fluid class="pa-4">
       <router-view />
     </v-container>
@@ -62,3 +92,9 @@ onMounted(() => {
 
   <Toast />
 </template>
+
+<style >
+.custom-alert-height .v-toolbar__content {
+  height: 53px !important;
+}
+</style>
