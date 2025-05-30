@@ -59,7 +59,7 @@ onMounted(() => {
   />
 
   <v-main>
-    <div class="v-toolbar v-toolbar--density-compact elevation-3">
+    <div class="v-toolbar v-toolbar--density-compact elevation-3 bg-white">
       <v-alert
         v-if="isTrial"
         type="warning"
