@@ -59,23 +59,33 @@ onMounted(() => {
   />
 
   <v-main>
-    <v-app-bar app dark class="custom-alert-height" style="max-height: 52.6px;">
+    <div class="v-toolbar v-toolbar--density-compact elevation-3">
       <v-alert
         v-if="isTrial"
         type="warning"
-        class="rounded-0"
+        class="rounded-0 w-100"
         border="bottom"
         density="compact"
         variant="tonal"
       >
-        <div class="d-flex justify-space-between align-center">
-          <span>
-            Você está em período de avaliação gratuita, finaliza em <strong>{{ trialDaysLeft }}</strong> dias.
+        <div
+          class="d-flex align-center justify-space-between flex-wrap"
+          :class="{ 'flex-column': isMobile }"
+        >
+          <span class="mb-2" v-if="isMobile">
+            Você está em período de avaliação gratuita, finaliza em
+            <strong>{{ trialDaysLeft }}</strong> dias.
           </span>
+          <span v-else>
+            Você está em período de avaliação gratuita, finaliza em
+            <strong>{{ trialDaysLeft }}</strong> dias.
+          </span>
+
           <v-btn
             color="warning"
             variant="flat"
-            class="ml-4"
+            class="text-no-wrap"
+            :class="isMobile ? 'w-100' : 'ml-4'"
             size="small"
             @click="() => $router.push('/assinatura')"
           >
@@ -83,7 +93,7 @@ onMounted(() => {
           </v-btn>
         </div>
       </v-alert>
-    </v-app-bar>
+    </div>
 
     <v-container fluid class="pa-4">
       <router-view />
@@ -92,9 +102,3 @@ onMounted(() => {
 
   <Toast />
 </template>
-
-<style >
-.custom-alert-height .v-toolbar__content {
-  height: 53px !important;
-}
-</style>
