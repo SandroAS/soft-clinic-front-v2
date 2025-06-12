@@ -34,13 +34,13 @@ export const useUserStore = defineStore('user', {
         const userData: AuthUser = await fetchWhoami();
         this.user = userData;
         return userData;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Falha ao carregar dados do usuário.';
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Falha ao carregar dados do usuário.';
         this.user = null;
-        console.error('Erro na ação fetchUser:', error);
+        console.error('Erro na ação fetchUser:', err);
         localStorage.removeItem('access_token');
         router.push('/login');
-        throw error;
+        throw err;
       } finally {
         this.loading = false;
       }
@@ -71,10 +71,10 @@ export const useUserStore = defineStore('user', {
         const response: AuthResponse = await loginUser(email, password);
         await this.handleAuthSuccess(response.accessToken, response.user);
         return this.user;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Erro ao realizar login.';
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Erro ao realizar login.';
         this.user = null;
-        throw error;
+        throw err;
       } finally {
         this.loading = false;
       }
@@ -87,10 +87,10 @@ export const useUserStore = defineStore('user', {
         const response: AuthResponse = await signupUser(email, password);
         await this.handleAuthSuccess(response.accessToken, response.user);
         return this.user;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Erro ao realizar cadastro.';
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Erro ao realizar cadastro.';
         this.user = null;
-        throw error;
+        throw err;
       } finally {
         this.loading = false;
       }
