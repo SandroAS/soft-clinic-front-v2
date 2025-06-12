@@ -60,7 +60,7 @@ export const useUserStore = defineStore('user', {
       this.user = null;
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
-      router.push('/login');
+      router.push('/auth/login');
     },
 
 

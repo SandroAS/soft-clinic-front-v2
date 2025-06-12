@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user.store'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -57,7 +58,7 @@ function irPara(path: string) {
       <v-list-item @click="irPara('/system/configuracoes')">
         <v-list-item-title>Configurações</v-list-item-title>
       </v-list-item>
-      <v-list-item link>
+      <v-list-item link @click="useUserStore().logout()">
         <template #append>
           <v-icon color="error" class="mr-2">mdi-logout</v-icon>
         </template>
