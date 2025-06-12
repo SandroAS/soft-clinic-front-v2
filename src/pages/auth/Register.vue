@@ -1,11 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import logo from '@/assets/logo.png';
 import { useSnackbarStore } from '@/stores/snackbar.store';
 import { useUserStore } from '@/stores/user.store';
 import { useRouter } from 'vue-router';
-import { Form, Field } from '@/plugins/vee-validate';
+import { Form, Field, useForm } from 'vee-validate';
 import type { UserRegister } from '@/types/user-register.type';
+import TermsOfServiceAndPrivacyPoliciesModal from './TermsOfServiceAndPrivacyPoliciesModal.vue';
+
+const dialog = ref(false)
+const typeOfDocument = ref<'terms' | 'privacy'>('terms')
+
+const openDialog = (type: 'terms' | 'privacy') => {
+  typeOfDocument.value = type;
+  dialog.value = true
+}
 
 const snackbarStore = useSnackbarStore();
 const userStore = useUserStore();
@@ -21,10 +30,11 @@ const clinicTypes = [
   { label: 'Fisioterapia (em breve)', value: 'fisioterapia', disabled: true },
 ]
 
-async function onSubmit(values: any) {
-  const userRegister: UserRegister = values;
+async function onSubmit(formValues: Record<string, any>) {
+  const userRegister: UserRegister = formValues as UserRegister;
   try {
     await userStore.signup(userRegister);
+    snackbarStore.show('Registro realizado com sucesso! Bem-vindo(a)!', 'success');
     router.push('/system/dashboard');
   } catch (error: any) {
     console.error('Erro no registro:', error);
@@ -47,7 +57,7 @@ async function onSubmit(values: any) {
         <p class="text-body-2">sem a necessidade de inserir seu cartão de crédito</p>
       </div>
 
-      <Form v-slot="{ values, meta }" @submit="onSubmit">
+      <Form @submit="onSubmit">
         <Field
           name="name"
           rules="required|alpha_spaces"
@@ -187,12 +197,20 @@ async function onSubmit(values: any) {
         >
           <v-checkbox
             :model-value="field.value"
+            @update:model-value="field.onChange"
             :error="!!errorMessage"
             :error-messages="errorMessage"
-            label="Eu concordo com o Termos de serviço e Política de Privacidade"
             class="mb-4"
-            @update:model-value="field.onChange"
-          />
+          >
+            <template v-slot:label>
+              <span>
+                Eu concordo com o
+                <a href="#" @click.prevent="openDialog('terms')" class="text-primary font-weight-medium">Termos de serviço</a>
+                e
+                <a href="#" @click.prevent="openDialog('privacy')" class="text-primary font-weight-medium">Política de Privacidade</a>
+              </span>
+            </template>
+          </v-checkbox>
         </Field>
 
         <v-btn
@@ -214,5 +232,7 @@ async function onSubmit(values: any) {
         </div>
       </Form>
     </v-card>
+
+    <TermsOfServiceAndPrivacyPoliciesModal v-model="dialog" :modalContentKey="typeOfDocument"/>
   </v-container>
 </template>
