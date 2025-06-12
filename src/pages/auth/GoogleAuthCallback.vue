@@ -21,7 +21,7 @@ onMounted(async () => {
   if (token) {
     try {
       await userStore.handleAuthSuccess(token);
-      router.push('system/dashboard');
+      router.push('/system/dashboard');
     } catch (err) {
       console.error('Erro ao buscar dados do usuário após login Google:', err);
     }

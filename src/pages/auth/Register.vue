@@ -60,7 +60,7 @@ async function onSubmit(formValues: Record<string, any>) {
       <Form @submit="onSubmit">
         <Field
           name="name"
-          rules="required|alpha_spaces"
+          rules="required|min:3|alpha_spaces"
           v-slot="{ field, errorMessage }"
         >
           <v-text-field
@@ -228,7 +228,7 @@ async function onSubmit(formValues: Record<string, any>) {
         </v-btn>
 
         <div class="text-center text-body-2">
-          Já possui uma conta? <a href="#" class="text-primary font-weight-medium" @click.prevent="router.push('/login')">Login</a>
+          Já possui uma conta? <a href="#" class="text-primary font-weight-medium" @click.prevent="router.push('/auth/login')">Login</a>
         </div>
       </Form>
     </v-card>
