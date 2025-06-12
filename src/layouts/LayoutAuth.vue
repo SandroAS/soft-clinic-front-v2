@@ -1,7 +1,14 @@
+<script setup lang="ts">
+import Toast from '@/components/system/Toast.vue';
+
+</script>
+
 <template>
   <v-main class="d-flex justify-center align-center bg-primary" style="min-height: 100vh;">
     <router-view />
   </v-main>
+
+  <Toast />
 </template>
 
 <style scoped>

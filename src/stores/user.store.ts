@@ -3,6 +3,7 @@ import { fetchWhoami, loginUser, signupUser } from '@/services/auth';
 import type { AuthUser } from '@/types/auth-user.type';
 import type { AuthResponse } from '@/types/auth-response.type';
 import router from '@/router';
+import type { UserRegister } from '@/types/user-register.type';
 
 interface UserStoreState {
   user: AuthUser | null;
@@ -80,11 +81,11 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async signup(email: string, password: string): Promise<AuthUser | null> {
+    async signup(userRegister: UserRegister): Promise<AuthUser | null> {
       this.loading = true;
       this.error = null;
       try {
-        const response: AuthResponse = await signupUser(email, password);
+        const response: AuthResponse = await signupUser(userRegister);
         await this.handleAuthSuccess(response.accessToken, response.user);
         return this.user;
       } catch (err: any) {
