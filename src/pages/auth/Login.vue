@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import logo from '@/assets/logo.png';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user.store';
@@ -11,6 +11,7 @@ const formValid = ref(false);
 const formRef = ref<HTMLFormElement | null>(null);
 
 const router = useRouter();
+const userStore = useUserStore();
 
 const rules = {
   required: (v: string) => !!v || 'O campo é obrigatório',
@@ -18,10 +19,16 @@ const rules = {
     /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v) || 'E-mail inválido',
 };
 
+watch([email, password], () => {
+  if (userStore.error) {
+    userStore.error = null; // Limpa o erro ao digitar
+  }
+});
+
 const submitForm = async () => {
   if (formRef.value?.validate()) {
     try {
-      await useUserStore().login(email.value, password.value);
+      await userStore.login(email.value, password.value);
       router.push('/system/dashboard');
     } catch (error) {
       console.error('Erro no login tradicional:', error);
@@ -30,11 +37,11 @@ const submitForm = async () => {
 };
 
 const forgotPassword = () => {
-  console.log('Ir para recuperação de senha');
+  router.push('/auth/forgot-password');
 };
 
 const register = () => {
-  router.push('/register');
+  router.push('/auth/register');
 };
 
 const loginWithGoogle = async () => {

@@ -15,7 +15,7 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -36,7 +36,7 @@ api.interceptors.response.use(
       if (error.response.status === 401) {
         console.warn('Requisição não autorizada (401). Redirecionando para o login...');
         console.warn('Requisição não autorizada (401). Redirecionando para o login...');
-        localStorage.removeItem('accessToken');
+        localStorage.removeItem('access_token');
         window.location.href = '/auth/login';
       }
     }

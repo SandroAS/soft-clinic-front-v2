@@ -19,8 +19,6 @@ onMounted(async () => {
   }
 
   if (token) {
-    localStorage.setItem('accessToken', token);
-
     try {
       await userStore.handleAuthSuccess(token);
       router.push('system/dashboard');
