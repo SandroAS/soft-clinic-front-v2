@@ -13,12 +13,12 @@ export const fetchWhoami = async (): Promise<AuthUser> => {
   }
 };
 
-export const loginUser = async (email: string, password?: string): Promise<AuthResponse> => {
+export const loginUser = async (email: string, password: string): Promise<AuthResponse> => {
   const response: AxiosResponse<AuthResponse> = await api.post('/auth/login', { email, password });
   return response.data;
 };
 
-export const signupUser = async (email: string, password?: string): Promise<AuthResponse> => {
+export const signupUser = async (email: string, password: string): Promise<AuthResponse> => {
   const response: AxiosResponse<AuthResponse> = await api.post('/auth/signup', { email, password });
   return response.data;
 };

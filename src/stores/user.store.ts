@@ -64,7 +64,7 @@ export const useUserStore = defineStore('user', {
     },
 
 
-    async login(email: string, password?: string): Promise<AuthUser | null> {
+    async login(email: string, password: string): Promise<AuthUser | null> {
       this.loading = true;
       this.error = null;
       try {
@@ -80,7 +80,7 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async signup(email: string, password?: string): Promise<AuthUser | null> {
+    async signup(email: string, password: string): Promise<AuthUser | null> {
       this.loading = true;
       this.error = null;
       try {

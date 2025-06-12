@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import logo from '@/assets/logo.png';
 import { useRouter } from 'vue-router';
-import api from '@/services/api';
+import { useUserStore } from '@/stores/user.store';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const email = ref('');
@@ -21,15 +21,7 @@ const rules = {
 const submitForm = async () => {
   if (formRef.value?.validate()) {
     try {
-      const response = await api.post('/auth/login', {
-        email: email.value,
-        password: password.value,
-      });
-
-      const { accessToken, user } = response.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('user', JSON.stringify(user));
-      console.log('Login tradicional bem-sucedido!', user);
+      await useUserStore().login(email.value, password.value);
       router.push('/system/dashboard');
     } catch (error) {
       console.error('Erro no login tradicional:', error);
