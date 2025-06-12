@@ -1,14 +1,47 @@
-import axios from 'axios'
+import axios, { type AxiosInstance } from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:8000/api', // ajuste para seu back-end
-  timeout: 5000,
-})
+const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
 
-export default api
+if (!API_BASE_URL) {
+  console.error('VITE_API_BASE_URL não está definida no .env. Por favor, configure-a.');
+}
 
-/**
- * Exemplo de uso:
- * import api from '@/services/api'
- * api.get('/users').then(res => console.log(res.data))
- */
+const api: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      if (error.response.status === 403) {
+        console.warn('Acesso negado (403). Verifique suas permissões.');
+      }
+      if (error.response.status === 401) {
+        console.warn('Requisição não autorizada (401). Redirecionando para o login...');
+        console.warn('Requisição não autorizada (401). Redirecionando para o login...');
+        localStorage.removeItem('accessToken');
+        window.location.href = '/auth/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;

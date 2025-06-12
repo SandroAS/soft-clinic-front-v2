@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import logo from '@/assets/logo.png'
+import logo from '@/assets/logo.png';
+import { useRouter } from 'vue-router';
+import api from '@/services/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const email = ref('');
 const password = ref('');
 const formValid = ref(false);
 const formRef = ref<HTMLFormElement | null>(null);
+
+const router = useRouter();
 
 const rules = {
   required: (v: string) => !!v || 'O campo é obrigatório',
@@ -13,11 +18,22 @@ const rules = {
     /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v) || 'E-mail inválido',
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   if (formRef.value?.validate()) {
-    console.log('Email:', email.value);
-    console.log('Password:', password.value);
-    // Adicione lógica de autenticação aqui
+    try {
+      const response = await api.post('/auth/login', {
+        email: email.value,
+        password: password.value,
+      });
+
+      const { accessToken, user } = response.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('user', JSON.stringify(user));
+      console.log('Login tradicional bem-sucedido!', user);
+      router.push('/system/dashboard');
+    } catch (error) {
+      console.error('Erro no login tradicional:', error);
+    }
   }
 };
 
@@ -26,7 +42,11 @@ const forgotPassword = () => {
 };
 
 const register = () => {
-  console.log('Ir para página de registro');
+  router.push('/register');
+};
+
+const loginWithGoogle = async () => {
+  window.location.href = API_BASE_URL+'/auth/google';
 };
 </script>
 
@@ -70,9 +90,23 @@ const register = () => {
           <v-icon end>mdi-login</v-icon>
         </v-btn>
 
+        <v-divider class="my-4"></v-divider>
+        <div class="text-center text-caption text-medium-emphasis mb-4">OU</div>
+
+        <v-btn
+          block
+          class="mb-4"
+          variant="outlined"
+          color="red"
+          @click="loginWithGoogle"
+        >
+          <v-icon start>mdi-google</v-icon>
+          Entrar com Google
+        </v-btn>
+
         <div class="text-center">
           <span class="text-caption mr-1">Não tem uma conta?</span>
-          <v-btn to="register" variant="outlined" color="teal" @click="register">
+          <v-btn variant="outlined" color="teal" @click="register">
             Teste gratuitamente!
           </v-btn>
         </div>

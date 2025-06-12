@@ -15,6 +15,7 @@ import PatientRecord from '@/components/system/patient/PatientRecord.vue'
 import Budgets from '@/pages/system/Budgets.vue'
 import Appointments from '@/pages/system/Appointments.vue'
 import Schedules from '@/pages/system/Schedules.vue'
+import GoogleAuthCallback from '@/pages/auth/GoogleAuthCallback.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -41,6 +42,11 @@ const routes: RouteRecordRaw[] = [
         path: 'register',
         name: 'register',
         component: Register
+      },
+      {
+        path: 'google-auth-callback',
+        name: 'gloogleAuthCallback',
+        component: GoogleAuthCallback
       }
     ]
   },
