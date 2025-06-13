@@ -1,38 +1,26 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import logo from '@/assets/logo.png';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user.store';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { useSnackbarStore } from '@/stores/snackbar.store';
+import { Form, Field } from 'vee-validate';
 
-const email = ref('');
-const password = ref('');
-const formValid = ref(false);
-const formRef = ref<HTMLFormElement | null>(null);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const showPassword = ref<boolean>(false);
 
 const router = useRouter();
 const userStore = useUserStore();
+const snackbarStore = useSnackbarStore();
 
-const rules = {
-  required: (v: string) => !!v || 'O campo é obrigatório',
-  email: (v: string) =>
-    /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v) || 'E-mail inválido',
-};
-
-watch([email, password], () => {
-  if (userStore.error) {
-    userStore.error = null; // Limpa o erro ao digitar
-  }
-});
-
-const submitForm = async () => {
-  if (formRef.value?.validate()) {
-    try {
-      await userStore.login(email.value, password.value);
-      router.push('/system/dashboard');
-    } catch (error) {
-      console.error('Erro no login tradicional:', error);
-    }
+async function onSubmit(formValues: Record<string, any>) {
+  const {email, password} = formValues as { email: string, password: string };
+  try {
+    await userStore.login(email, password);
+    router.push('/system/dashboard');
+  } catch (err) {
+    console.error('Erro no login: ', err);
+    snackbarStore.show('Falha ao tentar logar: '+err, 'error');
   }
 };
 
@@ -57,26 +45,43 @@ const loginWithGoogle = async () => {
         <span class="text-h5 font-weight-bold">Soft Clinic</span>
       </v-card-title>
 
-      <v-form ref="formRef" v-model="formValid" @submit.prevent="submitForm">
-        <v-text-field
-          v-model="email"
-          label="E-mail"
-          :rules="[rules.required, rules.email]"
-          prepend-inner-icon="mdi-email"
-          type="email"
-          variant="solo-filled"
-          density="comfortable"
-        ></v-text-field>
+      <Form @submit="onSubmit">
+        <Field
+          name="email"
+          rules="required|email"
+          v-slot="{ field, errorMessage }"
+        >
+          <v-text-field
+            v-bind="field"
+            label="E-mail"
+            prepend-inner-icon="mdi-email"
+            variant="solo-filled"
+            density="comfortable"
+            :error="!!errorMessage"
+            :error-messages="errorMessage"
+            class="mb-3"
+          />
+        </Field>
 
-        <v-text-field
-          v-model="password"
-          label="Senha"
-          :rules="[rules.required]"
-          prepend-inner-icon="mdi-lock"
-          type="password"
-          variant="solo-filled"
-          density="comfortable"
-        ></v-text-field>
+        <Field
+          name="password"
+          rules="required|min:6"
+          v-slot="{ field, errorMessage }"
+        >
+          <v-text-field
+            v-bind="field"
+            label="Senha"
+            :type="showPassword ? 'text' : 'password'"
+            prepend-inner-icon="mdi-lock"
+            variant="solo-filled"
+            density="comfortable"
+            :error="!!errorMessage"
+            :error-messages="errorMessage"
+            :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append-inner="showPassword = !showPassword"
+            class="mb-1"
+          />
+        </Field>
 
         <div class="text-end mb-4">
           <v-btn variant="text" class="text-caption" @click="forgotPassword">
@@ -109,7 +114,7 @@ const loginWithGoogle = async () => {
             Teste gratuitamente!
           </v-btn>
         </div>
-      </v-form>
+      </Form>
     </v-card>
   </v-container>
 </template>

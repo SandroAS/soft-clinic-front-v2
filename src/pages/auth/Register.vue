@@ -4,7 +4,7 @@ import logo from '@/assets/logo.png';
 import { useSnackbarStore } from '@/stores/snackbar.store';
 import { useUserStore } from '@/stores/user.store';
 import { useRouter } from 'vue-router';
-import { Form, Field, useForm } from 'vee-validate';
+import { Form, Field } from 'vee-validate';
 import type { UserRegister } from '@/types/user-register.type';
 import TermsOfServiceAndPrivacyPoliciesModal from './TermsOfServiceAndPrivacyPoliciesModal.vue';
 
