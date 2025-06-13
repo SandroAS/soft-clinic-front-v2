@@ -3,6 +3,7 @@ import type { AuthUser } from '@/types/auth-user.type';
 import { type AxiosResponse } from 'axios';
 import api from './api';
 import type { UserRegister } from '@/types/user-register.type';
+import type { UserMeta } from '@/types/user-meta.type';
 
 export const fetchWhoami = async (): Promise<AuthUser> => {
   try {
@@ -21,5 +22,10 @@ export const loginUser = async (email: string, password: string): Promise<AuthRe
 
 export const signupUser = async (userRegister: UserRegister): Promise<AuthResponse> => {
   const response: AxiosResponse<AuthResponse> = await api.post('/auth/signup', userRegister);
+  return response.data;
+};
+
+export const createTermsAcceptedInUserMetas = async (userUuid: string): Promise<UserMeta[]> => {
+  const response: AxiosResponse<UserMeta[]> = await api.post('/auth/terms-accepted', { userUuid });
   return response.data;
 };

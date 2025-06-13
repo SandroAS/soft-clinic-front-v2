@@ -16,6 +16,9 @@ import Budgets from '@/pages/system/Budgets.vue'
 import Appointments from '@/pages/system/Appointments.vue'
 import Schedules from '@/pages/system/Schedules.vue'
 import GoogleAuthCallback from '@/pages/auth/GoogleAuthCallback.vue'
+import { useUserStore } from '@/stores/user.store'
+
+const SISTEM_NAME = 'Soft Clinic';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -25,7 +28,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'home',
-        component: Home
+        component: Home,
+        meta: { isPublic: true, title: 'Home - '+SISTEM_NAME }
       }
     ]
   },
@@ -36,17 +40,22 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'login',
         name: 'login',
-        component: Login
+        component: Login,
+        meta: { isPublic: true, title: 'Login - '+SISTEM_NAME }
+
       },
       {
         path: 'register',
         name: 'register',
-        component: Register
+        component: Register,
+        meta: { isPublic: true, title: 'Registro - '+SISTEM_NAME }
+
       },
       {
         path: 'google-auth-callback',
         name: 'gloogleAuthCallback',
-        component: GoogleAuthCallback
+        component: GoogleAuthCallback,
+        meta: { isPublic: true, title: 'Google Auth Callback - '+SISTEM_NAME }
       }
     ]
   },
@@ -57,43 +66,51 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'dashboard',
         name: 'dashboard',
-        component: Dashboard
+        component: Dashboard,
+        meta: { isPublic: false, title: 'Dashboard - '+SISTEM_NAME }
       },
       {
         path: 'minha-conta',
         name: 'myAccount',
-        component: MyAccount
+        component: MyAccount,
+        meta: { isPublic: false, title: 'Minha Conta - '+SISTEM_NAME }
       },
       {
         path: 'configuracoes',
         name: 'settings',
-        component: Settings
+        component: Settings,
+        meta: { isPublic: false, title: 'Configurações - '+SISTEM_NAME }
       },
       {
         path: 'pacientes',
         name: 'patients',
-        component: Patients
+        component: Patients,
+        meta: { isPublic: false, title: 'Pacientes - '+SISTEM_NAME }
       },
       {
         path: 'pacientes/:id',
         name: 'patientRecord',
         component: PatientRecord,
-        props: true
+        props: true,
+        meta: { isPublic: false, title: 'Ficha de Paciente - '+SISTEM_NAME }
       },
       {
         path: 'orcamentos',
         name: 'budgets',
-        component: Budgets
+        component: Budgets,
+        meta: { isPublic: false, title: 'Orçamentos - '+SISTEM_NAME }
       },
       {
         path: 'atendimentos',
         name: 'appointments',
-        component: Appointments
+        component: Appointments,
+        meta: { isPublic: false, title: 'Atendimentos - '+SISTEM_NAME }
       },
       {
         path: 'agendamentos',
         name: 'schedules',
-        component: Schedules
+        component: Schedules,
+        meta: { isPublic: false, title: 'Agendamentos - '+SISTEM_NAME }
       }
     ]
   },
@@ -103,5 +120,38 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+
+  if (!userStore.user && to.name != 'gloogleAuthCallback') {
+    try {
+      await userStore.fetchUser();
+      console.log('[AuthMiddleware] Usuário carregado via token.');
+    } catch (error) {
+      console.error('[AuthMiddleware] Falha ao carregar usuário via token:', error);
+      if(to.name != 'login') userStore.logout();
+    }
+  }
+
+  const isPublic = to.meta.isPublic;
+  const isLoggedIn = userStore.user;
+
+  console.log(`[AuthMiddleware] Navegando para: ${to.path}. Pública: ${isPublic}, Logado: ${isLoggedIn}`);
+
+  if (!isPublic && !isLoggedIn) {
+    console.log('[AuthMiddleware] Rota protegida, usuário não logado. Redirecionando para /login.');
+    next({ name: 'login', query: { redirect: to.fullPath } });
+  } else if (isLoggedIn && isPublic) {
+    console.log('[AuthMiddleware] Usuário logado tentando acessar rota pública. Redirecionando para /system/dashboard.');
+    next({ name: 'dashboard' });
+  } else {
+    console.log('[AuthMiddleware] Navegação permitida.');
+    next();
+  }
+
+  const defaultTitle = SISTEM_NAME;
+  document.title = (to.meta.title ? `${to.meta.title} | ${defaultTitle}` : defaultTitle) as string;
+});
 
 export default router

@@ -1,9 +1,9 @@
 import type { UserAccount } from './user-account.type';
+import type { UserMeta } from './user-meta.type';
 import type { UserRole } from './user-role.type';
 
 export interface AuthUser {
   uuid: string;
-  account_id?: number;
   account?: UserAccount;
   name: string;
   email: string;
@@ -15,6 +15,7 @@ export interface AuthUser {
   is_active: boolean;
   role_id: number;
   role: UserRole;
+  userMetas: UserMeta[]
   created_at: string;
   updated_at: string;
 }
