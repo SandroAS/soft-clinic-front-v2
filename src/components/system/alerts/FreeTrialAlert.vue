@@ -88,7 +88,7 @@ watch([hasTrialExpired, () => userStore.isLoggedIn], ([newHasTrialExpired, newIs
           class="text-no-wrap"
           :class="props.isMobile ? 'w-100' : 'ml-4'"
           size="small"
-          @click="() => $router.push('/assinatura')"
+          @click="showTrialExpiredModal = true"
         >
           Assinar agora
         </v-btn>
@@ -96,5 +96,5 @@ watch([hasTrialExpired, () => userStore.isLoggedIn], ([newHasTrialExpired, newIs
     </v-alert>
   </div>
 
-  <TrialExpiredModal v-model="showTrialExpiredModal" />
+  <TrialExpiredModal v-model="showTrialExpiredModal" :hasTrialExpired="hasTrialExpired"/>
 </template>

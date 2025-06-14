@@ -5,10 +5,13 @@ import { useRouter } from 'vue-router'; // Importe useRouter para navegação
 
 const props = defineProps<{
   modelValue: boolean;
+  hasTrialExpired?: boolean
 }>();
 
 const emit = defineEmits(['update:modelValue']);
-const router = useRouter(); // Instancie o router
+const close = () => emit('update:modelValue', false)
+
+const router = useRouter();
 
 // Dados dos planos que você forneceu
 const plans = [
@@ -52,7 +55,7 @@ const basicFeatures = [
 ];
 
 const customFeatures = [
-  'Múltiplos profissionais de saúde', 'Todas as funcionalidades inclusas', 'Valor personalizado por profissional'
+  'Múltiplos profissionais de saúde', 'Todas as funcionalidades inclusas', 'Compartilhamento de pacientes entre profissionais', 'Compartilhamento de agenda entre profissionais'
 ];
 
 // Função para formatar o preço
@@ -86,17 +89,35 @@ const currentUser = useUserStore().user;
     class="trial-expired-modal"
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <v-card class="pa-4 pa-sm-8 d-flex flex-column" rounded="0" height="100vh"> <v-container class="flex-grow-1 d-flex flex-column justify-center align-center py-4">
+    <v-card class="pa-4 pa-sm-8 d-flex flex-column" rounded="0" height="100vh">
+      <v-btn v-if="!hasTrialExpired"
+        icon="mdi-close"
+        @click="close"
+      ></v-btn>
+      <v-container class="flex-grow-1 d-flex flex-column justify-center align-center py-4">
+
         <v-row>
           <v-col cols="12" class="text-center">
             <v-icon color="info" size="64" class="mb-4">mdi-information</v-icon>
-            <h1 class="text-h4 text-sm-h4 font-weight-bold mb-4">
-              Seu Período de Avaliação Encerrou.
-            </h1>
-            <p class="text-subtitle-1 text-medium-emphasis mb-6">
-              Para continuar aproveitando todas as funcionalidades do nosso sistema, escolha um dos planos abaixo.
-              <br>Seus dados estão seguros e prontos para serem usados!
-            </p>ou<br>
+            <template v-if="!hasTrialExpired">
+              <h1 class="text-h4 text-sm-h4 font-weight-bold mb-4">
+                Você ainda esta no período de Avaliação
+              </h1>
+              <p class="text-subtitle-1 text-medium-emphasis mb-6">
+                Continue aproveitando todas as funcionalidades do nosso sistema, mas fique a vontade caso já queira assinar um dos nossos planos abaixo.
+                <br>Seus dados estão seguros e prontos para serem usados!
+              </p>
+            </template>
+            <template v-else>
+              <h1 class="text-h4 text-sm-h4 font-weight-bold mb-4">
+                Seu Período de Avaliação Encerrou.
+              </h1>
+              <p class="text-subtitle-1 text-medium-emphasis mb-6">
+                Para continuar aproveitando todas as funcionalidades do nosso sistema, escolha um dos planos abaixo.
+                <br>Seus dados estão seguros e prontos para serem usados!
+              </p>
+            </template>
+            ou<br>
             <v-btn text class="text-body-1 mt-2" color="primary">
               Entre em contato para uma cotação personalizada baseada na quantidade de profissionais de saúde.
             </v-btn>
