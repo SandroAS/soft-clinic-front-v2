@@ -5,6 +5,8 @@ import type { AuthResponse } from '@/types/auth/auth-response.type';
 import router from '@/router';
 import type { UserRegister } from '@/types/user/user-register.type';
 import type { UserMeta } from '@/types/user/user-meta.type';
+import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
+import { updateUser } from '@/services/profile';
 
 interface UserStoreState {
   user: AuthUser | null;
@@ -67,7 +69,6 @@ export const useUserStore = defineStore('user', {
       router.push('/auth/login');
     },
 
-
     async login(email: string, password: string): Promise<AuthUser | null> {
       this.loading = true;
       this.error = null;
@@ -112,6 +113,24 @@ export const useUserStore = defineStore('user', {
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao realizar cadastro.';
         this.user = null;
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateUser(personalInformation: ProfilePersonalInformation) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await updateUser(personalInformation);
+        this.user!.name = personalInformation.name;
+        this.user!.email = personalInformation.email;
+        this.user!.cellphone = personalInformation.cellphone;
+        this.user!.cpf = personalInformation.cpf;
+        if(response.profile_img_url) this.user!.profile_img_url = response.profile_img_url;
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
         throw err;
       } finally {
         this.loading = false;

@@ -100,6 +100,7 @@ async function onSubmit(formValues: Record<string, any>) {
           <v-text-field
             v-bind="field"
             label="Telefone"
+            v-mask="['(##) # ####-####', '(##) ####-####']"
             prepend-inner-icon="mdi-phone"
             variant="solo-filled"
             density="comfortable"
@@ -117,6 +118,7 @@ async function onSubmit(formValues: Record<string, any>) {
           <v-text-field
             v-bind="field"
             label="CPF"
+            v-mask="'###.###.###-##'"
             prepend-inner-icon="mdi-card-account-details"
             variant="solo-filled"
             density="comfortable"

@@ -4,27 +4,30 @@ import profile_img_default from '@/assets/profile_img_default.png'
 import { useUserStore } from '@/stores/user.store';
 import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
 import { Form, Field } from '@/plugins/vee-validate';
+import { useSnackbarStore } from '@/stores/snackbar.store';
 
 const userStore = useUserStore();
+const snackbarStore = useSnackbarStore();
 
 const personalInformationDefault = reactive<ProfilePersonalInformation>({
-  name: userStore.user?.name,
-  email: userStore.user?.email,
-  cellphone: userStore.user?.cellphone,
-  cpf: userStore.user?.cpf,
-  profile_img_url: userStore.user?.profile_img_url
+  name: userStore.user!.name,
+  email: userStore.user!.email,
+  cellphone: userStore.user!.cellphone,
+  cpf: userStore.user!.cpf,
+  profile_img_url: userStore.user!.profile_img_url
 })
 
 function uploadAvatar() {
   alert('Função de upload ainda não implementada')
 }
 
-function onSubmit(formValues: Record<string, any>) {
+async function onSubmit(formValues: Record<string, any>) {
   const personalInformation: ProfilePersonalInformation = formValues as ProfilePersonalInformation;
   try {
-    
+    await userStore.updateUser(personalInformation);
+    snackbarStore.show('Usuário atualizado com sucesso!', 'success')
   } catch (err) {
-    
+    snackbarStore.show('Falha ao tentar atualizar usuário: '+err, 'success')
   }
 }
 </script>
@@ -97,7 +100,7 @@ function onSubmit(formValues: Record<string, any>) {
           </v-col>
           <v-col cols="12" sm="6">
             <Field
-              name="cellphone"
+              name="telefone"
               rules="required|numeric|min:10|max:11"
               v-slot="{ field, errorMessage }"
             >
@@ -123,6 +126,7 @@ function onSubmit(formValues: Record<string, any>) {
               <v-text-field
                 v-bind="field"
                 label="CPF"
+                v-mask="'###.###.###-##'"
                 prepend-inner-icon="mdi-card-account-details"
                 persistent-placeholder
                 variant="solo-filled"
