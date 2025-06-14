@@ -59,8 +59,9 @@ const genderTypes = [
 ];
 
 async function onSubmit(formValues: Record<string, any>) {
-  const personalInformation: ProfilePersonalInformation = formValues as ProfilePersonalInformation;
   const formData = new FormData();
+  formValues = { ...formValues, gender: formValues.gender ? (formValues.gender === 'Masculino' ? 'MALE' : 'FEMALE') : null }
+  const personalInformation: ProfilePersonalInformation = formValues as ProfilePersonalInformation;
 
   for (const key in formValues) {
     if (Object.prototype.hasOwnProperty.call(formValues, key)) {
@@ -73,8 +74,7 @@ async function onSubmit(formValues: Record<string, any>) {
   }
 
   try {
-    const payload = { ...personalInformation, gender: personalInformation.gender ? (personalInformation.gender === 'Masculino' ? 'MALE' : 'FEMALE') : null }
-    await userStore.updateUserPersonalInformation(formData, payload);
+    await userStore.updateUserPersonalInformation(formData, personalInformation);
     snackbarStore.show('Usuário atualizado com sucesso!', 'success')
     selectedImage.value = null;
   } catch (err) {
