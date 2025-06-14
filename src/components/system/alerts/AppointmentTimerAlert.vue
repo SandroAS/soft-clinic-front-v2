@@ -6,7 +6,7 @@ const props = defineProps<{
 }>()
 
 // Atendimento em andamento
-const isAttending = ref(true)
+const isAttending = ref(false)
 const elapsedSeconds = ref(0)
 let timer: number | null = null
 

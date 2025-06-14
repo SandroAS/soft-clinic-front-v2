@@ -1,9 +1,9 @@
-import type { AuthResponse } from '@/types/auth-response.type';
-import type { AuthUser } from '@/types/auth-user.type';
+import type { AuthResponse } from '@/types/auth/auth-response.type';
+import type { AuthUser } from '@/types/auth/auth-user.type';
 import { type AxiosResponse } from 'axios';
 import api from './api';
-import type { UserRegister } from '@/types/user-register.type';
-import type { UserMeta } from '@/types/user-meta.type';
+import type { UserRegister } from '@/types/user/user-register.type';
+import type { UserMeta } from '@/types/user/user-meta.type';
 
 export const fetchWhoami = async (): Promise<AuthUser> => {
   try {

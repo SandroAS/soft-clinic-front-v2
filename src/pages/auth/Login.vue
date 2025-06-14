@@ -4,7 +4,7 @@ import logo from '@/assets/logo.png';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user.store';
 import { useSnackbarStore } from '@/stores/snackbar.store';
-import { Form, Field } from 'vee-validate';
+import { Form, Field } from '@/plugins/vee-validate';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const showPassword = ref<boolean>(false);

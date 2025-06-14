@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { createTermsAcceptedInUserMetas, fetchWhoami, loginUser, signupUser } from '@/services/auth';
-import type { AuthUser } from '@/types/auth-user.type';
-import type { AuthResponse } from '@/types/auth-response.type';
+import type { AuthUser } from '@/types/auth/auth-user.type';
+import type { AuthResponse } from '@/types/auth/auth-response.type';
 import router from '@/router';
-import type { UserRegister } from '@/types/user-register.type';
-import type { UserMeta } from '@/types/user-meta.type';
+import type { UserRegister } from '@/types/user/user-register.type';
+import type { UserMeta } from '@/types/user/user-meta.type';
 
 interface UserStoreState {
   user: AuthUser | null;

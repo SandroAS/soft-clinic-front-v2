@@ -4,8 +4,8 @@ import logo from '@/assets/logo.png';
 import { useSnackbarStore } from '@/stores/snackbar.store';
 import { useUserStore } from '@/stores/user.store';
 import { useRouter } from 'vue-router';
-import { Form, Field } from 'vee-validate';
-import type { UserRegister } from '@/types/user-register.type';
+import { Form, Field } from '@/plugins/vee-validate';
+import type { UserRegister } from '@/types/user/user-register.type';
 import TermsOfServiceAndPrivacyPoliciesModal from './TermsOfServiceAndPrivacyPoliciesModal.vue';
 
 const dialog = ref(false)
@@ -94,7 +94,7 @@ async function onSubmit(formValues: Record<string, any>) {
 
         <Field
           name="cellphone"
-          rules="required|min:10"
+          rules="required|numeric|min:10|max:11"
           v-slot="{ field, errorMessage }"
         >
           <v-text-field

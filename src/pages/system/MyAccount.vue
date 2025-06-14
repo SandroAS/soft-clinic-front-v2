@@ -40,19 +40,19 @@ watch(selectedTab, (newTab) => {
 
     <v-container class="py-12">
       <v-tabs-window v-model="selectedTab">
-        <v-tabs-window-item value="informacoes-pessoais">
+        <v-tabs-window-item value="informacoes-pessoais" class="pr-1">
           <PersonalTab />
         </v-tabs-window-item>
 
-        <v-tabs-window-item value="notificacao">
+        <v-tabs-window-item value="notificacao" class="pr-1">
           <NotificationTab />
         </v-tabs-window-item>
 
-        <v-tabs-window-item value="assinatura">
+        <v-tabs-window-item value="assinatura" class="pr-1">
           <SubscriptionTab />
         </v-tabs-window-item>
 
-        <v-tabs-window-item value="integracoes">
+        <v-tabs-window-item value="integracoes" class="pr-1">
           <IntegrationTab />
         </v-tabs-window-item>
       </v-tabs-window>

@@ -1,6 +1,6 @@
-import type { UserAccount } from './user-account.type';
-import type { UserMeta } from './user-meta.type';
-import type { UserRole } from './user-role.type';
+import type { UserAccount } from '../user/user-account.type';
+import type { UserMeta } from '../user/user-meta.type';
+import type { UserRole } from '../user/user-role.type';
 
 export interface AuthUser {
   uuid: string;
