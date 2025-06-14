@@ -151,7 +151,7 @@ async function onSubmit(formValues: Record<string, any>) {
           </v-col>
           <v-col cols="12" sm="6">
             <Field
-              name="telefone"
+              name="cellphone"
               rules="required|min:15|max:16"
               v-slot="{ field, errorMessage }"
             >
