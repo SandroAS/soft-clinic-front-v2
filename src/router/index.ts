@@ -127,7 +127,6 @@ router.beforeEach(async (to, from, next) => {
   if (!userStore.user && to.name != 'gloogleAuthCallback') {
     try {
       await userStore.fetchUser();
-      console.log('[AuthMiddleware] Usuário carregado via token.');
     } catch (error) {
       console.error('[AuthMiddleware] Falha ao carregar usuário via token:', error);
       if(to.name != 'login') userStore.logout();
@@ -137,16 +136,11 @@ router.beforeEach(async (to, from, next) => {
   const isPublic = to.meta.isPublic;
   const isLoggedIn = userStore.user;
 
-  console.log(`[AuthMiddleware] Navegando para: ${to.path}. Pública: ${isPublic}, Logado: ${isLoggedIn}`);
-
   if (!isPublic && !isLoggedIn) {
-    console.log('[AuthMiddleware] Rota protegida, usuário não logado. Redirecionando para /login.');
     next({ name: 'login', query: { redirect: to.fullPath } });
   } else if (isLoggedIn && isPublic) {
-    console.log('[AuthMiddleware] Usuário logado tentando acessar rota pública. Redirecionando para /system/dashboard.');
     next({ name: 'dashboard' });
   } else {
-    console.log('[AuthMiddleware] Navegação permitida.');
     next();
   }
 

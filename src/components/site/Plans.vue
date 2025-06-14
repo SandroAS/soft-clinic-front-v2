@@ -49,10 +49,10 @@ const customFeatures = [
             <div class="mb-8">
               <span class="text-body-1 text-medium-emphasis">Mensal</span>
               <div class="d-flex align-baseline">
-                <span class="text-h3 font-weight-bold">R$100</span>
+                <span class="text-h3 font-weight-bold">R$200</span>
                 <span class="text-body-1 text-medium-emphasis">/mês</span>
               </div>
-              <span class="text-body-2 text-medium-emphasis">ou R$80/mês no plano anual</span>
+              <span class="text-body-2 text-medium-emphasis">ou R$2000/ano no plano anual</span>
             </div>
 
             <v-btn
@@ -93,10 +93,13 @@ const customFeatures = [
             </p>
 
             <div class="mb-8">
-              <span class="text-body-1 text-medium-emphasis">Valor Personalizado</span>
-              <p class="text-body-1 mt-2">
-                Entre em contato para uma cotação personalizada baseada na quantidade de profissionais de saúde.
-              </p>
+              <span class="text-body-1 text-medium-emphasis">Mensal</span>
+              <div class="d-flex align-baseline">
+                <span class="text-h3 font-weight-bold">R$200</span>
+                <span class="text-h6">+ R$2000,00</span>
+                <span class="text-body-1 text-medium-emphasis">/mês</span>
+              </div>
+              <span class="text-body-2 text-medium-emphasis">ou R$2000/ano no plano anual</span>
             </div>
 
             <v-btn
