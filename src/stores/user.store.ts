@@ -123,7 +123,7 @@ export const useUserStore = defineStore('user', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await updateUser(personalInformation);
+        const response = await updateUser(this.user!.uuid, personalInformation);
         this.user!.name = personalInformation.name;
         this.user!.email = personalInformation.email;
         this.user!.cellphone = personalInformation.cellphone;
