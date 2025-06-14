@@ -104,6 +104,7 @@ function onSubmit(formValues: Record<string, any>) {
               <v-text-field
                 v-bind="field"
                 label="Telefone"
+                v-mask="['(##) # ####-####', '(##) ####-####']"
                 prepend-inner-icon="mdi-phone"
                 persistent-placeholder
                 variant="solo-filled"
