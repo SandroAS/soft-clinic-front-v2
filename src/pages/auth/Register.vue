@@ -94,13 +94,13 @@ async function onSubmit(formValues: Record<string, any>) {
 
         <Field
           name="cellphone"
-          rules="required|numeric|min:10|max:11"
+          rules="required|min:15|max:16"
           v-slot="{ field, errorMessage }"
         >
           <v-text-field
             v-bind="field"
             label="Telefone"
-            v-mask="['(##) # ####-####', '(##) ####-####']"
+            v-mask="['(##) #####-####', '(##) ####-####']"
             prepend-inner-icon="mdi-phone"
             variant="solo-filled"
             density="comfortable"

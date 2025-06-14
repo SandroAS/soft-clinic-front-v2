@@ -6,7 +6,7 @@ import router from '@/router';
 import type { UserRegister } from '@/types/user/user-register.type';
 import type { UserMeta } from '@/types/user/user-meta.type';
 import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
-import { updateUser } from '@/services/profile';
+import { updateUserPersonalInformation } from '@/services/profile';
 
 interface UserStoreState {
   user: AuthUser | null;
@@ -119,11 +119,11 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async updateUser(personalInformation: ProfilePersonalInformation) {
+    async updateUserPersonalInformation(formData: FormData, personalInformation: ProfilePersonalInformation) {
       this.loading = true;
       this.error = null;
       try {
-        const response = await updateUser(this.user!.uuid, personalInformation);
+        const response = await updateUserPersonalInformation(this.user!.uuid, formData);
         this.user!.name = personalInformation.name;
         this.user!.email = personalInformation.email;
         this.user!.cellphone = personalInformation.cellphone;

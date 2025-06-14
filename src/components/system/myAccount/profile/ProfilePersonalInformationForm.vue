@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import profile_img_default from '@/assets/profile_img_default.png'
 import { useUserStore } from '@/stores/user.store';
 import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
@@ -9,6 +9,41 @@ import { useSnackbarStore } from '@/stores/snackbar.store';
 const userStore = useUserStore();
 const snackbarStore = useSnackbarStore();
 
+const fileInput = ref<HTMLInputElement | null>(null);
+const selectedImage = ref<File | null>(null);
+const previewImageUrl = ref<string | null>(null);
+
+watch(selectedImage, (newFile) => {
+  if (newFile) {
+    previewImageUrl.value = URL.createObjectURL(newFile);
+  } else {
+    previewImageUrl.value = userStore.user!.profile_img_url || null;
+  }
+}, { immediate: true });
+
+watch(() => userStore.user!.profile_img_url, (newUrl) => {
+  if (!selectedImage.value) { // Só atualiza se não houver uma imagem nova selecionada
+    previewImageUrl.value = newUrl || null;
+  }
+}, { immediate: true });
+
+const finalProfileImgSrc = computed(() => {
+  return previewImageUrl.value || profile_img_default;
+});
+
+function openFileInput() {
+  fileInput.value?.click();
+}
+
+function onFileSelected(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    selectedImage.value = target.files[0];
+  } else {
+    selectedImage.value = null; // Limpa se nada for selecionado
+  }
+}
+
 const personalInformationDefault = reactive<ProfilePersonalInformation>({
   name: userStore.user!.name,
   email: userStore.user!.email,
@@ -17,15 +52,24 @@ const personalInformationDefault = reactive<ProfilePersonalInformation>({
   profile_img_url: userStore.user!.profile_img_url
 })
 
-function uploadAvatar() {
-  alert('Função de upload ainda não implementada')
-}
-
 async function onSubmit(formValues: Record<string, any>) {
   const personalInformation: ProfilePersonalInformation = formValues as ProfilePersonalInformation;
+  const formData = new FormData();
+
+  for (const key in formValues) {
+    if (Object.prototype.hasOwnProperty.call(formValues, key)) {
+      formData.append(key, formValues[key]);
+    }
+  }
+
+  if (selectedImage.value) {
+    formData.append('profile_img_url', selectedImage.value);
+  }
+
   try {
-    await userStore.updateUser(personalInformation);
+    await userStore.updateUserPersonalInformation(formData, personalInformation);
     snackbarStore.show('Usuário atualizado com sucesso!', 'success')
+    selectedImage.value = null;
   } catch (err) {
     snackbarStore.show('Falha ao tentar atualizar usuário: '+err, 'success')
   }
@@ -33,26 +77,33 @@ async function onSubmit(formValues: Record<string, any>) {
 </script>
 
 <template>
-  <v-row>
-    <v-col cols="12" md="4" class="pr-md-6">
-      <h5 class="text-subtitle-1 font-weight-medium">Informações Pessoais</h5>
-      <p class="text-body-2 text-medium-emphasis">
-        Use um e-mail válido para receber notificações.
-      </p>
-    </v-col>
-
-    <v-col cols="12" md="8">
-      <Form @submit="onSubmit" :initial-values="personalInformationDefault">
+  <Form @submit="onSubmit" :initial-values="personalInformationDefault">
+    <v-row>
+      <v-col cols="12" md="4" class="pr-md-6">
+        <h5 class="text-subtitle-1 font-weight-medium">Informações Pessoais</h5>
+        <p class="text-body-2 text-medium-emphasis">
+          Use um e-mail válido para receber notificações.
+        </p>
+      </v-col>
+    
+      <v-col cols="12" md="8">
         <v-row>
           <v-col cols="12" md="6">
             <div class="d-flex align-center ga-4">
               <v-avatar size="120" class="border">
-                <v-img :src="personalInformationDefault.profile_img_url || profile_img_default" alt="Avatar" />
+                <v-img :src="finalProfileImgSrc" alt="Avatar" />
               </v-avatar>
               <div>
-                <v-btn variant="outlined" class="mb-2" @click="uploadAvatar">
+                <v-btn variant="outlined" class="mb-2" @click="openFileInput">
                   Trocar Avatar
                 </v-btn>
+                <input
+                  type="file"
+                  ref="fileInput"
+                  accept="image/jpeg, image/png, image/gif"
+                  @change="onFileSelected"
+                  style="display: none;"
+                />
                 <div class="text-caption text-medium-emphasis">
                   JPG, GIF ou PNG. Máx. 1MB.
                 </div>
@@ -101,13 +152,13 @@ async function onSubmit(formValues: Record<string, any>) {
           <v-col cols="12" sm="6">
             <Field
               name="telefone"
-              rules="required|numeric|min:10|max:11"
+              rules="required|min:15|max:16"
               v-slot="{ field, errorMessage }"
             >
               <v-text-field
                 v-bind="field"
                 label="Telefone"
-                v-mask="['(##) # ####-####', '(##) ####-####']"
+                v-mask="['(##) #####-####', '(##) ####-####']"
                 prepend-inner-icon="mdi-phone"
                 persistent-placeholder
                 variant="solo-filled"
@@ -137,11 +188,11 @@ async function onSubmit(formValues: Record<string, any>) {
             </Field>
           </v-col>
         </v-row>
-      </Form>
-    </v-col>
-
-    <v-col cols="12" class="d-flex justify-end">
-      <v-btn class="mt-4" color="primary">Salvar</v-btn>
-    </v-col>
-  </v-row>
+      </v-col>
+      
+      <v-col cols="12" class="d-flex justify-end">
+        <v-btn class="mt-4" color="primary" type="submit">Salvar</v-btn>
+      </v-col>
+    </v-row>
+  </Form>
 </template>
