@@ -22,7 +22,7 @@ watch(selectedImage, (newFile) => {
 }, { immediate: true });
 
 watch(() => userStore.user!.profile_img_url, (newUrl) => {
-  if (!selectedImage.value) { // Só atualiza se não houver uma imagem nova selecionada
+  if (!selectedImage.value) {
     previewImageUrl.value = newUrl || null;
   }
 }, { immediate: true });
@@ -40,7 +40,7 @@ function onFileSelected(event: Event) {
   if (target.files && target.files.length > 0) {
     selectedImage.value = target.files[0];
   } else {
-    selectedImage.value = null; // Limpa se nada for selecionado
+    selectedImage.value = null;
   }
 }
 
@@ -69,11 +69,12 @@ async function onSubmit(formValues: Record<string, any>) {
   }
 
   if (selectedImage.value) {
-    formData.append('profile_img_url', selectedImage.value);
+    formData.append('profile_image', selectedImage.value);
   }
 
   try {
-    await userStore.updateUserPersonalInformation(formData, personalInformation);
+    const payload = { ...personalInformation, gender: personalInformation.gender ? (personalInformation.gender === 'Masculino' ? 'MALE' : 'FEMALE') : null }
+    await userStore.updateUserPersonalInformation(formData, payload);
     snackbarStore.show('Usuário atualizado com sucesso!', 'success')
     selectedImage.value = null;
   } catch (err) {
