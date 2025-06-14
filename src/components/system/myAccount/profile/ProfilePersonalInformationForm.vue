@@ -49,8 +49,14 @@ const personalInformationDefault = reactive<ProfilePersonalInformation>({
   email: userStore.user!.email,
   cellphone: userStore.user!.cellphone,
   cpf: userStore.user!.cpf,
+  gender: userStore.user!.gender ? (userStore.user!.gender === 'MALE' ? 'Masculino' : 'Feminino') : null,
   profile_img_url: userStore.user!.profile_img_url
 })
+
+const genderTypes = [
+  { text: 'Masculino', value: 'MALE' },
+  { text: 'Feminino', value: 'FEMALE' }
+];
 
 async function onSubmit(formValues: Record<string, any>) {
   const personalInformation: ProfilePersonalInformation = formValues as ProfilePersonalInformation;
@@ -160,7 +166,7 @@ async function onSubmit(formValues: Record<string, any>) {
                 label="Telefone"
                 v-mask="['(##) #####-####', '(##) ####-####']"
                 prepend-inner-icon="mdi-phone"
-                persistent-placeholder
+                :persistent-placeholder="!!userStore.user!.cellphone"
                 variant="solo-filled"
                 density="compact"
                 :error="!!errorMessage"
@@ -179,9 +185,29 @@ async function onSubmit(formValues: Record<string, any>) {
                 label="CPF"
                 v-mask="'###.###.###-##'"
                 prepend-inner-icon="mdi-card-account-details"
-                persistent-placeholder
+                :persistent-placeholder="!!userStore.user!.cpf"
                 variant="solo-filled"
                 density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <Field
+              name="gender"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-select
+                v-bind="field"
+                :items="genderTypes"
+                item-title="text"
+                item-value="value"
+                label="Gênero"
+                prepend-inner-icon="mdi-gender-male-female"
+                :persistent-placeholder="!!userStore.user!.gender"
+                density="compact"
+                variant="solo-filled"
                 :error="!!errorMessage"
                 :error-messages="errorMessage"
               />
