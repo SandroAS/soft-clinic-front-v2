@@ -60,7 +60,8 @@ const genderTypes = [
 
 async function onSubmit(formValues: Record<string, any>) {
   const formData = new FormData();
-  formValues = { ...formValues, gender: formValues.gender ? (formValues.gender === 'Masculino' ? 'MALE' : 'FEMALE') : null }
+  const gender = formValues.gender ? (formValues.gender === 'Masculino' || formValues.gender === 'MALE' ? 'MALE' : 'FEMALE') : null;
+  formValues = { ...formValues, gender }
   const personalInformation: ProfilePersonalInformation = formValues as ProfilePersonalInformation;
 
   for (const key in formValues) {
@@ -78,7 +79,7 @@ async function onSubmit(formValues: Record<string, any>) {
     snackbarStore.show('Usuário atualizado com sucesso!', 'success')
     selectedImage.value = null;
   } catch (err) {
-    snackbarStore.show('Falha ao tentar atualizar usuário: '+err, 'success')
+    snackbarStore.show('Falha ao tentar atualizar usuário: '+err, 'error')
   }
 }
 </script>
