@@ -6,7 +6,8 @@ import router from '@/router';
 import type { UserRegister } from '@/types/user/user-register.type';
 import type { UserMeta } from '@/types/user/user-meta.type';
 import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
-import { updateUserPersonalInformation } from '@/services/profile';
+import { saveUserCompany, updateUserPersonalInformation } from '@/services/profile';
+import type { ProfileCompany } from '@/types/profile/profile-company.type';
 
 interface UserStoreState {
   user: AuthUser | null;
@@ -129,6 +130,28 @@ export const useUserStore = defineStore('user', {
         this.user!.cellphone = personalInformation.cellphone;
         this.user!.cpf = personalInformation.cpf;
         if(response.profile_img_url) this.user!.profile_img_url = response.profile_img_url;
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async saveUserCompany(company: ProfileCompany) {
+      this.loading = true;
+      this.error = null;
+      const uuid = this.user!.company?.uuid;
+      try {
+        const response = await saveUserCompany(company, uuid);
+        this.user!.company = {
+          uuid: uuid,
+          name: company.name,
+          social_reason: company.social_reason,
+          cnpj: company.cnpj,
+          email: company.email,
+          cellphone: company.cellphone,
+        }
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
         throw err;
