@@ -52,12 +52,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="name"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Nome da empresa"
-                  :persistent-placeholder="userStore.company.name"
+                  :persistent-placeholder="!!userStore.user!.company?.name"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -69,12 +69,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="social_reason"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Razão Social"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.social_reason"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -86,12 +86,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="cnpj"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="CNPJ"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.cnpj"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -103,12 +103,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="cellphone"
                 rules="required|min:15|max:16"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Telefone comer"
-                  persistent-placeholdercial
+                  :persistent-placeholder="!!userStore.user!.company?.cellphone"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -120,12 +120,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="email"
                 rules="required|email"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Email comercial"
-                  persistent-placeholderl
+                  :persistent-placeholder="!!userStore.user!.company?.email"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -140,12 +140,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="cep"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="CEP"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.address?.cep"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -159,12 +159,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="street"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Rua"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.address?.street"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -176,12 +176,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="number"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Número"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.address?.number"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -193,12 +193,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="neigborhood"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Bairro"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.address?.neigborhood"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -210,12 +210,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="complement"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Complemento"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.address?.complement"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -227,12 +227,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="city"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Cidade"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.address?.city"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"
@@ -244,12 +244,12 @@ async function onSubmit(formValues: Record<string, any>) {
               <Field
                 name="state"
                 rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage, value }"
+                v-slot="{ field, errorMessage }"
               >
                 <v-text-field
                   v-bind="field"
                   label="Estado"
-                  persistent-placeholder
+                  :persistent-placeholder="!!userStore.user!.company?.address?.state"
                   variant="solo-filled"
                   density="compact"
                   :error="!!errorMessage"

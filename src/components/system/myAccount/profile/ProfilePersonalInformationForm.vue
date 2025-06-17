@@ -125,7 +125,7 @@ async function onSubmit(formValues: Record<string, any>) {
             <Field
               name="name"
               rules="required|min:3|alpha_spaces"
-              v-slot="{ field, errorMessage, value }"
+              v-slot="{ field, errorMessage }"
             >
               <v-text-field
                 v-bind="field"
