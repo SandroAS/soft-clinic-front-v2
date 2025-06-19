@@ -17,7 +17,7 @@ export interface AuthUser {
   role_id: number;
   role: UserRole;
   userMetas: UserMeta[]
-  company?: Company;
+  companies?: Company[];
   created_at: string;
   updated_at: string;
 }

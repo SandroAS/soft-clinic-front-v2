@@ -142,13 +142,18 @@ export const useUserStore = defineStore('user', {
     async saveUserCompany(company: ProfileCompany) {
       this.loading = true;
       this.error = null;
-      const uuid = this.user!.company?.uuid;
+      const uuid = this.user!.companies?.length ? this.user!.companies[0].uuid : undefined;
 
       try {
         const response: ProfileCompanyResponse = await saveUserCompany(company, uuid);
-        this.user!.company = {
+        this.user!.companies = [];
+        this.user!.companies[0] = {
           uuid: uuid || response.uuid,
-          ...company
+          ...company,
+          address: {
+            uuid: response.address?.uuid || company.address.uuid,
+            ...company.address
+          }
         }
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
