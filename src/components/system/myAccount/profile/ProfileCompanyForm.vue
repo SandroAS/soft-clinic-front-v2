@@ -15,18 +15,19 @@ const companyDefault = reactive({
   cnpj: '',
   cellphone: '',
   email: '',
-  cep: '',
-  street: '',
-  number: '',
-  neighborhood: '',
-  complement: '',
-  city: '',
-  state: ''
+  address: {
+    cep: '',
+    street: '',
+    number: '',
+    neighborhood: '',
+    complement: '',
+    city: '',
+    state: ''
+  }
 });
 
 async function onSubmit(formValues: Record<string, any>) {
   const company: ProfileCompany = formValues as ProfileCompany;
-  console.log(company)
   try {
     await userStore.saveUserCompany(company);
     snackbarStore.show('Usuário atualizado com sucesso!', 'success')
@@ -43,17 +44,17 @@ async function searchAddress(value: string, setFieldValue: Function) {
     const res: ViaCepResponse | null = await viaCepService.getAddressByCep(cleanedCep);
 
     if (res && !res.erro) {
-      setFieldValue('street', res.logradouro);
-      setFieldValue('neighborhood', res.bairro);
-      setFieldValue('complement', res.complemento);
-      setFieldValue('city', res.localidade);
+      setFieldValue('address.street', res.logradouro);
+      setFieldValue('address.neighborhood', res.bairro);
+      setFieldValue('address.complement', res.complemento);
+      setFieldValue('address.city', res.localidade);
 
       const stateEnum = Object.values(BrazilianStates).find(s => s === res.uf);
       if (stateEnum) {
-        setFieldValue('state', stateEnum);
+        setFieldValue('address.state', stateEnum);
       } else {
         console.warn(`Estado retornado pelo ViaCEP (${res.uf}) não encontrado no ENUM. Limpando campo.`);
-        setFieldValue('state', '');
+        setFieldValue('address.state', '');
       }
 
       const numberField = document.getElementById('number') as HTMLInputElement | null;
@@ -62,11 +63,11 @@ async function searchAddress(value: string, setFieldValue: Function) {
       }
 
     } else {
-      setFieldValue('street', '');
-      setFieldValue('neighborhood', '');
-      setFieldValue('complement', '');
-      setFieldValue('city', '');
-      setFieldValue('state', '');
+      setFieldValue('address.street', '');
+      setFieldValue('address.neighborhood', '');
+      setFieldValue('address.complement', '');
+      setFieldValue('address.city', '');
+      setFieldValue('address.state', '');
     }
   } catch (err) {
     console.error(err)
@@ -177,7 +178,7 @@ async function searchAddress(value: string, setFieldValue: Function) {
         <v-row>
           <v-col cols="12" sm="6">
             <Field
-              name="cep"
+              name="address.cep"
               rules="required|min:9|max:9"
               v-slot="{ field, errorMessage, value }"
             >
@@ -198,7 +199,7 @@ async function searchAddress(value: string, setFieldValue: Function) {
         <v-row>
           <v-col cols="12" sm="8">
             <Field
-              name="street"
+              name="address.street"
               rules="required"
               v-slot="{ field, errorMessage, value }"
             >
@@ -215,7 +216,7 @@ async function searchAddress(value: string, setFieldValue: Function) {
           </v-col>
           <v-col cols="12" sm="4">
             <Field
-              name="number"
+              name="address.number"
               rules="required"
               v-slot="{ field, errorMessage }"
             >
@@ -233,7 +234,7 @@ async function searchAddress(value: string, setFieldValue: Function) {
           </v-col>
           <v-col cols="12" sm="6">
             <Field
-              name="neighborhood"
+              name="address.neighborhood"
               rules="required"
               v-slot="{ field, errorMessage, value }"
             >
@@ -250,8 +251,7 @@ async function searchAddress(value: string, setFieldValue: Function) {
           </v-col>
           <v-col cols="12" sm="6">
             <Field
-              name="complement"
-              rules="required"
+              name="address.complement"
               v-slot="{ field, errorMessage, value }"
             >
               <v-text-field
@@ -267,7 +267,7 @@ async function searchAddress(value: string, setFieldValue: Function) {
           </v-col>
           <v-col cols="12" sm="6">
             <Field
-              name="city"
+              name="address.city"
               rules="required"
               v-slot="{ field, errorMessage, value }"
             >
@@ -284,7 +284,7 @@ async function searchAddress(value: string, setFieldValue: Function) {
           </v-col>
           <v-col cols="12" sm="6">
             <Field
-              name="state"
+              name="address.state"
               rules="required"
               v-slot="{ field, errorMessage, value }"
             >

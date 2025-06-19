@@ -8,6 +8,7 @@ import type { UserMeta } from '@/types/user/user-meta.type';
 import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
 import { saveUserCompany, updateUserPersonalInformation } from '@/services/profile.service';
 import type { ProfileCompany } from '@/types/profile/profile-company.type';
+import type ProfileCompanyResponse from '@/types/profile/profile-company-response.type';
 
 interface UserStoreState {
   user: AuthUser | null;
@@ -142,15 +143,12 @@ export const useUserStore = defineStore('user', {
       this.loading = true;
       this.error = null;
       const uuid = this.user!.company?.uuid;
+
       try {
-        const response = await saveUserCompany(company, uuid);
+        const response: ProfileCompanyResponse = await saveUserCompany(company, uuid);
         this.user!.company = {
-          uuid: uuid,
-          name: company.name,
-          social_reason: company.social_reason,
-          cnpj: company.cnpj,
-          email: company.email,
-          cellphone: company.cellphone,
+          uuid: uuid || response.uuid,
+          ...company
         }
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';

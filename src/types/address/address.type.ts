@@ -1,10 +1,10 @@
 export default interface Address {
-  uuid: string;
+  uuid?: string;
   cep: string;
   street: string;
   number: string;
   neighborhood: string;
   city: string;
   state: string;
-  complement: string;
+  complement?: string;
 }
