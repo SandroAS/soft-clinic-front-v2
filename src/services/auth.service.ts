@@ -1,7 +1,7 @@
 import type { AuthResponse } from '@/types/auth/auth-response.type';
 import type { AuthUser } from '@/types/auth/auth-user.type';
 import { type AxiosResponse } from 'axios';
-import api from './api';
+import api from './api.service';
 import type { UserRegister } from '@/types/user/user-register.type';
 import type { UserMeta } from '@/types/user/user-meta.type';
 

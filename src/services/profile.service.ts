@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios';
-import api from './api';
+import api from './api.service';
 import type { ProfilePersonalInformationResponse } from '@/types/profile/profile-personal-information-response.type';
 import type { ProfileCompany } from '@/types/profile/profile-company.type';
 import type ProfileCompanyResponse from '@/types/profile/profile-company-response.type';

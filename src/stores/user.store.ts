@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { createTermsAcceptedInUserMetas, fetchWhoami, loginUser, signupUser } from '@/services/auth';
+import { createTermsAcceptedInUserMetas, fetchWhoami, loginUser, signupUser } from '@/services/auth.service';
 import type { AuthUser } from '@/types/auth/auth-user.type';
 import type { AuthResponse } from '@/types/auth/auth-response.type';
 import router from '@/router';
 import type { UserRegister } from '@/types/user/user-register.type';
 import type { UserMeta } from '@/types/user/user-meta.type';
 import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
-import { saveUserCompany, updateUserPersonalInformation } from '@/services/profile';
+import { saveUserCompany, updateUserPersonalInformation } from '@/services/profile.service';
 import type { ProfileCompany } from '@/types/profile/profile-company.type';
 
 interface UserStoreState {

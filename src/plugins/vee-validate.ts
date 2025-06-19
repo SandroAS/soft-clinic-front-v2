@@ -96,6 +96,62 @@ defineRule('is_true', (value: boolean) => {
   return true;
 })
 
+defineRule('cnpj', (value: string | number) => {
+  if (!value) {
+    return true;
+  }
+
+  const cleanedCnpj = String(value).replace(/[^\d]/g, '');
+
+  if (cleanedCnpj.length !== 14) {
+    return 'O CNPJ deve conter 14 dígitos.';
+  }
+
+  if (/^(\d)\1{13}$/.test(cleanedCnpj)) {
+    return 'CNPJ inválido.';
+  }
+
+  const cnpjNumbers = cleanedCnpj.split('').map(Number);
+
+  // Pesos para o cálculo do primeiro dígito verificador
+  const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  let sum = 0;
+
+  // Calcula a soma ponderada para o primeiro dígito
+  for (let i = 0; i < 12; i++) {
+    sum += cnpjNumbers[i] * weights1[i];
+  }
+
+  // Calcula o primeiro dígito verificador
+  let remainder = sum % 11;
+  let digit1 = remainder < 2 ? 0 : 11 - remainder;
+
+  // Compara com o primeiro dígito real do CNPJ
+  if (cnpjNumbers[12] !== digit1) {
+    return 'CNPJ inválido.';
+  }
+
+  // Pesos para o cálculo do segundo dígito verificador
+  const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  sum = 0;
+
+  // Calcula a soma ponderada para o segundo dígito
+  for (let i = 0; i < 13; i++) {
+    sum += cnpjNumbers[i] * weights2[i];
+  }
+
+  // Calcula o segundo dígito verificador
+  remainder = sum % 11;
+  let digit2 = remainder < 2 ? 0 : 11 - remainder;
+
+  // Compara com o segundo dígito real do CNPJ
+  if (cnpjNumbers[13] !== digit2) {
+    return 'CNPJ inválido.';
+  }
+
+  return true;
+});
+
 localize({ pt_BR })
 configure({
   generateMessage: localize('pt_BR')

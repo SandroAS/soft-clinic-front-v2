@@ -3,7 +3,7 @@ export default interface Address {
   cep: string;
   street: string;
   number: string;
-  neigborhood: string;
+  neighborhood: string;
   city: string;
   state: string;
   complement: string;

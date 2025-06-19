@@ -4,15 +4,16 @@ import { Form, Field } from '@/plugins/vee-validate'
 import { useUserStore } from '@/stores/user.store';
 import { useSnackbarStore } from '@/stores/snackbar.store';
 import type { ProfileCompany } from '@/types/profile/profile-company.type';
+import { BrazilianStates, viaCepService, type ViaCepResponse } from '@/services/via-cep.service';
 
 const userStore = useUserStore();
 const snackbarStore = useSnackbarStore();
 
 const companyDefault = reactive({
   name: '',
-  corporateName: '',
+  social_reason: '',
   cnpj: '',
-  phone: '',
+  cellphone: '',
   email: '',
   cep: '',
   street: '',
@@ -25,7 +26,7 @@ const companyDefault = reactive({
 
 async function onSubmit(formValues: Record<string, any>) {
   const company: ProfileCompany = formValues as ProfileCompany;
-
+  console.log(company)
   try {
     await userStore.saveUserCompany(company);
     snackbarStore.show('Usuário atualizado com sucesso!', 'success')
@@ -33,10 +34,48 @@ async function onSubmit(formValues: Record<string, any>) {
     snackbarStore.show('Falha ao tentar atualizar usuário: '+err, 'error')
   }
 }
+
+async function searchAddress(value: string, setFieldValue: Function) {
+  if(value.length < 9) return;
+
+  const cleanedCep = value.replace(/\D/g, '');
+  try {
+    const res: ViaCepResponse | null = await viaCepService.getAddressByCep(cleanedCep);
+
+    if (res && !res.erro) {
+      setFieldValue('street', res.logradouro);
+      setFieldValue('neighborhood', res.bairro);
+      setFieldValue('complement', res.complemento);
+      setFieldValue('city', res.localidade);
+
+      const stateEnum = Object.values(BrazilianStates).find(s => s === res.uf);
+      if (stateEnum) {
+        setFieldValue('state', stateEnum);
+      } else {
+        console.warn(`Estado retornado pelo ViaCEP (${res.uf}) não encontrado no ENUM. Limpando campo.`);
+        setFieldValue('state', '');
+      }
+
+      const numberField = document.getElementById('number') as HTMLInputElement | null;
+      if (numberField) {
+        numberField.focus();
+      }
+
+    } else {
+      setFieldValue('street', '');
+      setFieldValue('neighborhood', '');
+      setFieldValue('complement', '');
+      setFieldValue('city', '');
+      setFieldValue('state', '');
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
 </script>
 
 <template>
-  <Form @submit="onSubmit" :initial-values="companyDefault">
+  <Form v-slot="{ setFieldValue }" @submit="onSubmit" :initial-values="companyDefault">
     <v-row>
       <v-col cols="12" md="4" class="pr-md-6">
         <h5 class="text-subtitle-1 font-weight-medium">Informações da Empresa</h5>
@@ -46,224 +85,225 @@ async function onSubmit(formValues: Record<string, any>) {
       </v-col>
   
       <v-col cols="12" md="8">
-        <v-form>
-          <v-row>
-            <v-col cols="12" sm="12">
-              <Field
-                name="name"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Nome da empresa"
-                  :persistent-placeholder="!!userStore.user!.company?.name"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="12">
-              <Field
-                name="social_reason"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Razão Social"
-                  :persistent-placeholder="!!userStore.user!.company?.social_reason"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="6">
-              <Field
-                name="cnpj"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="CNPJ"
-                  :persistent-placeholder="!!userStore.user!.company?.cnpj"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="6">
-              <Field
-                name="cellphone"
-                rules="required|min:15|max:16"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Telefone comer"
-                  :persistent-placeholder="!!userStore.user!.company?.cellphone"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="12">
-              <Field
-                name="email"
-                rules="required|email"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Email comercial"
-                  :persistent-placeholder="!!userStore.user!.company?.email"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                  type="email"
-                />
-              </Field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" sm="6">
-              <Field
-                name="cep"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="CEP"
-                  :persistent-placeholder="!!userStore.user!.company?.address?.cep"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" sm="8">
-              <Field
-                name="street"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Rua"
-                  :persistent-placeholder="!!userStore.user!.company?.address?.street"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="4">
-              <Field
-                name="number"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Número"
-                  :persistent-placeholder="!!userStore.user!.company?.address?.number"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="6">
-              <Field
-                name="neigborhood"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Bairro"
-                  :persistent-placeholder="!!userStore.user!.company?.address?.neigborhood"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="6">
-              <Field
-                name="complement"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Complemento"
-                  :persistent-placeholder="!!userStore.user!.company?.address?.complement"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="6">
-              <Field
-                name="city"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Cidade"
-                  :persistent-placeholder="!!userStore.user!.company?.address?.city"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" sm="6">
-              <Field
-                name="state"
-                rules="required|min:3|alpha_spaces"
-                v-slot="{ field, errorMessage }"
-              >
-                <v-text-field
-                  v-bind="field"
-                  label="Estado"
-                  :persistent-placeholder="!!userStore.user!.company?.address?.state"
-                  variant="solo-filled"
-                  density="compact"
-                  :error="!!errorMessage"
-                  :error-messages="errorMessage"
-                />
-              </Field>
-            </v-col>
-  
-            <v-col cols="12" class="d-flex justify-end">
-              <v-btn class="mt-4" color="primary">Salvar</v-btn>
-            </v-col>
-          </v-row>
-          
-        </v-form>
+        <v-row>
+          <v-col cols="12" sm="12">
+            <Field
+              name="name"
+              rules="required|min:3"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Nome da empresa"
+                :persistent-placeholder="!!userStore.user!.company?.name"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="12">
+            <Field
+              name="social_reason"
+              rules="required|min:3"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Razão Social"
+                :persistent-placeholder="!!userStore.user!.company?.social_reason"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <Field
+              name="cnpj"
+              rules="required|cnpj"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="CNPJ"
+                :persistent-placeholder="!!userStore.user!.company?.cnpj"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <Field
+              name="cellphone"
+              rules="required|min:15|max:16"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Telefone comer"
+                :persistent-placeholder="!!userStore.user!.company?.cellphone"
+                v-mask="['(##) #####-####', '(##) ####-####']"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="12">
+            <Field
+              name="email"
+              rules="required|email"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Email comercial"
+                :persistent-placeholder="!!userStore.user!.company?.email"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+                type="email"
+              />
+            </Field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" sm="6">
+            <Field
+              name="cep"
+              rules="required|min:9|max:9"
+              v-slot="{ field, errorMessage, value }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="CEP"
+                :persistent-placeholder="!!userStore.user!.company?.address?.cep"
+                v-mask="'#####-###'"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+                @keyup="searchAddress(value, setFieldValue)"
+              />
+            </Field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" sm="8">
+            <Field
+              name="street"
+              rules="required"
+              v-slot="{ field, errorMessage, value }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Rua"
+                :persistent-placeholder="!!userStore.user!.company?.address?.street || !!value"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="4">
+            <Field
+              name="number"
+              rules="required"
+              v-slot="{ field, errorMessage }"
+            >
+              <v-text-field
+                id="number"
+                v-bind="field"
+                label="Número"
+                :persistent-placeholder="!!userStore.user!.company?.address?.number"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <Field
+              name="neighborhood"
+              rules="required"
+              v-slot="{ field, errorMessage, value }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Bairro"
+                :persistent-placeholder="!!userStore.user!.company?.address?.neighborhood || !!value"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <Field
+              name="complement"
+              rules="required"
+              v-slot="{ field, errorMessage, value }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Complemento"
+                :persistent-placeholder="!!userStore.user!.company?.address?.complement || !!value"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <Field
+              name="city"
+              rules="required"
+              v-slot="{ field, errorMessage, value }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Cidade"
+                :persistent-placeholder="!!userStore.user!.company?.address?.city || !!value"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <Field
+              name="state"
+              rules="required"
+              v-slot="{ field, errorMessage, value }"
+            >
+              <v-text-field
+                v-bind="field"
+                label="Estado"
+                :persistent-placeholder="!!userStore.user!.company?.address?.state || !!value"
+                variant="solo-filled"
+                density="compact"
+                :error="!!errorMessage"
+                :error-messages="errorMessage"
+              />
+            </Field>
+          </v-col>
+
+          <v-col cols="12" class="d-flex justify-end">
+            <v-btn class="mt-4" color="primary" type="submit">Salvar</v-btn>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </Form>
