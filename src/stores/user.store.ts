@@ -6,9 +6,10 @@ import router from '@/router';
 import type { UserRegister } from '@/types/user/user-register.type';
 import type { UserMeta } from '@/types/user/user-meta.type';
 import type { ProfilePersonalInformation } from '@/types/profile/profile-personal-information.type';
-import { saveUserCompany, updateUserPersonalInformation } from '@/services/profile.service';
+import { saveUserCompany, saveUserPassword, updateUserPersonalInformation } from '@/services/profile.service';
 import type { ProfileCompany } from '@/types/profile/profile-company.type';
 import type ProfileCompanyResponse from '@/types/profile/profile-company-response.type';
+import type ProfilePassword from '@/types/profile/profile-passworld.type';
 
 interface UserStoreState {
   user: AuthUser | null;
@@ -156,7 +157,21 @@ export const useUserStore = defineStore('user', {
           }
         }
       } catch (err: any) {
-        this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
+        this.error = err.response?.data?.message || 'Erro ao tentar atualizar empresa.';
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async savePassword(password: ProfilePassword) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        await saveUserPassword(this.user!.uuid, password);
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Erro ao tentar atualizar senha.';
         throw err;
       } finally {
         this.loading = false;

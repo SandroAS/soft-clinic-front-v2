@@ -15,6 +15,7 @@ export interface AuthUser {
   profile_img_url?: string | null;
   is_active: boolean;
   role_id: number;
+  password?: string;
   role: UserRole;
   userMetas: UserMeta[]
   companies?: Company[];
