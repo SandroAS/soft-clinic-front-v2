@@ -65,6 +65,7 @@ async function onSubmit(formValues: Record<string, any>) {
   try {
     await accountUserStore.saveAccountUser(accountUser, props.selectedAccountUser?.uuid);
     snackbarStore.show('Registro realizado com sucesso! Bem-vindo(a)!', 'success');
+    close();
   } catch (err: any) {
     console.error('Erro no registro:', err);
     snackbarStore.show(accountUserStore.error || 'Falha ao salvar usuário.', 'error');
