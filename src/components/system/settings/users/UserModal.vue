@@ -22,7 +22,20 @@ const close = () => emit('update:modelValue', false)
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
-const userTypes = [ RoleType.ASSISTANT, RoleType.HEALTHCARE_PROFESSIONAL ];
+const userTypes = [
+  {
+    value: RoleType.ASSISTANT,
+    title: 'Assistente',
+    subtitle: 'Pode criar usuários ilimitados',
+    disabled: false
+  },
+  {
+    value: RoleType.HEALTHCARE_PROFESSIONAL,
+    title: 'Profissional de Saúde',
+    subtitle: 'Assine o plano multi para adicionar novos profissionais de saúde',
+    disabled: true
+  },
+];
 
 let userAccount = reactive<AccountUserPayload>({
   name: props.selectedAccountUser?.name || '',
@@ -50,7 +63,7 @@ async function onSubmit(formValues: Record<string, any>) {
   const accountUser: AccountUserPayload = formValues as AccountUserPayload;
 
   try {
-    await accountUserStore.saveAccountUser(accountUser);
+    await accountUserStore.saveAccountUser(accountUser, props.selectedAccountUser?.uuid);
     snackbarStore.show('Registro realizado com sucesso! Bem-vindo(a)!', 'success');
   } catch (err: any) {
     console.error('Erro no registro:', err);
@@ -143,7 +156,7 @@ async function onSubmit(formValues: Record<string, any>) {
 
           <Field
             name="password"
-            rules="required|min:6"
+            :rules="!props.selectedAccountUser ? 'required|min:6' : ''"
             v-slot="{ field, errorMessage }"
           >
             <v-text-field
@@ -164,7 +177,7 @@ async function onSubmit(formValues: Record<string, any>) {
 
           <Field
             name="confirmPassword"
-            rules="required|confirmed:@password"
+            :rules="!props.selectedAccountUser ? 'required|confirmed:@password': ''"
             v-slot="{ field, errorMessage }"
           >
             <v-text-field
@@ -190,13 +203,20 @@ async function onSubmit(formValues: Record<string, any>) {
               v-bind="field"
               label="Tipo"
               :items="userTypes"
-              required
+              item-value="value"
+              item-title="title"
+              item-props="disabled"
+              :return-object="false"
               variant="solo-filled"
               density="compact"
               persistent-placeholder
               :error="!!errorMessage"
               :error-messages="errorMessage"
-            />
+            >
+              <template v-slot:item="{ item, props: itemProps }">
+                <v-list-item v-bind="itemProps" :title="item.title" :subtitle="item.raw.subtitle"></v-list-item>
+              </template>
+            </v-select>
           </Field>
         </v-card-text>
         <v-card-actions>

@@ -8,7 +8,9 @@ export const getAccountUsers = async () => {
   return response.data.users;
 };
 
-export const saveAccountUser = async (accountUser: AccountUserPayload) => {
-  const response: AxiosResponse<{ uuid: string, role: { uuid: string } }> = await api.post('/account/users', accountUser);
+export const saveAccountUser = async (accountUser: AccountUserPayload, uuid?: string) => {
+  const response: AxiosResponse<{ uuid: string, role: { uuid: string } }> = uuid 
+    ? await api.put(`/account/users/${uuid}`, accountUser)
+    : await api.post('/account/users', accountUser);
   return response.data;
 };

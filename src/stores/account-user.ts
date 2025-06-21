@@ -20,15 +20,15 @@ export const useAccountUserStore = defineStore('accountUser', {
   getters: {},
 
   actions: {
-    async saveAccountUser(accountUser: AccountUserPayload) {
+    async saveAccountUser(accountUser: AccountUserPayload, uuid?: string) {
       this.loading = true;
       this.error = null;
 
       try {
-        const { uuid, role }: { uuid: string, role: { uuid: string } } = await saveAccountUser(accountUser);
+        const res: { uuid: string, role: { uuid: string } } = await saveAccountUser(accountUser, uuid);
         if(!this.account_users) this.account_users = [];
-        this.account_users.push({
-          uuid,
+        const accountUserSaved = {
+          uuid: res.uuid,
           name: accountUser.name,
           email: accountUser.email,
           cellphone: accountUser.cellphone,
@@ -36,11 +36,18 @@ export const useAccountUserStore = defineStore('accountUser', {
           is_active: true,
           password: 'passworldAlreadySet',
           role: {
-            uuid: role.uuid,
+            uuid: res.role.uuid,
             name: accountUser.role,
             permissions: []
           }
-        });
+        }
+        if(uuid) {
+          const accountUserFind = this.account_users.find(x => x.uuid === uuid);
+          const index = this.account_users.indexOf(accountUserFind!);
+          this.account_users.splice(index, 1, accountUserSaved!)
+        } else {
+          this.account_users.push(accountUserSaved);
+        }
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
         throw err;
