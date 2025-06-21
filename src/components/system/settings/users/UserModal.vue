@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { Form, Field } from '@/plugins/vee-validate';
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
 import type AccountUser from '@/types/account/account-user.type';
@@ -10,7 +10,7 @@ import { RoleType } from '@/types/user/user-role.type';
 const accountUserStore = useAccountUserStore();
 const snackbarStore = useSnackbarStore();
 
-defineProps<{
+const props = defineProps<{
   modelValue: boolean,
   selectedAccountUser?: AccountUser | null
 }>();
@@ -23,6 +23,28 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
 const userTypes = [ RoleType.ASSISTANT, RoleType.HEALTHCARE_PROFESSIONAL ];
+
+let userAccount = reactive<AccountUserPayload>({
+  name: props.selectedAccountUser?.name || '',
+  email: props.selectedAccountUser?.email || '',
+  cellphone: props.selectedAccountUser?.cellphone || '',
+  cpf: props.selectedAccountUser?.cpf || '',
+  password: props.selectedAccountUser?.password || '',
+  confirmPassword: '',
+  role: props.selectedAccountUser?.role.name || RoleType.ASSISTANT
+})
+
+watch(() => props.selectedAccountUser, (val) => {
+  userAccount = {
+    name: props.selectedAccountUser?.name || '',
+    email: props.selectedAccountUser?.email || '',
+    cellphone: props.selectedAccountUser?.cellphone || '',
+    cpf: props.selectedAccountUser?.cpf || '',
+    password: props.selectedAccountUser?.password || '',
+    confirmPassword: '',
+    role: props.selectedAccountUser?.role.name || RoleType.ASSISTANT
+  }
+})
 
 async function onSubmit(formValues: Record<string, any>) {
   const accountUser: AccountUserPayload = formValues as AccountUserPayload;
@@ -39,7 +61,7 @@ async function onSubmit(formValues: Record<string, any>) {
 
 <template>
   <v-dialog :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" max-width="500px">
-    <Form @submit="onSubmit" :initial-values="selectedAccountUser || undefined">
+    <Form @submit="onSubmit" :initial-values="userAccount">
       <v-card>
         <v-card-title>
           {{ !!selectedAccountUser ? 'Editar usuário' : 'Novo usuário' }}
@@ -56,6 +78,7 @@ async function onSubmit(formValues: Record<string, any>) {
               prepend-inner-icon="mdi-account"
               variant="solo-filled"
               density="compact"
+              :persistent-placeholder="!!props.selectedAccountUser?.name"
               :error="!!errorMessage"
               :error-messages="errorMessage"
               class="mb-3"
@@ -73,6 +96,7 @@ async function onSubmit(formValues: Record<string, any>) {
               prepend-inner-icon="mdi-email"
               variant="solo-filled"
               density="compact"
+              :persistent-placeholder="!!props.selectedAccountUser?.email"
               :error="!!errorMessage"
               :error-messages="errorMessage"
               class="mb-3"
@@ -91,6 +115,7 @@ async function onSubmit(formValues: Record<string, any>) {
               prepend-inner-icon="mdi-phone"
               variant="solo-filled"
               density="compact"
+              :persistent-placeholder="!!props.selectedAccountUser?.cellphone"
               :error="!!errorMessage"
               :error-messages="errorMessage"
               class="mb-3"
@@ -109,6 +134,7 @@ async function onSubmit(formValues: Record<string, any>) {
               prepend-inner-icon="mdi-card-account-details"
               variant="solo-filled"
               density="compact"
+              :persistent-placeholder="!!props.selectedAccountUser?.cpf"
               :error="!!errorMessage"
               :error-messages="errorMessage"
               class="mb-3"
@@ -167,6 +193,7 @@ async function onSubmit(formValues: Record<string, any>) {
               required
               variant="solo-filled"
               density="compact"
+              persistent-placeholder
               :error="!!errorMessage"
               :error-messages="errorMessage"
             />
