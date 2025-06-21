@@ -15,11 +15,6 @@ const openDialog = (item: AccountUser) => {
   dialog.value = true;
 }
 
-const toggleStatus = (accountUser: AccountUser) => {
-  if (accountUser.role.name === 'ADMIN') return;
-  accountUser.is_active = accountUser.is_active === true ? false : false;
-}
-
 async function getUsers() {
   await accountUserStore.getAccountUsers();
 }
@@ -42,7 +37,7 @@ getUsers();
         { title: 'Telefone', key: 'cellphone' },
         { title: 'Tipo', key: 'role.name' },
         { title: 'Status', key: 'is_active' },
-        { title: 'Editar/Desativar', key: 'actions', sortable: false, align: 'end' }
+        { title: 'Editar', key: 'actions', sortable: false, align: 'end' }
       ]"
       :items="accountUserStore.account_users || undefined"
       item-value="id"
@@ -65,18 +60,18 @@ getUsers();
       </template>
 
       <template #item.is_active="{ item }">
-        <v-chip :color="item.is_active ? 'green' : 'grey'" dark>
-          {{ item.is_active ? 'ATIVO' : 'INATIVO' }}
-        </v-chip>
+        <v-switch
+          :model-value="item.is_active"
+          :label="item.is_active ? 'Ativado' : 'Desativado'"
+          :color="item.is_active ? 'green' : 'grey'"
+          hide-details
+        ></v-switch>
       </template>
 
       <template #item.actions="{ item }">
         <div v-if="item.role.name !== 'ADMIN'">
           <v-btn icon @click="openDialog(item)">
             <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon @click="toggleStatus(item)">
-            <v-icon>{{ item.is_active ? 'mdi-account-off' : 'mdi-account-check' }}</v-icon>
           </v-btn>
         </div>
       </template>
