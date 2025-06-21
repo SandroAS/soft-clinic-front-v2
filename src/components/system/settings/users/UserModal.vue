@@ -214,7 +214,7 @@ async function onSubmit(formValues: Record<string, any>) {
               :error-messages="errorMessage"
             >
               <template v-slot:item="{ item, props: itemProps }">
-                <v-list-item v-bind="itemProps" :title="item.title" :subtitle="item.raw.subtitle"></v-list-item>
+                <v-list-item v-bind="itemProps" :title="item.title" :subtitle="item.raw.subtitle" :disabled="item.raw.disabled"></v-list-item>
               </template>
             </v-select>
           </Field>
