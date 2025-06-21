@@ -157,7 +157,7 @@ async function onSubmit(formValues: Record<string, any>) {
 
           <Field
             name="password"
-            :rules="!props.selectedAccountUser ? 'required|min:6' : ''"
+            :rules="!props.selectedAccountUser?.name ? 'required|min:6' : ''"
             v-slot="{ field, errorMessage }"
           >
             <v-text-field
@@ -178,7 +178,7 @@ async function onSubmit(formValues: Record<string, any>) {
 
           <Field
             name="confirmPassword"
-            :rules="!props.selectedAccountUser ? 'required|confirmed:@password': ''"
+            :rules="!props.selectedAccountUser?.name ? 'required|confirmed:@password': ''"
             v-slot="{ field, errorMessage }"
           >
             <v-text-field

@@ -50,7 +50,12 @@ getUsers();
       <template #item.name="{ item }">
         <div class="d-flex align-center gap-3">
           <v-avatar color="primary" size="36" class="mr-2">
-            {{ getInitials(item.name) }}
+            <template v-if="item.profile_img_url">
+              <v-img :src="item.profile_img_url"></v-img>
+            </template>
+            <template v-else>
+              {{ getInitials(item.name) }}
+            </template>
           </v-avatar>
           <div>
             <div class="font-weight-medium">{{ item.name }}</div>

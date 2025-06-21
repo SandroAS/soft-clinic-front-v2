@@ -7,6 +7,7 @@ export default interface AccountUser {
   cellphone?: string;
   cpf?: string;
   is_active: boolean;
+  profile_img_url?: string;
   password?: string | null;
   role: Role
 }
