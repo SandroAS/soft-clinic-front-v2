@@ -31,7 +31,7 @@ let userAccount = reactive<AccountUserPayload>({
   cpf: props.selectedAccountUser?.cpf || '',
   password: props.selectedAccountUser?.password || '',
   confirmPassword: '',
-  role: props.selectedAccountUser?.role.name || RoleType.ASSISTANT
+  role: props.selectedAccountUser?.role?.name || RoleType.ASSISTANT
 })
 
 watch(() => props.selectedAccountUser, (val) => {
@@ -42,7 +42,7 @@ watch(() => props.selectedAccountUser, (val) => {
     cpf: props.selectedAccountUser?.cpf || '',
     password: props.selectedAccountUser?.password || '',
     confirmPassword: '',
-    role: props.selectedAccountUser?.role.name || RoleType.ASSISTANT
+    role: props.selectedAccountUser?.role?.name || RoleType.ASSISTANT
   }
 })
 
