@@ -75,9 +75,9 @@ onMounted(() => {
     <v-data-table-server
       :headers="[
         { title: 'Nome', key: 'name' },
-        { title: 'Telefone', key: 'cellphone' },
-        { title: 'Tipo', key: 'role.name' },
-        { title: 'Status', key: 'is_active' },
+        { title: 'Telefone', key: 'cellphone', align: 'end' },
+        { title: 'Tipo', key: 'role.name', align: 'end' },
+        { title: 'Status', key: 'is_active', align: 'end' },
         { title: 'Editar', key: 'actions', sortable: false, align: 'end' }
       ]"
       :items="accountUserStore.account_users || []"
@@ -87,40 +87,55 @@ onMounted(() => {
       :items-length="accountUserStore.total"
       :loading="accountUserStore.loading"
       :page="currentPage"
+      mobile-breakpoint="md"
       @update:options="loadItems"
     >
       <template #item.name="{ item }">
-        <div class="d-flex align-center gap-3">
-          <v-avatar color="primary" size="36" class="mr-2">
-            <template v-if="item.profile_img_url">
+        <div class="d-flex align-center gap-3 flex-row-reverse flex-md-row">
+          <v-avatar color="primary" size="36" class="mr-2 ml-sm-2 mr-sm-0"> <template v-if="item.profile_img_url">
               <v-img :src="item.profile_img_url"></v-img>
             </template>
             <template v-else>
               {{ getInitials(item.name) }}
             </template>
           </v-avatar>
-          <div>
+          <div class="text-md-left text-right text-left">
             <div class="font-weight-medium">{{ item.name }}</div>
             <div class="text-caption text-medium-emphasis">{{ item.email }}</div>
           </div>
         </div>
       </template>
 
+      <template #item.cellphone="{ item }">
+        <div class="d-flex justify-end pr-2"> {{ item.cellphone }}
+        </div>
+      </template>
+
+      <template #item.role.name="{ item }">
+        <div class="d-flex justify-end pr-2"> {{ item.role.name }}
+        </div>
+      </template>
+
       <template #item.is_active="{ item }">
-        <div style="min-width: 132px;">
+        <div class="d-flex custom-justify-switch align-center" style="min-width: 132px;">
+          <span class="text-subtitle-2 mr-2 d-md-none">
+            {{ item.is_active ? 'Ativado' : 'Desativado' }}
+          </span>
           <v-switch
             :model-value="item.is_active"
-            :label="item.is_active ? 'Ativado' : 'Desativado'"
+            :label="item.is_active ? '' : ''"
             :color="item.is_active ? 'green' : 'grey'"
             hide-details
             @change="updateIsActive(item)"
           ></v-switch>
+          <span class="text-subtitle-2 mr-2 custom-display-none">
+            {{ item.is_active ? 'Ativado' : 'Desativado' }}
+          </span>
         </div>
       </template>
 
       <template #item.actions="{ item }">
-        <div v-if="item.role.name !== 'ADMIN'">
-          <v-btn icon @click="openDialog(item)">
+        <div v-if="item.role.name !== 'ADMIN'" class="d-flex justify-end"> <v-btn icon @click="openDialog(item)">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
         </div>
@@ -130,3 +145,19 @@ onMounted(() => {
     <UserModal v-model="dialog" :selectedAccountUser="selectedAccountUser"/>
   </div>
 </template>
+
+<style scoped>
+.custom-justify-switch {
+  justify-content: space-between;
+}
+
+@media (max-width: 959px) {
+  .custom-display-none {
+    display: none;
+  }
+
+  .custom-justify-switch {
+    justify-content: end;
+  }
+}
+</style>
