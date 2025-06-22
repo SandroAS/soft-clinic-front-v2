@@ -55,16 +55,16 @@ async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPe
   if (sortColumn !== accountUserStore.sort_column || sortOrder !== accountUserStore.sort_order) {
     accountUserStore.sort_column = sortColumn;
     accountUserStore.sort_order = sortOrder;
-    accountUserStore.page = 1; // Reseta a página ao mudar a ordenação
+    accountUserStore.page = 1;
     shouldFetch = true;
   }
 
   if (shouldFetch) {
-    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit });
+    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit, sort_column: accountUserStore.sort_column, sort_order: accountUserStore.sort_order });
   }
 
   if (!accountUserStore.account_users && !accountUserStore.loading) {
-    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit });
+    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit, sort_column: accountUserStore.sort_column, sort_order: accountUserStore.sort_order });
   }
 }
 
