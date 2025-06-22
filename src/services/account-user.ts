@@ -1,11 +1,13 @@
 import type { AxiosResponse } from 'axios';
 import api from './api.service';
-import type AccountUser from '@/types/account/account-user.type';
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
+import type AccountUsersResponsePaginationDto from '@/types/account/account-users-response-pagination-dto';
 
-export const getAccountUsers = async () => {
-  const response: AxiosResponse<{ uuid: string, users: AccountUser[] }> = await api.get('/account/users');
-  return response.data.users;
+export const getAccountUsers = async (page: number = 1, limit: number = 10) => {
+  const response: AxiosResponse<AccountUsersResponsePaginationDto> = await api.get('/account/users', {
+    params: { page, limit }
+  });
+  return response.data;
 };
 
 export const saveAccountUser = async (accountUser: AccountUserPayload, uuid?: string) => {

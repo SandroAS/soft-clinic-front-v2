@@ -1,6 +1,7 @@
 import { getAccountUsers, saveAccountUser, updateAccountUserIsActive } from '@/services/account-user';
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
 import type AccountUser from '@/types/account/account-user.type';
+import type AccountUsersResponsePaginationDto from '@/types/account/account-users-response-pagination-dto';
 import { RoleType } from '@/types/user/user-role.type';
 import { defineStore } from 'pinia';
 
@@ -8,13 +9,21 @@ interface AccountUserStoreState {
   account_users: AccountUser[] | null;
   loading: boolean;
   error: string | null;
+  total: number;
+  page: number;
+  last_page: number;
+  limit: number;
 }
 
 export const useAccountUserStore = defineStore('accountUser', {
   state: (): AccountUserStoreState => ({
     account_users: null,
     loading: false,
-    error: null
+    error: null,
+    total: 0,
+    page: 1,
+    last_page: 1,
+    limit: 10,
   }),
 
   getters: {},
@@ -74,19 +83,34 @@ export const useAccountUserStore = defineStore('accountUser', {
       }
     },
 
-    async getAccountUsers() {
+    async getAccountUsers(params: { page?: number; limit?: number; } = {}) {
       this.loading = true;
       this.error = null;
 
       try {
-        const res: AccountUser[] = await getAccountUsers();
-        this.account_users = res;
+        const res: AccountUsersResponsePaginationDto = await getAccountUsers(params.page, params.limit);
+        this.account_users = res.users;
+        this.total = res.total;
+        this.page = res.page;
+        this.limit = res.limit;
+        this.last_page = res.last_page;
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
         throw err;
       } finally {
         this.loading = false;
       }
+    },
+
+    async setPage(page: number) {
+      this.page = page;
+      await this.getAccountUsers({ page: this.page, limit: this.limit });
+    },
+
+    async setItemsPerPage(limit: number) {
+      this.limit = limit;
+      this.page = 1;
+      await this.getAccountUsers({ page: this.page, limit: this.limit });
     }
-  },
+  }
 });

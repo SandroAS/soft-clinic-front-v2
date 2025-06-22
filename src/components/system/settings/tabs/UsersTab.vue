@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import UserModal from '../users/UserModal.vue'
 import type AccountUser from '@/types/account/account-user.type'
 import { useAccountUserStore } from '@/stores/account-user';
@@ -12,8 +12,18 @@ const snackbarStore = useSnackbarStore();
 const dialog = ref(false);
 const selectedAccountUser = ref<AccountUser| null>(null);
 
-const openDialog = (item: AccountUser) => {
-  selectedAccountUser.value = item;
+const currentPage = ref(accountUserStore.page);
+const itemsPerPage = ref(accountUserStore.limit);
+
+watch(() => accountUserStore.page, (newPage) => {
+  currentPage.value = newPage;
+});
+watch(() => accountUserStore.limit, (newLimit) => {
+  itemsPerPage.value = newLimit;
+});
+
+const openDialog = (item?: AccountUser) => {
+  selectedAccountUser.value = item || null;
   dialog.value = true;
 }
 
@@ -27,7 +37,15 @@ async function updateIsActive(accountUser: AccountUser) {
 }
 
 async function getUsers() {
-  await accountUserStore.getAccountUsers();
+  await accountUserStore.getAccountUsers({ page: currentPage.value, limit: itemsPerPage.value });
+}
+
+function onPageChange(page: number) {
+  accountUserStore.setPage(page);
+}
+
+function onItemsPerPageChange(newLimit: number) {
+  accountUserStore.setItemsPerPage(newLimit);
 }
 
 getUsers();
@@ -50,8 +68,21 @@ getUsers();
         { title: 'Status', key: 'is_active' },
         { title: 'Editar', key: 'actions', sortable: false, align: 'end' }
       ]"
-      :items="accountUserStore.account_users || undefined"
-      item-value="id"
+      :items="accountUserStore.account_users || []"
+      item-value="uuid"
+      :items-per-page="itemsPerPage"
+      :items-per-page-options="[{title: '10', value: 10}, {title: '25', value: 25}, {title: '50', value: 50}, {title: '100', value: 100}]"
+      :items-length="accountUserStore.total"
+      :loading="accountUserStore.loading"
+      :page="currentPage"
+      @update:options="({ page, itemsPerPage: limit }) => {
+        if (page !== currentPage) {
+          onPageChange(page);
+        }
+        if (limit !== itemsPerPage) {
+          onItemsPerPageChange(limit);
+        }
+      }"
     >
       <template #item.name="{ item }">
         <div class="d-flex align-center gap-3">
