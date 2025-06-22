@@ -3,10 +3,19 @@ import api from './api.service';
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
 import type AccountUsersResponsePaginationDto from '@/types/account/account-users-response-pagination-dto';
 
-export const getAccountUsers = async (page: number = 1, limit: number = 10) => {
-  const response: AxiosResponse<AccountUsersResponsePaginationDto> = await api.get('/account/users', {
-    params: { page, limit }
-  });
+export const getAccountUsers = async (page: number = 1, limit: number = 10, sortColumn?: string, sortOrder?: 'asc' | 'desc'): Promise<AccountUsersResponsePaginationDto> => {
+  const params: any = { page, limit };
+
+  if (sortColumn) {
+    params.sort_column = sortColumn;
+  }
+
+  if (sortOrder) {
+    params.sort_order = sortOrder;
+  }
+
+  const response: AxiosResponse<AccountUsersResponsePaginationDto> = await api.get('/account/users', { params });
+
   return response.data;
 };
 

@@ -2,7 +2,6 @@ import { getAccountUsers, saveAccountUser, updateAccountUserIsActive } from '@/s
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
 import type AccountUser from '@/types/account/account-user.type';
 import type AccountUsersResponsePaginationDto from '@/types/account/account-users-response-pagination-dto';
-import { RoleType } from '@/types/user/user-role.type';
 import { defineStore } from 'pinia';
 
 interface AccountUserStoreState {
@@ -13,6 +12,8 @@ interface AccountUserStoreState {
   page: number;
   last_page: number;
   limit: number;
+  sort_column?: string;
+  sort_order?: 'asc' | 'desc';
 }
 
 export const useAccountUserStore = defineStore('accountUser', {
@@ -24,6 +25,8 @@ export const useAccountUserStore = defineStore('accountUser', {
     page: 1,
     last_page: 1,
     limit: 10,
+    sort_column: undefined,
+    sort_order: undefined
   }),
 
   getters: {},
@@ -83,17 +86,19 @@ export const useAccountUserStore = defineStore('accountUser', {
       }
     },
 
-    async getAccountUsers(params: { page?: number; limit?: number; } = {}) {
+    async getAccountUsers(params: { page?: number, limit?: number, sort_column?: string, sort_order?: 'asc' | 'desc' } = {}) {
       this.loading = true;
       this.error = null;
 
       try {
-        const res: AccountUsersResponsePaginationDto = await getAccountUsers(params.page, params.limit);
+        const res: AccountUsersResponsePaginationDto = await getAccountUsers(params.page, params.limit, params.sort_column, params.sort_order);
         this.account_users = res.users;
         this.total = res.total;
         this.page = res.page;
         this.limit = res.limit;
         this.last_page = res.last_page;
+        this.sort_column = params.sort_column;
+        this.sort_order = params.sort_order;
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
         throw err;

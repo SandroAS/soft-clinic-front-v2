@@ -36,6 +36,9 @@ async function getUsers() {
 getUsers();
 
 async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: any[] }) {
+  const sortColumn = sortBy.length > 0 ? sortBy[0].key : undefined;
+  const sortOrder = sortBy.length > 0 ? sortBy[0].order : undefined;
+
   let shouldFetch = false;
 
   if (page !== accountUserStore.page) {
@@ -49,6 +52,13 @@ async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPe
     shouldFetch = true;
   }
 
+  if (sortColumn !== accountUserStore.sort_column || sortOrder !== accountUserStore.sort_order) {
+    accountUserStore.sort_column = sortColumn;
+    accountUserStore.sort_order = sortOrder;
+    accountUserStore.page = 1; // Reseta a página ao mudar a ordenação
+    shouldFetch = true;
+  }
+
   if (shouldFetch) {
     await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit });
   }
@@ -59,7 +69,11 @@ async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPe
 }
 
 onMounted(() => {
-  loadItems({ page: accountUserStore.page, itemsPerPage: accountUserStore.limit, sortBy: [] });
+  loadItems({
+    page: accountUserStore.page,
+    itemsPerPage: accountUserStore.limit,
+    sortBy: accountUserStore.sort_column ? [{ key: accountUserStore.sort_column, order: accountUserStore.sort_order || 'asc' }] : []
+  });
 });
 </script>
 
@@ -74,10 +88,10 @@ onMounted(() => {
 
     <v-data-table-server
       :headers="[
-        { title: 'Nome', key: 'name' },
-        { title: 'Telefone', key: 'cellphone', align: 'end' },
-        { title: 'Tipo', key: 'role.name', align: 'end' },
-        { title: 'Status', key: 'is_active', align: 'end' },
+        { title: 'Nome', key: 'name', sortable: true },
+        { title: 'Telefone', key: 'cellphone', align: 'end', sortable: true },
+        { title: 'Tipo', key: 'role.name', align: 'end', sortable: true },
+        { title: 'Status', key: 'is_active', align: 'end', sortable: true },
         { title: 'Editar', key: 'actions', sortable: false, align: 'end' }
       ]"
       :items="accountUserStore.account_users || []"
@@ -123,7 +137,6 @@ onMounted(() => {
           </span>
           <v-switch
             :model-value="item.is_active"
-            :label="item.is_active ? '' : ''"
             :color="item.is_active ? 'green' : 'grey'"
             hide-details
             @change="updateIsActive(item)"
