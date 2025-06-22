@@ -2,6 +2,7 @@ import { getAccountUsers, saveAccountUser, updateAccountUserIsActive } from '@/s
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
 import type AccountUser from '@/types/account/account-user.type';
 import type AccountUsersResponsePaginationDto from '@/types/account/account-users-response-pagination-dto';
+import type DataTableFilterParams from '@/types/dataTable/data-table-filter-params.type';
 import { defineStore } from 'pinia';
 
 interface AccountUserStoreState {
@@ -14,6 +15,7 @@ interface AccountUserStoreState {
   limit: number;
   sort_column?: string;
   sort_order?: 'asc' | 'desc';
+  search_term?: string;
 }
 
 export const useAccountUserStore = defineStore('accountUser', {
@@ -26,7 +28,8 @@ export const useAccountUserStore = defineStore('accountUser', {
     last_page: 1,
     limit: 10,
     sort_column: undefined,
-    sort_order: undefined
+    sort_order: undefined,
+    search_term: undefined
   }),
 
   getters: {},
@@ -86,12 +89,12 @@ export const useAccountUserStore = defineStore('accountUser', {
       }
     },
 
-    async getAccountUsers(params: { page?: number, limit?: number, sort_column?: string, sort_order?: 'asc' | 'desc' } = {}) {
+    async getAccountUsers(params: DataTableFilterParams = {}) {
       this.loading = true;
       this.error = null;
 
       try {
-        const res: AccountUsersResponsePaginationDto = await getAccountUsers(params.page, params.limit, params.sort_column, params.sort_order);
+        const res: AccountUsersResponsePaginationDto = await getAccountUsers(params.page, params.limit, params.sort_column, params.sort_order, params.search_term);
         this.account_users = res.users;
         this.total = res.total;
         this.page = res.page;
@@ -99,6 +102,7 @@ export const useAccountUserStore = defineStore('accountUser', {
         this.last_page = res.last_page;
         this.sort_column = params.sort_column;
         this.sort_order = params.sort_order;
+        this.search_term = params.search_term;
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
         throw err;

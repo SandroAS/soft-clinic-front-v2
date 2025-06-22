@@ -14,6 +14,7 @@ const selectedAccountUser = ref<AccountUser| null>(null);
 
 const currentPage = ref(accountUserStore.page);
 const itemsPerPage = ref(accountUserStore.limit);
+const searchTerm = ref(accountUserStore.search_term || '');
 
 const openDialog = (item?: AccountUser) => {
   selectedAccountUser.value = item || null;
@@ -38,6 +39,7 @@ getUsers();
 async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: any[] }) {
   const sortColumn = sortBy.length > 0 ? sortBy[0].key : undefined;
   const sortOrder = sortBy.length > 0 ? sortBy[0].order : undefined;
+  const currentSearchTerm = searchTerm.value;
 
   let shouldFetch = false;
 
@@ -59,14 +61,35 @@ async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPe
     shouldFetch = true;
   }
 
+  if (currentSearchTerm !== accountUserStore.search_term) {
+    accountUserStore.search_term = currentSearchTerm;
+    accountUserStore.page = 1; // Reseta a página ao aplicar novo filtro
+    shouldFetch = true;
+  }
+
   if (shouldFetch) {
-    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit, sort_column: accountUserStore.sort_column, sort_order: accountUserStore.sort_order });
+    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit, sort_column: accountUserStore.sort_column, sort_order: accountUserStore.sort_order, search_term: accountUserStore.search_term });
   }
 
   if (!accountUserStore.account_users && !accountUserStore.loading) {
-    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit, sort_column: accountUserStore.sort_column, sort_order: accountUserStore.sort_order });
+    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit, sort_column: accountUserStore.sort_column, sort_order: accountUserStore.sort_order, search_term: accountUserStore.search_term });
   }
 }
+
+let searchDebounceTimeout: ReturnType<typeof setTimeout>;
+watch(searchTerm, (newVal, oldVal) => {
+  if (newVal === oldVal) return;
+
+  clearTimeout(searchDebounceTimeout);
+  searchDebounceTimeout = setTimeout(() => {
+    accountUserStore.page = 1;
+    loadItems({
+      page: accountUserStore.page,
+      itemsPerPage: accountUserStore.limit,
+      sortBy: accountUserStore.sort_column ? [{ key: accountUserStore.sort_column, order: accountUserStore.sort_order || 'asc' }] : [],
+    });
+  }, 300);
+});
 
 onMounted(() => {
   loadItems({
@@ -79,8 +102,20 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="d-flex justify-end mb-4">
-      <v-btn color="primary" @click="openDialog">
+    <div class="flex-column flex-md-row d-flex justify-space-between mb-4 mt-2 align-center">
+      <v-text-field
+        v-model="searchTerm"
+        label="Buscar usuário"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        density="compact"
+        hide-details
+        clearable
+        class="mb-4 mb-md-0 w-md-auto w-100"
+        style="max-width: 300px;"
+      ></v-text-field>
+
+      <v-btn color="primary" class="w-md-auto w-100" @click="openDialog">
         <v-icon start>mdi-plus</v-icon>
         Adicionar usuário
       </v-btn>
@@ -131,8 +166,8 @@ onMounted(() => {
       </template>
 
       <template #item.is_active="{ item }">
-        <div class="d-flex custom-justify-switch align-center" style="min-width: 132px;">
-          <span class="text-subtitle-2 mr-2 d-md-none">
+        <div class="d-flex justify-md-space-between justify-end align-center flex-md-row-reverse" style="min-width: 132px;">
+          <span class="text-subtitle-2 mr-2">
             {{ item.is_active ? 'Ativado' : 'Desativado' }}
           </span>
           <v-switch
@@ -141,9 +176,6 @@ onMounted(() => {
             hide-details
             @change="updateIsActive(item)"
           ></v-switch>
-          <span class="text-subtitle-2 mr-2 custom-display-none">
-            {{ item.is_active ? 'Ativado' : 'Desativado' }}
-          </span>
         </div>
       </template>
 
@@ -158,19 +190,3 @@ onMounted(() => {
     <UserModal v-model="dialog" :selectedAccountUser="selectedAccountUser"/>
   </div>
 </template>
-
-<style scoped>
-.custom-justify-switch {
-  justify-content: space-between;
-}
-
-@media (max-width: 959px) {
-  .custom-display-none {
-    display: none;
-  }
-
-  .custom-justify-switch {
-    justify-content: end;
-  }
-}
-</style>
