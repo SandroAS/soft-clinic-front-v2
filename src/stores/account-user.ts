@@ -1,4 +1,4 @@
-import { getAccountUsers, saveAccountUser } from '@/services/account-user';
+import { getAccountUsers, saveAccountUser, updateAccountUserIsActive } from '@/services/account-user';
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
 import type AccountUser from '@/types/account/account-user.type';
 import { RoleType } from '@/types/user/user-role.type';
@@ -50,6 +50,24 @@ export const useAccountUserStore = defineStore('accountUser', {
         }
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateAccountUserIsActive(uuid: string) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const res: boolean = await updateAccountUserIsActive(uuid);
+        if(!res) this.error = 'Erro ao tentar ativar/inativar usuário.';
+        const accountUserFind = this.account_users!.find(x => x.uuid === uuid);
+        const index = this.account_users!.indexOf(accountUserFind!);
+        this.account_users!.splice(index, 1, {...accountUserFind!, is_active: !accountUserFind!.is_active})
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Erro ao tentar ativar/inativar usuário.';
         throw err;
       } finally {
         this.loading = false;

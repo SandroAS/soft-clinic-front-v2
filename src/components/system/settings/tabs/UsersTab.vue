@@ -4,8 +4,10 @@ import UserModal from '../users/UserModal.vue'
 import type AccountUser from '@/types/account/account-user.type'
 import { useAccountUserStore } from '@/stores/account-user';
 import { getInitials } from '@/utils/getInitialsFromName.util';
+import { useSnackbarStore } from '@/stores/snackbar.store';
 
 const accountUserStore = useAccountUserStore();
+const snackbarStore = useSnackbarStore();
 
 const dialog = ref(false);
 const selectedAccountUser = ref<AccountUser| null>(null);
@@ -13,6 +15,15 @@ const selectedAccountUser = ref<AccountUser| null>(null);
 const openDialog = (item: AccountUser) => {
   selectedAccountUser.value = item;
   dialog.value = true;
+}
+
+async function updateIsActive(accountUser: AccountUser) {
+  try {
+    await accountUserStore.updateAccountUserIsActive(accountUser.uuid!);
+  } catch (err) {
+    console.error(err);
+    snackbarStore.show('Falha ao tentar ativar/inativar usuário. Erro: '+err, 'error')
+  }
 }
 
 async function getUsers() {
@@ -60,12 +71,15 @@ getUsers();
       </template>
 
       <template #item.is_active="{ item }">
-        <v-switch
-          :model-value="item.is_active"
-          :label="item.is_active ? 'Ativado' : 'Desativado'"
-          :color="item.is_active ? 'green' : 'grey'"
-          hide-details
-        ></v-switch>
+        <div style="min-width: 132px;">
+          <v-switch
+            :model-value="item.is_active"
+            :label="item.is_active ? 'Ativado' : 'Desativado'"
+            :color="item.is_active ? 'green' : 'grey'"
+            hide-details
+            @change="updateIsActive(item)"
+          ></v-switch>
+        </div>
       </template>
 
       <template #item.actions="{ item }">

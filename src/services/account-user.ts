@@ -14,3 +14,8 @@ export const saveAccountUser = async (accountUser: AccountUserPayload, uuid?: st
     : await api.post('/account/users', accountUser);
   return response.data;
 };
+
+export const updateAccountUserIsActive = async (uuid: string) => {
+  const response: AxiosResponse<boolean> = await api.patch(`/account/users/is-active/${uuid}`);
+  return response.data;
+};
