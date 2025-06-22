@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import UserModal from '../users/UserModal.vue'
 import type AccountUser from '@/types/account/account-user.type'
 import { useAccountUserStore } from '@/stores/account-user';
@@ -14,13 +14,6 @@ const selectedAccountUser = ref<AccountUser| null>(null);
 
 const currentPage = ref(accountUserStore.page);
 const itemsPerPage = ref(accountUserStore.limit);
-
-watch(() => accountUserStore.page, (newPage) => {
-  currentPage.value = newPage;
-});
-watch(() => accountUserStore.limit, (newLimit) => {
-  itemsPerPage.value = newLimit;
-});
 
 const openDialog = (item?: AccountUser) => {
   selectedAccountUser.value = item || null;
@@ -40,15 +33,34 @@ async function getUsers() {
   await accountUserStore.getAccountUsers({ page: currentPage.value, limit: itemsPerPage.value });
 }
 
-function onPageChange(page: number) {
-  accountUserStore.setPage(page);
-}
-
-function onItemsPerPageChange(newLimit: number) {
-  accountUserStore.setItemsPerPage(newLimit);
-}
-
 getUsers();
+
+async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: any[] }) {
+  let shouldFetch = false;
+
+  if (page !== accountUserStore.page) {
+    accountUserStore.page = page;
+    shouldFetch = true;
+  }
+
+  if (itemsPerPage !== accountUserStore.limit) {
+    accountUserStore.limit = itemsPerPage;
+    accountUserStore.page = 1;
+    shouldFetch = true;
+  }
+
+  if (shouldFetch) {
+    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit });
+  }
+
+  if (!accountUserStore.account_users && !accountUserStore.loading) {
+    await accountUserStore.getAccountUsers({ page: accountUserStore.page, limit: accountUserStore.limit });
+  }
+}
+
+onMounted(() => {
+  loadItems({ page: accountUserStore.page, itemsPerPage: accountUserStore.limit, sortBy: [] });
+});
 </script>
 
 <template>
@@ -60,7 +72,7 @@ getUsers();
       </v-btn>
     </div>
 
-    <v-data-table
+    <v-data-table-server
       :headers="[
         { title: 'Nome', key: 'name' },
         { title: 'Telefone', key: 'cellphone' },
@@ -75,14 +87,7 @@ getUsers();
       :items-length="accountUserStore.total"
       :loading="accountUserStore.loading"
       :page="currentPage"
-      @update:options="({ page, itemsPerPage: limit }) => {
-        if (page !== currentPage) {
-          onPageChange(page);
-        }
-        if (limit !== itemsPerPage) {
-          onItemsPerPageChange(limit);
-        }
-      }"
+      @update:options="loadItems"
     >
       <template #item.name="{ item }">
         <div class="d-flex align-center gap-3">
@@ -120,7 +125,7 @@ getUsers();
           </v-btn>
         </div>
       </template>
-    </v-data-table>
+    </v-data-table-server>
 
     <UserModal v-model="dialog" :selectedAccountUser="selectedAccountUser"/>
   </div>
