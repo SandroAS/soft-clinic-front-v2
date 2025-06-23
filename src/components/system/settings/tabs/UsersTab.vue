@@ -5,9 +5,11 @@ import type AccountUser from '@/types/account/account-user.type'
 import { useAccountUserStore } from '@/stores/account-user';
 import { getInitials } from '@/utils/getInitialsFromName.util';
 import { useSnackbarStore } from '@/stores/snackbar.store';
+import { useRoleStore } from '@/stores/role-permission';
 
 const accountUserStore = useAccountUserStore();
 const snackbarStore = useSnackbarStore();
+const roleStore = useRoleStore();
 
 const dialog = ref(false);
 const selectedAccountUser = ref<AccountUser| null>(null);
@@ -156,13 +158,11 @@ onMounted(() => {
       </template>
 
       <template #item.cellphone="{ item }">
-        <div class="d-flex justify-end pr-2"> {{ item.cellphone }}
-        </div>
+        <div class="d-flex justify-end pr-2"> {{ item.cellphone }}</div>
       </template>
 
       <template #item.role.name="{ item }">
-        <div class="d-flex justify-end pr-2"> {{ item.role.name }}
-        </div>
+        <div class="d-flex justify-end pr-2"> {{ roleStore.formatName(item.role.name) }}</div>
       </template>
 
       <template #item.is_active="{ item }">

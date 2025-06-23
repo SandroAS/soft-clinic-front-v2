@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import UsersTab from '@/components/system/settings/tabs/UsersTab.vue'
-import PermissionsTab from '@/components/system/settings/tabs/PermissionsTab.vue'
+import RolePermissionsTab from '@/components/system/settings/tabs/RolePermissionsTab.vue'
 import OdontogramaCategoriesTab from '@/components/system/settings/tabs/OdontogramaCategoriesTab.vue'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -45,7 +45,7 @@ watch(selectedTab, (newTab) => {
         </v-tabs-window-item>
 
         <v-tabs-window-item value="permissoes">
-          <PermissionsTab />
+          <RolePermissionsTab />
         </v-tabs-window-item>
 
         <v-tabs-window-item value="servicos">

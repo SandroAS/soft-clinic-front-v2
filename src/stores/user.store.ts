@@ -9,7 +9,7 @@ import type { ProfilePersonalInformation } from '@/types/profile/profile-persona
 import { saveUserCompany, saveUserPassword, updateUserPersonalInformation } from '@/services/profile.service';
 import type { ProfileCompany } from '@/types/profile/profile-company.type';
 import type ProfileCompanyResponse from '@/types/profile/profile-company-response.type';
-import type ProfilePassword from '@/types/profile/profile-passworld.type';
+import type ProfilePassword from '@/types/profile/profile-password.type';
 
 interface UserStoreState {
   user: AuthUser | null;

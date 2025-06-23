@@ -53,6 +53,7 @@ export const useAccountUserStore = defineStore('accountUser', {
           role: {
             uuid: res.role.uuid,
             name: accountUser.role,
+            created_at: '',
             permissions: []
           }
         }
