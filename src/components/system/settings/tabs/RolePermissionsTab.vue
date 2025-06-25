@@ -3,6 +3,7 @@ import type { Role } from '@/types/role/role.type'
 import { onMounted, ref, watch } from 'vue'
 import { useRoleStore } from '@/stores/role-permission';
 import { formatDate } from '@/utils/formatDate.util';
+import RolePermissionsModal from '../rolePermissions/RolePermissionsModal.vue';
 
 const roleStore = useRoleStore();
 
@@ -136,24 +137,6 @@ onMounted(() => {
       </template>
     </v-data-table>
 
-    <v-dialog v-model="dialog" max-width="600">
-      <v-card>
-        <v-card-title>
-          Permissões do grupo: {{ selectedRole?.name }}
-        </v-card-title>
-        <v-card-text>
-          <v-switch
-            label="Cadastro de Pacientes"
-            readonly
-            color="primary"
-            hide-details
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" @click="dialog = false">Fechar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <RolePermissionsModal v-model="dialog" :selectedRole="selectedRole" />
   </v-card>
 </template>

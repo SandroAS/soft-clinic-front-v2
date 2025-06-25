@@ -187,6 +187,6 @@ onMounted(() => {
       </template>
     </v-data-table-server>
 
-    <UserModal v-model="dialog" :selectedAccountUser="selectedAccountUser"/>
+    <UserModal v-model="dialog" :selectedAccountUser="selectedAccountUser" />
   </div>
 </template>
