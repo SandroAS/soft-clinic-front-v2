@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoleStore } from '@/stores/role-permission';
 import type { Role } from '@/types/role/role.type';
+import formatPermissionName from '@/utils/formatPermissionName.util';
 
 const roleStore = useRoleStore();
 
@@ -24,7 +25,7 @@ const close = () => emit('update:modelValue', false)
         <v-switch
           v-for="permission in roleStore!.permissions"
           :key="permission"
-          :label="permission"
+          :label="formatPermissionName(permission)"
           :model-value="selectedRole!.permissions.some(x => x === permission)"
           readonly
           color="primary"
