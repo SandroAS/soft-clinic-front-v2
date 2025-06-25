@@ -108,8 +108,8 @@ onMounted(() => {
 
     <v-data-table
       :headers="[
-        { title: 'Grupo', value: 'name' },
-        { title: 'Data de Cadastro', value: 'created_at' },
+        { title: 'Grupo', value: 'name', sortable: true },
+        { title: 'Data de Cadastro', value: 'created_at', sortable: true },
         { title: 'Ações', value: 'actions', sortable: false, align: 'end' }
       ]"
       :items="roleStore.roles || []"
