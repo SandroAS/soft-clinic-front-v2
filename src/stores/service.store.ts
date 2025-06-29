@@ -4,7 +4,6 @@ import type ServicePayload from '@/types/service/service-payload.type';
 import type ServiceResponsePagination from '@/types/service/service-response-pagination.type';
 import type Service from '@/types/service/service.type';
 import { defineStore } from 'pinia';
-import type { SystemModuleName } from './system-module.store';
 
 interface ServiceStoreState {
   services: Service[] | null;
@@ -48,15 +47,17 @@ export const useServiceStore = defineStore('service', {
           name: service.name,
           description: service.description,
           price: service.price,
-          systemModule: {
-            uuid: service.systemModule.uuid,
-            name: service.systemModule.name as SystemModuleName
-          }
+          systemModule: service.systemModule
+            ? { uuid: service.systemModule.uuid, name: service.systemModule.name }
+            : { uuid: '', name: '' }
         }
         if(uuid) {
-          const serviceFind = this.services.find(x => x.uuid === uuid);
-          const index = this.services.indexOf(serviceFind!);
-          this.services.splice(index, 1, serviceSaved!)
+          const index = this.services.findIndex(x => x.uuid === uuid);
+          if (index !== -1) {
+            this.services.splice(index, 1, serviceSaved);
+          } else {
+            console.error('UUID: '+uuid+' não encontrado para atualizar localmente.')
+          }
         } else {
           this.services.push(serviceSaved);
         }

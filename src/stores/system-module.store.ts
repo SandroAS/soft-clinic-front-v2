@@ -24,15 +24,17 @@ export const useSystemModuleStore = defineStore('systemModule', {
   }),
 
   getters: {
-    systemModulesOptions(): { value: SystemModule, title: string, disabled: boolean }[] | [] {
+    systemModulesOptions(): { value: SystemModule | '', title: string, disabled: boolean }[] | [] {
       if(!this.system_modules) return [];
-      return this.system_modules.map(system_module => {
+      const systemModulesMapped = this.system_modules.map(system_module => {
         return {
           value: system_module,
           title: formatSystemModuleName(system_module.name as SystemModuleName),
           disabled: system_module.name !== SystemModuleName.DENTISTRY
         }
-      })
+      });
+      systemModulesMapped.push({ value: { uuid: '', name: '' }, title: 'Selecione uma Opção', disabled: true });
+      return systemModulesMapped;
     }
   },
 

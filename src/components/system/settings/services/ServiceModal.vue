@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { Form, Field } from '@/plugins/vee-validate';
 import { useServiceStore } from '@/stores/service.store';
 import { useSnackbarStore } from '@/stores/snackbar.store';
 import type Service from '@/types/service/service.type';
 import type ServicePayload from '@/types/service/service-payload.type';
 import { useSystemModuleStore } from '@/stores/system-module.store';
+import type { SystemModule } from '@/types/systemModule/system-module.type';
 
 const serviceStore = useServiceStore();
 const snackbarStore = useSnackbarStore();
@@ -20,12 +21,24 @@ const emit = defineEmits(['update:modelValue'])
 
 const close = () => emit('update:modelValue', false)
 
+const defaultSystemModule = computed<SystemModule | undefined>(() => {
+  if (props.selectedService?.systemModule) {
+    return props.selectedService.systemModule;
+  }
+
+  if (systemModuleStore.system_modules && systemModuleStore.system_modules.length > 0) {
+    return systemModuleStore.system_modules[0];
+  }
+
+  return undefined;
+});
+
 let service = reactive<ServicePayload>({
   uuid: props.selectedService?.uuid || undefined,
   name: props.selectedService?.name || '',
   description: props.selectedService?.description || '',
   price: props.selectedService?.price || '',
-  systemModule: props.selectedService?.systemModule || systemModuleStore.system_modules![0]
+  systemModule: defaultSystemModule.value
 })
 
 watch(() => props.selectedService, (val) => {
@@ -33,21 +46,20 @@ watch(() => props.selectedService, (val) => {
     name: props.selectedService?.name || '',
     description: props.selectedService?.description || '',
     price: props.selectedService?.price || '',
-    systemModule: props.selectedService?.systemModule || systemModuleStore.system_modules![0]
+    systemModule: defaultSystemModule.value
   }
 })
 
 async function onSubmit(formValues: Record<string, any>) {
   const service: ServicePayload = formValues as ServicePayload;
-  const systemModuleName = props.selectedService?.systemModule.name || systemModuleStore.system_modules!.find(x => x.uuid === service.uuid) // PENSAR MELHOR
-
+  
   try {
     await serviceStore.saveService(service, props.selectedService?.uuid);
-    snackbarStore.show('Registro realizado com sucesso! Bem-vindo(a)!', 'success');
+    snackbarStore.show('Serviço salvo com sucesso!', 'success');
     close();
   } catch (err: any) {
     console.error('Erro no registro:', err);
-    snackbarStore.show(serviceStore.error || 'Falha ao salvar usuário.', 'error');
+    snackbarStore.show(serviceStore.error || 'Falha ao salvar serviço.', 'error');
   }
 };
 </script>

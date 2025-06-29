@@ -5,5 +5,5 @@ export default interface ServicePayload {
   name: string;
   description?: string;
   price: string;
-  systemModule: SystemModule;
+  systemModule?: SystemModule;
 }

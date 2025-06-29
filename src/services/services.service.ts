@@ -10,19 +10,19 @@ export const getServices = async (page: number = 1, limit: number = 10, sortColu
   if (sortOrder) params.sort_order = sortOrder;
   if (searchTerm) params.search_term = searchTerm;
 
-  const response: AxiosResponse<ServiceResponsePagination> = await api.get('/service', { params });
+  const response: AxiosResponse<ServiceResponsePagination> = await api.get('/services', { params });
 
   return response.data;
 };
 
 export const saveService = async (service: ServicePayload, uuid?: string) => {
   const response: AxiosResponse<{ uuid: string }> = uuid 
-    ? await api.put(`/service/${uuid}`, service)
-    : await api.post('/service', service);
+    ? await api.put(`/services/${uuid}`, service)
+    : await api.post('/services', service);
   return response.data;
 };
 
 export const removeService = async (uuid: string) => {
-  const response: AxiosResponse<boolean> = await api.delete(`/service/${uuid}`);
+  const response: AxiosResponse<boolean> = await api.delete(`/services/${uuid}`);
   return response.data;
 };

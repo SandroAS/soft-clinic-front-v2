@@ -4,6 +4,7 @@ import { useServiceStore } from '@/stores/service.store';
 import { useSnackbarStore } from '@/stores/snackbar.store';
 import { useSystemModuleStore } from '@/stores/system-module.store';
 import type Service from '@/types/service/service.type';
+import ServiceModal from '../services/ServiceModal.vue';
 
 const serviceStore = useServiceStore();
 const snackbarStore = useSnackbarStore();
@@ -150,6 +151,6 @@ onMounted(() => {
       </template>
     </v-data-table>
 
-    <ServiceModal />
+    <ServiceModal v-model="dialog" :selectedService="selectedService" />
   </div>
 </template>
