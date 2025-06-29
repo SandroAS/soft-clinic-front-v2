@@ -2,17 +2,17 @@
 import { onMounted, ref, watch } from 'vue'
 import UserModal from '../users/UserModal.vue'
 import type AccountUser from '@/types/account/account-user.type'
-import { useAccountUserStore } from '@/stores/account-user';
+import { useAccountUserStore } from '@/stores/account-user.store';
 import { getInitials } from '@/utils/getInitialsFromName.util';
 import { useSnackbarStore } from '@/stores/snackbar.store';
-import { useRoleStore } from '@/stores/role-permission';
+import { useRoleStore } from '@/stores/role-permission.store';
 
 const accountUserStore = useAccountUserStore();
 const snackbarStore = useSnackbarStore();
 const roleStore = useRoleStore();
 
 const dialog = ref(false);
-const selectedAccountUser = ref<AccountUser| null>(null);
+const selectedAccountUser = ref<AccountUser | null>(null);
 
 const currentPage = ref(accountUserStore.page);
 const itemsPerPage = ref(accountUserStore.limit);
@@ -28,7 +28,7 @@ async function updateIsActive(accountUser: AccountUser) {
     await accountUserStore.updateAccountUserIsActive(accountUser.uuid!);
   } catch (err) {
     console.error(err);
-    snackbarStore.show('Falha ao tentar ativar/inativar usuário. Erro: '+err, 'error')
+    snackbarStore.show('Falha ao tentar ativar/inativar usuário. Erro: ' + err, 'error')
   }
 }
 

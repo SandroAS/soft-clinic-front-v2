@@ -1,4 +1,4 @@
-import { getAccountUsers, saveAccountUser, updateAccountUserIsActive } from '@/services/account-user';
+import { getAccountUsers, saveAccountUser, updateAccountUserIsActive } from '@/services/account-user.service';
 import type AccountUserPayload from '@/types/account/account-user-payload.type';
 import type AccountUser from '@/types/account/account-user.type';
 import type AccountUsersResponsePaginationDto from '@/types/account/account-users-response-pagination-dto';
@@ -105,7 +105,7 @@ export const useAccountUserStore = defineStore('accountUser', {
         this.sort_order = params.sort_order;
         this.search_term = params.search_term;
       } catch (err: any) {
-        this.error = err.response?.data?.message || 'Erro ao tentar atualizar usuário.';
+        this.error = err.response?.data?.message || 'Erro ao tentar buscar usuários.';
         throw err;
       } finally {
         this.loading = false;

@@ -1,5 +1,5 @@
 import type { AccountTrial } from '../account/account-trial.type';
-import type { SystemModule } from '../account/system-module.type';
+import type { SystemModule } from '../systemModule/system-module.type';
 
 export interface UserAccount {
   uuid: string;

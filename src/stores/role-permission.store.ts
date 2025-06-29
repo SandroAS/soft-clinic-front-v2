@@ -2,7 +2,7 @@ import type { Role } from '@/types/role/role.type';
 import type DataTableFilterParams from '@/types/dataTable/data-table-filter-params.type';
 import { defineStore } from 'pinia';
 import type RoleResponsePaginationDto from '@/types/role/role-response-pagination.type';
-import { getAllPermissions, getRolesPermissions } from '@/services/role-permission';
+import { getAllPermissions, getRolesPermissions } from '@/services/role-permission.service';
 import { RoleType } from '@/types/user/user-role.type';
 
 interface RoleStoreState {

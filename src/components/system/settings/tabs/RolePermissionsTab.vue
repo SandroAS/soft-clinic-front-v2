@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Role } from '@/types/role/role.type'
 import { onMounted, ref, watch } from 'vue'
-import { useRoleStore } from '@/stores/role-permission';
+import { useRoleStore } from '@/stores/role-permission.store';
 import { formatDate } from '@/utils/formatDate.util';
 import RolePermissionsModal from '../rolePermissions/RolePermissionsModal.vue';
 
@@ -93,35 +93,19 @@ onMounted(() => {
 <template>
   <v-card flat>
     <div class="d-flex justify-start mb-4 mt-2 align-center">
-      <v-text-field
-        v-model="searchTerm"
-        label="Buscar grupo de permissões"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        density="compact"
-        hide-details
-        clearable
-        class="w-md-auto w-100"
-        style="max-width: 300px;"
-      ></v-text-field>
+      <v-text-field v-model="searchTerm" label="Buscar grupo de permissões" prepend-inner-icon="mdi-magnify"
+        variant="outlined" density="compact" hide-details clearable class="w-md-auto w-100"
+        style="max-width: 300px;"></v-text-field>
     </div>
 
-    <v-data-table
-      :headers="[
-        { title: 'Grupo', value: 'name', sortable: true },
-        { title: 'Data de Cadastro', value: 'created_at', sortable: true },
-        { title: 'Ações', value: 'actions', sortable: false, align: 'end' }
-      ]"
-      :items="roleStore.roles || []"
-      item-value="uuid"
-      :items-per-page="itemsPerPage"
-      :items-per-page-options="[{title: '10', value: 10}, {title: '25', value: 25}, {title: '50', value: 50}, {title: '100', value: 100}]"
-      :items-length="roleStore.total"
-      :loading="roleStore.loading"
-      :page="currentPage"
-      mobile-breakpoint="md"
-      @update:options="loadItems"
-    >
+    <v-data-table :headers="[
+      { title: 'Grupo', value: 'name', sortable: true },
+      { title: 'Data de Cadastro', value: 'created_at', sortable: true },
+      { title: 'Ações', value: 'actions', sortable: false, align: 'end' }
+    ]" :items="roleStore.roles || []" item-value="uuid" :items-per-page="itemsPerPage"
+      :items-per-page-options="[{ title: '10', value: 10 }, { title: '25', value: 25 }, { title: '50', value: 50 }, { title: '100', value: 100 }]"
+      :items-length="roleStore.total" :loading="roleStore.loading" :page="currentPage" mobile-breakpoint="md"
+      @update:options="loadItems">
       <template #item.name="{ item }">
         {{ roleStore.formatName(item.name) }}
       </template>
