@@ -21,38 +21,26 @@ const emit = defineEmits(['update:modelValue'])
 
 const close = () => emit('update:modelValue', false)
 
-const defaultSystemModule = computed<SystemModule | undefined>(() => {
-  if (props.selectedService?.systemModule) {
-    return props.selectedService.systemModule;
-  }
-
-  if (systemModuleStore.system_modules && systemModuleStore.system_modules.length > 0) {
-    return systemModuleStore.system_modules[0];
-  }
-
-  return undefined;
-});
-
 let service = reactive<ServicePayload>({
   uuid: props.selectedService?.uuid || undefined,
   name: props.selectedService?.name || '',
   description: props.selectedService?.description || '',
-  price: props.selectedService?.price || '',
-  systemModule: defaultSystemModule.value
+  price: props.selectedService?.price || '0.00',
+  systemModule: props.selectedService?.systemModule || undefined
 })
 
 watch(() => props.selectedService, (val) => {
   service = {
     name: props.selectedService?.name || '',
     description: props.selectedService?.description || '',
-    price: props.selectedService?.price || '',
-    systemModule: defaultSystemModule.value
+    price: props.selectedService?.price || '0.00',
+    systemModule: props.selectedService?.systemModule || undefined
   }
 })
 
 async function onSubmit(formValues: Record<string, any>) {
   const service: ServicePayload = formValues as ServicePayload;
-  
+
   try {
     await serviceStore.saveService(service, props.selectedService?.uuid);
     snackbarStore.show('Serviço salvo com sucesso!', 'success');
@@ -62,6 +50,56 @@ async function onSubmit(formValues: Record<string, any>) {
     snackbarStore.show(serviceStore.error || 'Falha ao salvar serviço.', 'error');
   }
 };
+
+const displayFormattedValue = computed(() => {
+  const valueAsNumber = parseFloat(String(props.modelValue || '0').replace(',', '.'));
+  
+  if (isNaN(valueAsNumber) || valueAsNumber === null) {
+    return '0,00';
+  }
+
+  return valueAsNumber.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: true,
+  });
+});
+
+function handlePriceKeydown(event: KeyboardEvent, currentValue: string | number | null, onChange: (value: any) => void) {
+  const key = event.key;
+  
+  let currentPriceInCentsString = '';
+  if (currentValue !== null && currentValue !== undefined) {
+    currentPriceInCentsString = String(currentValue).replace(/\D/g, '');
+  }
+
+  if (!/^\d$/.test(key) && key !== 'Backspace') {
+    event.preventDefault();
+    return;
+  }
+
+  let newPriceString = currentPriceInCentsString;
+
+  if (key === 'Backspace') {
+    newPriceString = newPriceString.slice(0, -1);
+    if (newPriceString.length === 0) {
+      newPriceString = '0';
+    }
+  } else {
+    newPriceString += key;
+  }
+
+  newPriceString = newPriceString.replace(/^0+(?=\d)/, '');
+
+  const newPriceValueInCents = newPriceString === '' ? null : parseFloat(newPriceString);
+  
+  const valueForVeeValidate = newPriceValueInCents !== null 
+    ? (newPriceValueInCents / 100).toFixed(2) 
+    : null;
+
+  onChange(valueForVeeValidate);
+  service.price = valueForVeeValidate;
+}
 </script>
 
 <template>
@@ -83,7 +121,7 @@ async function onSubmit(formValues: Record<string, any>) {
               :error-messages="errorMessage" class="mb-3"
             />
           </Field>
-          <Field name="name" rules="required" v-slot="{ field, errorMessage }">
+          <Field name="description" rules="required" v-slot="{ field, errorMessage }">
             <v-textarea
               v-bind="field"
               label="Descrição"
@@ -94,19 +132,18 @@ async function onSubmit(formValues: Record<string, any>) {
               :error-messages="errorMessage" class="mb-3"
             />
           </Field>
-          <Field name="name" rules="required|min:0" v-slot="{ field, errorMessage }">
+          <Field name="price" rules="required|min:0" v-slot="{ field, errorMessage, value }">
             <v-text-field
               v-bind="field"
+              :model-value="displayFormattedValue"
               label="Valor (R$)"
               prefix="R$"
-              type="number"
-              min="0"
-              step="0.01"
               variant="solo-filled"
               density="compact"
               :persistent-placeholder="!!props.selectedService?.price"
               :error="!!errorMessage"
               :error-messages="errorMessage" class="mb-3"
+              @keydown.prevent="handlePriceKeydown($event, value, field.onChange)"
             />
           </Field>
           <Field name="systemModule" rules="required" v-slot="{ field, errorMessage }">

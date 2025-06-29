@@ -24,7 +24,7 @@ export const useSystemModuleStore = defineStore('systemModule', {
   }),
 
   getters: {
-    systemModulesOptions(): { value: SystemModule | '', title: string, disabled: boolean }[] | [] {
+    systemModulesOptions(): { value: SystemModule, title: string, disabled: boolean }[] | [] {
       if(!this.system_modules) return [];
       const systemModulesMapped = this.system_modules.map(system_module => {
         return {
@@ -33,7 +33,6 @@ export const useSystemModuleStore = defineStore('systemModule', {
           disabled: system_module.name !== SystemModuleName.DENTISTRY
         }
       });
-      systemModulesMapped.push({ value: { uuid: '', name: '' }, title: 'Selecione uma Opção', disabled: true });
       return systemModulesMapped;
     }
   },
