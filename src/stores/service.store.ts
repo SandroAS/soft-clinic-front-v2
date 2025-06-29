@@ -36,7 +36,7 @@ export const useServiceStore = defineStore('service', {
   getters: {},
 
   actions: {
-    async saveService(service: ServicePayload, systemModuleName: SystemModuleName, uuid?: string) {
+    async saveService(service: ServicePayload, uuid?: string) {
       this.loading = true;
       this.error = null;
 
@@ -49,8 +49,8 @@ export const useServiceStore = defineStore('service', {
           description: service.description,
           price: service.price,
           systemModule: {
-            uuid: service.system_module_uuid,
-            name: systemModuleName
+            uuid: service.systemModule.uuid,
+            name: service.systemModule.name as SystemModuleName
           }
         }
         if(uuid) {

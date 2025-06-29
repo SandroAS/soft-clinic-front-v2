@@ -1,6 +1,6 @@
 import { getSystemModules } from '@/services/sytem-module.service';
-import type DataTableFilterParams from '@/types/dataTable/data-table-filter-params.type';
 import type { SystemModule } from '@/types/systemModule/system-module.type';
+import formatSystemModuleName from '@/utils/formatSystemModuleName.util';
 import { defineStore } from 'pinia';
 
 interface ServiceStoreState {
@@ -23,7 +23,18 @@ export const useSystemModuleStore = defineStore('systemModule', {
     error: null
   }),
 
-  getters: {},
+  getters: {
+    systemModulesOptions(): { value: SystemModule, title: string, disabled: boolean }[] | [] {
+      if(!this.system_modules) return [];
+      return this.system_modules.map(system_module => {
+        return {
+          value: system_module,
+          title: formatSystemModuleName(system_module.name as SystemModuleName),
+          disabled: system_module.name !== SystemModuleName.DENTISTRY
+        }
+      })
+    }
+  },
 
   actions: {
     async getSystemModules() {
