@@ -51,8 +51,9 @@ async function onSubmit(formValues: Record<string, any>) {
   }
 };
 
-const displayFormattedValue = computed(() => {
-  const valueAsNumber = parseFloat(String(props.modelValue || '0').replace(',', '.'));
+const displayFormattedValue = computed((val) => {
+  console.log(val)
+  const valueAsNumber = parseFloat(String(props.selectedService?.price || '0.00').replace(',', '.'));
   
   if (isNaN(valueAsNumber) || valueAsNumber === null) {
     return '0,00';
