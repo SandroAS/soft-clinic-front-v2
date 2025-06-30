@@ -46,7 +46,7 @@ export const useServiceStore = defineStore('service', {
           uuid: res.uuid,
           name: service.name,
           description: service.description,
-          price: service.price,
+          price: service.price ?? '0.00',
           systemModule: service.systemModule
             ? { uuid: service.systemModule.uuid, name: service.systemModule.name }
             : { uuid: '', name: '' }
@@ -59,7 +59,7 @@ export const useServiceStore = defineStore('service', {
             console.error('UUID: '+uuid+' não encontrado para atualizar localmente.')
           }
         } else {
-          this.services.push(serviceSaved);
+          this.services.unshift(serviceSaved);
         }
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Erro ao tentar atualizar serviço.';

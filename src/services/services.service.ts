@@ -17,8 +17,8 @@ export const getServices = async (page: number = 1, limit: number = 10, sortColu
 
 export const saveService = async (service: ServicePayload, uuid?: string) => {
   const response: AxiosResponse<{ uuid: string }> = uuid 
-    ? await api.put(`/services/${uuid}`, service)
-    : await api.post('/services', service);
+    ? await api.put(`/services/${uuid}`, { ...service, system_module_uuid: service.systemModule!.uuid })
+    : await api.post('/services', { ...service, system_module_uuid: service.systemModule!.uuid });
   return response.data;
 };
 
