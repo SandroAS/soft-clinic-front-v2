@@ -69,7 +69,7 @@ export const useServiceStore = defineStore('service', {
       }
     },
 
-    async getServices(params: DataTableFilterParams = {}) {
+    async getServices(params: DataTableFilterParams) {
       this.loading = true;
       this.error = null;
 

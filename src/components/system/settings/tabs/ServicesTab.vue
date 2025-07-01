@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { useServiceStore } from '@/stores/service.store';
-import { useSnackbarStore } from '@/stores/snackbar.store';
 import { useSystemModuleStore } from '@/stores/system-module.store';
 import type Service from '@/types/service/service.type';
 import ServiceModal from '../services/ServiceModal.vue';
+import loadItems from '@/utils/loadItems.util';
 
 const serviceStore = useServiceStore();
-const snackbarStore = useSnackbarStore();
 const systemModuleStore = useSystemModuleStore();
 
 const dialog = ref(false);
@@ -16,6 +15,7 @@ const selectedService = ref<Service | null>(null);
 const currentPage = ref(serviceStore.page);
 const itemsPerPage = ref(serviceStore.limit);
 const searchTerm = ref(serviceStore.search_term || '');
+const sortBy = ref(serviceStore.sort_column ? [{ key: serviceStore.sort_column, order: serviceStore.sort_order }] : []);
 
 const openDialog = (item?: Service) => {
   selectedService.value = item || null;
@@ -33,67 +33,31 @@ async function getSystemModules() {
 getServices();
 getSystemModules()
 
-async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: any[] }) {
-  const sortColumn = sortBy.length > 0 ? sortBy[0].key : undefined;
-  const sortOrder = sortBy.length > 0 ? sortBy[0].order : undefined;
-  const currentSearchTerm = searchTerm.value;
+const loadServices = async () => {
+  await loadItems(
+    { page: currentPage.value, itemsPerPage: itemsPerPage.value, sortBy: sortBy.value },
+    searchTerm.value,
+    serviceStore,
+    'getServices',
+    'services'
+  );
 
-  let shouldFetch = false;
-
-  if (page !== serviceStore.page) {
-    serviceStore.page = page;
-    shouldFetch = true;
-  }
-
-  if (itemsPerPage !== serviceStore.limit) {
-    serviceStore.limit = itemsPerPage;
-    serviceStore.page = 1;
-    shouldFetch = true;
-  }
-
-  if (sortColumn !== serviceStore.sort_column || sortOrder !== serviceStore.sort_order) {
-    serviceStore.sort_column = sortColumn;
-    serviceStore.sort_order = sortOrder;
-    serviceStore.page = 1;
-    shouldFetch = true;
-  }
-
-  if (currentSearchTerm !== serviceStore.search_term) {
-    serviceStore.search_term = currentSearchTerm;
-    serviceStore.page = 1; // Reseta a página ao aplicar novo filtro
-    shouldFetch = true;
-  }
-
-  if (shouldFetch) {
-    await serviceStore.getServices({ page: serviceStore.page, limit: serviceStore.limit, sort_column: serviceStore.sort_column, sort_order: serviceStore.sort_order, search_term: serviceStore.search_term });
-  }
-
-  if (!serviceStore.services && !serviceStore.loading) {
-    await serviceStore.getServices({ page: serviceStore.page, limit: serviceStore.limit, sort_column: serviceStore.sort_column, sort_order: serviceStore.sort_order, search_term: serviceStore.search_term });
-  }
-}
+  currentPage.value = serviceStore.page;
+  itemsPerPage.value = serviceStore.limit;
+};
 
 let searchDebounceTimeout: ReturnType<typeof setTimeout>;
-watch(searchTerm, (newVal, oldVal) => {
-  if (newVal === oldVal) return;
+watch(searchTerm, (newVal) => {
+  if (typeof newVal !== 'string') return; 
 
   clearTimeout(searchDebounceTimeout);
   searchDebounceTimeout = setTimeout(() => {
-    serviceStore.page = 1;
-    loadItems({
-      page: serviceStore.page,
-      itemsPerPage: serviceStore.limit,
-      sortBy: serviceStore.sort_column ? [{ key: serviceStore.sort_column, order: serviceStore.sort_order || 'asc' }] : [],
-    });
+    loadServices();
   }, 300);
 });
 
-onMounted(() => {
-  loadItems({
-    page: serviceStore.page,
-    itemsPerPage: serviceStore.limit,
-    sortBy: serviceStore.sort_column ? [{ key: serviceStore.sort_column, order: serviceStore.sort_order || 'asc' }] : []
-  });
+onMounted(async () => {
+  loadServices();
 });
 </script>
 
@@ -133,7 +97,7 @@ onMounted(() => {
       :loading="serviceStore.loading"
       :page="currentPage"
       mobile-breakpoint="md"
-      @update:options="loadItems"
+      @update:options="loadServices"
     >
       <template v-slot:[`item.price`]="{ item }">
         R$ {{ item.price }}

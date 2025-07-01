@@ -61,7 +61,7 @@ export const useRoleStore = defineStore('role', {
       }
     },
 
-    async getRolesPermissions(params: DataTableFilterParams = {}) {
+    async getRolesPermissions(params: DataTableFilterParams = { page: 1, limit: 10 }) {
       this.loading = true;
       this.error = null;
 

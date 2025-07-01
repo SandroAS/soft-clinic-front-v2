@@ -1,74 +1,91 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { useOdontogramaCategoryStore } from '@/stores/odontograma-category.store';
+import type OdontogramaCategory from '@/types/odontogramaCategory/odontograma-category.type';
+import { ref, watch, onMounted } from 'vue'
+import OdontogramaCategoryModal from '../odontogramaCategories/OdontogramaCategoryModal.vue';
 
-type Category = {
-  id: number
-  name: string
-  color: string
-  type: 'DENTE' | 'FACE'
-  predefined: boolean
-}
+const odontogramaCategoryStore = useOdontogramaCategoryStore();
 
 const dialog = ref(false)
-const isEdit = ref(false)
-const editedItem = ref<Category | null>(null)
+const selectedOdontogramaCategory = ref<OdontogramaCategory | null>(null);
 
-const predefinedCategories: Category[] = [
-  { id: 1, name: 'Prótese', color: '#BDBDBD', type: 'DENTE', predefined: true },
-  { id: 2, name: 'Resina', color: '#FFC107', type: 'DENTE', predefined: true },
-  { id: 3, name: 'Cariado', color: '#D32F2F', type: 'FACE', predefined: true },
-  { id: 4, name: 'Ausente', color: '#9E9E9E', type: 'DENTE', predefined: true }
-]
+const currentPage = ref(odontogramaCategoryStore.page);
+const itemsPerPage = ref(odontogramaCategoryStore.limit);
+const searchTerm = ref(odontogramaCategoryStore.search_term || '');
 
-const customCategories = ref<Category[]>([
-  { id: 5, name: 'Canal Tratado', color: '#2196F3', type: 'DENTE', predefined: false }
-])
-
-const categories = computed(() => [
-  ...predefinedCategories,
-  ...customCategories.value
-])
-
-const openDialog = (item: Category | null = null) => {
-  isEdit.value = !!item
-  editedItem.value = item
-    ? { ...item }
-    : {
-        id: Date.now(),
-        name: '',
-        color: '#1976D2',
-        type: 'DENTE',
-        predefined: false
-      }
-  dialog.value = true
+const openDialog = (item?: OdontogramaCategory) => {
+  selectedOdontogramaCategory.value = item || null;
+  dialog.value = true;
 }
 
-const saveCategory = () => {
-  const itemToSave = editedItem.value ?? {
-    id: Date.now(),
-    name: '',
-    color: '#000000',
-    type: 'DENTE',
-    predefined: false
+async function getOdontogramaCategories() {
+  await odontogramaCategoryStore.getOdontogramaCategories({ page: currentPage.value, limit: itemsPerPage.value });
+}
+
+getOdontogramaCategories();
+
+async function loadItems({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy: any[] }) {
+  const sortColumn = sortBy.length > 0 ? sortBy[0].key : undefined;
+  const sortOrder = sortBy.length > 0 ? sortBy[0].order : undefined;
+  const currentSearchTerm = searchTerm.value;
+
+  let shouldFetch = false;
+
+  if (page !== odontogramaCategoryStore.page) {
+    odontogramaCategoryStore.page = page;
+    shouldFetch = true;
   }
 
-  const { id, ...categoryData } = itemToSave
-
-  if (isEdit.value) {
-    const index = customCategories.value.findIndex(c => c.id === itemToSave.id)
-    if (index !== -1) {
-      customCategories.value[index] = { id: itemToSave.id, ...categoryData }
-    }
-  } else {
-    customCategories.value.push({ id: itemToSave.id, ...categoryData })
+  if (itemsPerPage !== odontogramaCategoryStore.limit) {
+    odontogramaCategoryStore.limit = itemsPerPage;
+    odontogramaCategoryStore.page = 1;
+    shouldFetch = true;
   }
 
-  dialog.value = false
+  if (sortColumn !== odontogramaCategoryStore.sort_column || sortOrder !== odontogramaCategoryStore.sort_order) {
+    odontogramaCategoryStore.sort_column = sortColumn;
+    odontogramaCategoryStore.sort_order = sortOrder;
+    odontogramaCategoryStore.page = 1;
+    shouldFetch = true;
+  }
+
+  if (currentSearchTerm !== odontogramaCategoryStore.search_term) {
+    odontogramaCategoryStore.search_term = currentSearchTerm;
+    odontogramaCategoryStore.page = 1;
+    shouldFetch = true;
+  }
+
+  if (shouldFetch) {
+    await odontogramaCategoryStore.getOdontogramaCategories({ page: odontogramaCategoryStore.page, limit: odontogramaCategoryStore.limit, sort_column: odontogramaCategoryStore.sort_column, sort_order: odontogramaCategoryStore.sort_order, search_term: odontogramaCategoryStore.search_term });
+  }
+
+  if (!odontogramaCategoryStore.odontograma_categories && !odontogramaCategoryStore.loading) {
+    await odontogramaCategoryStore.getOdontogramaCategories({ page: odontogramaCategoryStore.page, limit: odontogramaCategoryStore.limit, sort_column: odontogramaCategoryStore.sort_column, sort_order: odontogramaCategoryStore.sort_order, search_term: odontogramaCategoryStore.search_term });
+  }
 }
 
-const deleteCategory = (id: number) => {
-  customCategories.value = customCategories.value.filter(c => c.id !== id)
-}
+let searchDebounceTimeout: ReturnType<typeof setTimeout>;
+watch(searchTerm, (newVal, oldVal) => {
+  if (newVal === oldVal) return;
+
+  clearTimeout(searchDebounceTimeout);
+  searchDebounceTimeout = setTimeout(() => {
+    odontogramaCategoryStore.page = 1;
+    loadItems({
+      page: odontogramaCategoryStore.page,
+      itemsPerPage: odontogramaCategoryStore.limit,
+      sortBy: odontogramaCategoryStore.sort_column ? [{ key: odontogramaCategoryStore.sort_column, order: odontogramaCategoryStore.sort_order || 'asc' }] : [],
+    });
+  }, 300);
+});
+
+onMounted(() => {
+  loadItems({
+    page: odontogramaCategoryStore.page,
+    itemsPerPage: odontogramaCategoryStore.limit,
+    sortBy: odontogramaCategoryStore.sort_column ? [{ key: odontogramaCategoryStore.sort_column, order: odontogramaCategoryStore.sort_order || 'asc' }] : []
+  });
+});
 </script>
 
 <template>
@@ -87,67 +104,29 @@ const deleteCategory = (id: number) => {
         { title: 'Tipo', value: 'type' },
         { title: 'Ações', value: 'actions', sortable: false, align: 'end' }
       ]"
-      :items="categories"
+      :items="odontogramaCategoryStore.odontograma_categories || []"
       item-key="id"
     >
       <template v-slot:[`item.actions`]="{ item }">
-        <div v-if="!item.predefined">
+        <div>
           <v-btn
             icon
-            :disabled="item.predefined"
             @click="openDialog(item)"
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn
+          <!-- <v-btn
             icon
             color="red"
             :disabled="item.predefined"
             @click="deleteCategory(item.id)"
           >
             <v-icon>mdi-delete</v-icon>
-          </v-btn>
+          </v-btn> -->
         </div>
       </template>
     </v-data-table>
 
-    <v-dialog v-model="dialog" max-width="500">
-      <v-card>
-        <v-card-title class="text-h6">
-          {{ isEdit ? 'Editar Categoria' : 'Nova Categoria' }}
-        </v-card-title>
-        <v-card-text v-if="editedItem">
-          <v-text-field
-            v-model="editedItem.name"
-            label="Nome"
-            required
-            variant="solo-filled"
-            density="comfortable"
-          />
-          <v-color-picker
-            v-model="editedItem.color"
-            mode="hexa"
-            label="Cor"
-            hide-canvas
-            show-swatches
-            flat
-            class="mb-4"
-            style="width: -webkit-fill-available"
-          />
-          <v-select
-            v-model="editedItem.type"
-            :items="['DENTE', 'FACE']"
-            label="Tipo"
-            variant="solo-filled"
-            density="comfortable"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="dialog = false">Cancelar</v-btn>
-          <v-btn color="primary" @click="saveCategory">Salvar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <OdontogramaCategoryModal v-model="dialog" :selectedService="selectedOdontogramaCategory" />
   </div>
 </template>

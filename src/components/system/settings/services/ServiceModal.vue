@@ -6,7 +6,6 @@ import { useSnackbarStore } from '@/stores/snackbar.store';
 import type Service from '@/types/service/service.type';
 import type ServicePayload from '@/types/service/service-payload.type';
 import { useSystemModuleStore } from '@/stores/system-module.store';
-import type { SystemModule } from '@/types/systemModule/system-module.type';
 
 const serviceStore = useServiceStore();
 const snackbarStore = useSnackbarStore();
@@ -119,7 +118,8 @@ function handlePriceKeydown(event: KeyboardEvent, currentValue: string | number 
               density="compact"
               :persistent-placeholder="!!props.selectedService?.name"
               :error="!!errorMessage"
-              :error-messages="errorMessage" class="mb-3"
+              :error-messages="errorMessage"
+              class="mb-3"
             />
           </Field>
           <Field name="description" rules="required" v-slot="{ field, errorMessage }">
@@ -130,7 +130,8 @@ function handlePriceKeydown(event: KeyboardEvent, currentValue: string | number 
               density="compact"
               :persistent-placeholder="!!props.selectedService?.description"
               :error="!!errorMessage"
-              :error-messages="errorMessage" class="mb-3"
+              :error-messages="errorMessage"
+              class="mb-3"
             />
           </Field>
           <Field name="price" rules="required|min:0" v-slot="{ field, errorMessage, value }">
@@ -143,7 +144,8 @@ function handlePriceKeydown(event: KeyboardEvent, currentValue: string | number 
               density="compact"
               :persistent-placeholder="!!props.selectedService?.price"
               :error="!!errorMessage"
-              :error-messages="errorMessage" class="mb-3"
+              :error-messages="errorMessage"
+              class="mb-3"
               @keydown.prevent="handlePriceKeydown($event, value, field.onChange)"
             />
           </Field>

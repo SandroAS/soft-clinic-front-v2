@@ -90,7 +90,7 @@ export const useAccountUserStore = defineStore('accountUser', {
       }
     },
 
-    async getAccountUsers(params: DataTableFilterParams = {}) {
+    async getAccountUsers(params: DataTableFilterParams) {
       this.loading = true;
       this.error = null;
 
